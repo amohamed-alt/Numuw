@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#E8E2D7;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;font-family:'Cairo',sans-serif;padding:32px 20px 60px}
+::-webkit-scrollbar{width:0;height:0}
+input,textarea,button{font-family:'Cairo',sans-serif}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+@keyframes successPop{0%{opacity:0;transform:translateX(-50%) translateY(20px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}85%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-10px)}}
+</style>
+</helmet>
+
+<div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+
+  <!-- App label -->
+  <div style="display:flex;align-items:center;gap:10px;direction:rtl;">
+    <div style="width:32px;height:32px;background:#59B8A5;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(89,184,165,0.35);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="4" stroke="white" stroke-width="2"/><path d="M12 14v6M9 17.5c0 0 1 1.5 3 1.5s3-1.5 3-1.5" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+    </div>
+    <span style="font-size:18px;font-weight:800;color:#252525;">نُمُوّ <span style="color:#77736F;font-weight:400;font-size:14px;">· Numuw</span></span>
+  </div>
+
+  <!-- PHONE BEZEL -->
+  <div style="width:390px;height:844px;border-radius:50px;overflow:hidden;position:relative;background:#FBF8F4;box-shadow:0 0 0 11px #1c1c1e,0 0 0 13px #3a3a3c,0 32px 100px rgba(0,0,0,0.4);flex-shrink:0;display:flex;flex-direction:column;">
+
+    <!-- Dynamic Island -->
+    <div style="position:absolute;top:13px;left:50%;transform:translateX(-50%);width:128px;height:36px;background:#0a0a0a;border-radius:20px;z-index:300;pointer-events:none;"></div>
+
+    <!-- STATUS BAR -->
+    <div style="height:52px;flex-shrink:0;z-index:200;display:flex;align-items:flex-end;justify-content:space-between;padding:0 28px 10px;direction:ltr;position:relative;">
+      <span style="font-size:15px;font-weight:700;color:#1a1a1a;letter-spacing:-0.3px;font-family:system-ui,-apple-system;">9:41</span>
+      <div style="display:flex;align-items:center;gap:5px;">
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="#1a1a1a"><rect x="0" y="6" width="3" height="5" rx="0.5"/><rect x="4.5" y="4" width="3" height="7" rx="0.5"/><rect x="9" y="2" width="3" height="9" rx="0.5"/><rect x="13.5" y="0" width="3" height="11" rx="0.5"/></svg>
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="none"><path d="M8 2.5a6 6 0 0 1 4.24 1.76" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/><path d="M8 2.5a6 6 0 0 0-4.24 1.76" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/><path d="M8 5.5a3 3 0 0 1 2.12 0.88" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/><path d="M8 5.5a3 3 0 0 0-2.12 0.88" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="9" r="1.2" fill="#1a1a1a"/></svg>
+        <svg width="26" height="12" viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="22" height="11" rx="3.5" stroke="#1a1a1a" stroke-opacity="0.35"/><rect x="2" y="2" width="18" height="8" rx="2" fill="#1a1a1a"/><path d="M24.5 4.5v3a1.5 1.5 0 0 0 0-3z" fill="#1a1a1a" fill-opacity="0.4"/></svg>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <div style="flex:1;position:relative;overflow:hidden;">
+
+      <!-- ═══ SPLASH ═══ -->
+      <sc-if value="{{ isSplash }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:#FBF8F4;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div style="">
+            <div style="width:104px;height:104px;background:linear-gradient(135deg,#59B8A5,#3D9E8C);border-radius:34px;display:flex;align-items:center;justify-content:center;box-shadow:0 16px 48px rgba(89,184,165,0.4);">
+              <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                <circle cx="30" cy="26" r="14" fill="white" opacity="0.95"/>
+                <circle cx="25" cy="23" r="2.5" fill="#59B8A5"/>
+                <circle cx="35" cy="23" r="2.5" fill="#59B8A5"/>
+                <path d="M25 30 Q30 34 35 30" stroke="#59B8A5" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                <path d="M30 40 V52" stroke="white" stroke-width="3" stroke-linecap="round"/>
+                <path d="M30 48 Q24 44 24 38" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                <path d="M30 46 Q36 42 36 36" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              </svg>
+            </div>
+          </div>
+          <div style="margin-top:28px;text-align:center;direction:rtl;">
+            <div style="font-size:40px;font-weight:900;color:#252525;letter-spacing:-1px;">نُمُوّ</div>
+            <div style="font-size:15px;color:#77736F;margin-top:6px;">رفيقتكِ في رحلة الأمومة</div>
+          </div>
+          <div style="margin-top:48px;display:flex;gap:7px;">
+            <div style="width:8px;height:8px;border-radius:50%;background:#59B8A5;animation:pulse 1.5s 0s infinite;"></div>
+            <div style="width:8px;height:8px;border-radius:50%;background:#59B8A5;animation:pulse 1.5s 0.3s infinite;"></div>
+            <div style="width:8px;height:8px;border-radius:50%;background:#59B8A5;animation:pulse 1.5s 0.6s infinite;"></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ WELCOME ═══ -->
+      <sc-if value="{{ isWelcome }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:#FBF8F4;direction:rtl;overflow-y:auto;">
+          <div style="background:linear-gradient(180deg,#D9EFE9 0%,#FBF8F4 100%);padding:72px 32px 40px;display:flex;flex-direction:column;align-items:center;">
+            <div style="width:148px;height:148px;background:linear-gradient(135deg,#E7F4F0,#D4EDE8);border-radius:74px;display:flex;align-items:center;justify-content:center;border:3px solid rgba(89,184,165,0.2);">
+              <svg width="96" height="96" viewBox="0 0 96 96" fill="none">
+                <circle cx="48" cy="36" r="20" fill="#FDEBDF"/>
+                <circle cx="41" cy="32" r="2.5" fill="#F3A26B"/><circle cx="55" cy="32" r="2.5" fill="#F3A26B"/>
+                <path d="M41 40 Q48 45 55 40" stroke="#F3A26B" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                <path d="M48 60 C48 60 32 52 32 42 C32 36 37 33 41 35 C43.5 36 46 39 48 41 C50 39 52.5 36 55 35 C59 33 64 36 64 42 C64 52 48 60 48 60Z" fill="#F3A26B" opacity="0.6"/>
+              </svg>
+            </div>
+            <div style="margin-top:22px;text-align:center;">
+              <div style="font-size:34px;font-weight:900;color:#252525;letter-spacing:-0.5px;">نُمُوّ</div>
+              <div style="font-size:15px;color:#77736F;margin-top:8px;line-height:1.7;max-width:260px;">سجّلي أحداث طفلكِ، تابعي نموّه<br/>واطمئني في كل لحظة 💚</div>
+            </div>
+          </div>
+          <div style="padding:24px 24px 40px;display:flex;flex-direction:column;gap:12px;">
+            <button onClick="{{ goSignIn }}" style="width:100%;height:56px;background:linear-gradient(135deg,#59B8A5,#3D9E8C);border:none;border-radius:18px;color:white;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(89,184,165,0.4);">تسجيل الدخول</button>
+            <button onClick="{{ goSignUp }}" style="width:100%;height:56px;background:white;border:2px solid #EDE7E1;border-radius:18px;color:#252525;font-size:17px;font-weight:600;cursor:pointer;">إنشاء حساب جديد</button>
+            <div style="margin-top:12px;display:flex;flex-direction:column;gap:11px;">
+              <div style="display:flex;align-items:center;gap:12px;"><div style="width:38px;height:38px;background:#E7F4F0;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">🍼</div><span style="font-size:14px;color:#77736F;">تسجيل سريع للرضاعة والنوم والحفاضات</span></div>
+              <div style="display:flex;align-items:center;gap:12px;"><div style="width:38px;height:38px;background:#F0EBFA;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">📊</div><span style="font-size:14px;color:#77736F;">متابعة النمو والتطعيمات</span></div>
+              <div style="display:flex;align-items:center;gap:12px;"><div style="width:38px;height:38px;background:#FDEBDF;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">💬</div><span style="font-size:14px;color:#77736F;">مساعد ذكي لتنظيم بيانات طفلكِ</span></div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ SIGN IN ═══ -->
+      <sc-if value="{{ isSignIn }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:#FBF8F4;direction:rtl;overflow-y:auto;">
+          <div style="padding:64px 24px 0;display:flex;align-items:center;gap:14px;">
+            <button onClick="{{ goWelcome }}" style="width:42px;height:42px;background:white;border:1.5px solid #EDE7E1;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.06);"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 5l5 5-5 5M5 10h12" stroke="#252525" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div><div style="font-size:22px;font-weight:800;color:#252525;">مرحباً بعودتكِ 👋</div><div style="font-size:14px;color:#77736F;margin-top:2px;">سجّلي الدخول للمتابعة</div></div>
+          </div>
+          <div style="padding:28px 24px 40px;display:flex;flex-direction:column;gap:16px;">
+            <div style="display:flex;flex-direction:column;gap:7px;"><label style="font-size:14px;font-weight:600;color:#252525;">البريد الإلكتروني</label><input type="email" placeholder="example@email.com" dir="ltr" style="width:100%;height:52px;background:white;border:1.5px solid #EDE7E1;border-radius:14px;padding:0 16px;font-size:15px;color:#252525;outline:none;"/></div>
+            <div style="display:flex;flex-direction:column;gap:7px;"><label style="font-size:14px;font-weight:600;color:#252525;">كلمة المرور</label><input type="password" placeholder="••••••••" style="width:100%;height:52px;background:white;border:1.5px solid #EDE7E1;border-radius:14px;padding:0 16px;font-size:15px;color:#252525;outline:none;"/></div>
+            <div style="text-align:left;"><span style="font-size:14px;color:#59B8A5;font-weight:600;cursor:pointer;">نسيتِ كلمة المرور؟</span></div>
+            <button onClick="{{ doSignIn }}" style="width:100%;height:56px;background:linear-gradient(135deg,#59B8A5,#3D9E8C);border:none;border-radius:18px;color:white;font-size:17px;font-weight:700;cursor:pointer;margin-top:4px;box-shadow:0 8px 24px rgba(89,184,165,0.4);">تسجيل الدخول</button>
+            <div style="display:flex;align-items:center;gap:12px;"><div style="flex:1;height:1px;background:#EDE7E1;"></div><span style="font-size:13px;color:#77736F;">أو</span><div style="flex:1;height:1px;background:#EDE7E1;"></div></div>
+            <div style="text-align:center;"><span style="font-size:14px;color:#77736F;">ليس لديكِ حساب؟ </span><span onClick="{{ goSignUp }}" style="font-size:14px;color:#59B8A5;font-weight:700;cursor:pointer;">إنشاء حساب</span></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ SIGN UP ═══ -->
+      <sc-if value="{{ isSignUp }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:#FBF8F4;direction:rtl;overflow-y:auto;">
+          <div style="padding:64px 24px 0;display:flex;align-items:center;gap:14px;">
+            <button onClick="{{ goWelcome }}" style="width:42px;height:42px;background:white;border:1.5px solid #EDE7E1;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 5l5 5-5 5M5 10h12" stroke="#252525" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div><div style="font-size:22px;font-weight:800;color:#252525;">إنشاء حساب ✨</div><div style="font-size:14px;color:#77736F;margin-top:2px;">ابدئي رحلتكِ مع نُمُوّ</div></div>
+          </div>
+          <div style="padding:28px 24px 40px;display:flex;flex-direction:column;gap:15px;">
+            <div style="display:flex;flex-direction:column;gap:7px;"><label style="font-size:14px;font-weight:600;color:#252525;">اسمكِ</label><input placeholder="اسمكِ الكريم" style="width:100%;height:52px;background:white;border:1.5px solid #EDE7E1;border-radius:14px;padding:0 16px;font-size:15px;color:#252525;outline:none;"/></div>
+            <div style="display:flex;flex-direction:column;gap:7px;"><label style="font-size:14px;font-weight:600;color:#252525;">البريد الإلكتروني</label><input type="email" placeholder="example@email.com" dir="ltr" style="width:100%;height:52px;background:white;border:1.5px solid #EDE7E1;border-radius:14px;padding:0 16px;font-size:15px;color:#252525;outline:none;"/></div>
+            <div style="display:flex;flex-direction:column;gap:7px;"><label style="font-size:14px;font-weight:600;color:#252525;">كلمة المرور</label><input type="password" placeholder="••••••••" style="width:100%;height:52px;background:white;border:1.5px solid #EDE7E1;border-radius:14px;padding:0 16px;font-size:15px;color:#252525;outline:none;"/></div>
+            <button onClick="{{ doSignUp }}" style="width:100%;height:56px;background:linear-gradient(135deg,#59B8A5,#3D9E8C);border:none;border-radius:18px;color:white;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(89,184,165,0.4);">إنشاء الحساب</button>
+            <div style="text-align:center;"><span style="font-size:14px;color:#77736F;">لديكِ حساب؟ </span><span onClick="{{ goSignIn }}" style="font-size:14px;color:#59B8A5;font-weight:700;cursor:pointer;">تسجيل الدخول</span></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ EMAIL CONFIRM ═══ -->
+      <sc-if value="{{ isEmailConfirm }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:#FBF8F4;direction:rtl;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;">
+          <div style="width:96px;height:96px;background:#E7F4F0;border-radius:28px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-size:46px;">📧</div>
+          <div style="font-size:24px;font-weight:800;color:#252525;margin-bottom:12px;">تأكيد البريد الإلكتروني</div>
+          <div style="font-size:15px;color:#77736F;line-height:1.7;margin-bottom:32px;max-width:280px;">أرسلنا رابط التأكيد إلى بريدكِ. تفضّلي بالتحقق منه ثم عودي للمتابعة.</div>
+          <button onClick="{{ goOnboarding }}" style="width:100%;max-width:300px;height:56px;background:linear-gradient(135deg,#59B8A5,#3D9E8C);border:none;border-radius:18px;color:white;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(89,184,165,0.35);">تأكيد وإضافة طفلي</button>
+          <div style="margin-top:16px;font-size:14px;color:#77736F;">لم يصلكِ البريد؟ <span style="color:#59B8A5;font-weight:600;cursor:pointer;">إعادة الإرسال</span></div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ ONBOARDING 1 ═══ -->
+      <sc-if value="{{ isOnboarding1 }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:#FBF8F4;direction:rtl;overflow-y:auto;">
+          <div style="padding:64px 24px 0;">
+            <div style="display:flex;gap:6px;margin-bottom:28px;"><div style="flex:1;height:4px;background:#59B8A5;border-radius:2px;"></div><div style="flex:1;height:4px;background:#EDE7E1;border-radius:2px;"></div><div style="flex:1;height:4px;background:#EDE7E1;border-radius:2px;"></div></div>
+            <div style="font-size:12px;color:#77736F;margin-bottom:6px;font-weight:600;">الخطوة 1 من 3</div>
+            <div style="font-size:24px;font-weight:800;color:#252525;line-height:1.4;margin-bottom:6px;">هل ما زالت الأم حامل<br/>أم الطفل وُلد؟</div>
+            <div style="font-size:14px;color:#77736F;margin-bottom:28px;">اختاري الخيار المناسب لكِ</div>
+          </div>
+          <div style="padding:0 24px 40px;display:flex;flex-direction:column;gap:14px;">
+            <button onClick="{{ selectBorn }}" style="{{ onb1BornBtnStyle }}">
+              <div style="{{ onb1BornIconStyle }}">👶</div>
+              <div>
+                <div style="{{ onb1BornTitleStyle }}">الطفل وُلد</div>
+                <div style="{{ onb1BornSubStyle }}">سجّلي أحداث يومية من الآن</div>
+              </div>
+            </button>
+            <button onClick="{{ selectPregnant }}" style="{{ onb1PregnantBtnStyle }}">
+              <div style="{{ onb1PregnantIconStyle }}">🤰</div>
+              <div>
+                <div style="{{ onb1PregnantTitleStyle }}">الأم حامل</div>
+                <div style="{{ onb1PregnantSubStyle }}">سجّلي موعد الولادة المتوقع</div>
+              </div>
+            </button>
+            <button onClick="{{ nextOnboarding1 }}" style="width:100%;height:56px;background:linear-gradient(135deg,#59B8A5,#3D9E8C);border:none;border-radius:18px;color:white;font-size:17px;font-weight:700;cursor:pointer;margin-top:16px;box-shadow:0 8px 24px rgba(89,184,165,0.35);">التالي →</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ ONBOARDING 2 ═══ -->
+      <sc-if value="{{ isOnboarding2 }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:#FBF8F4;direction:rtl;overflow-y:auto;">
+          <div style="padding:64px 24px 0;">
+            <div style="display:flex;gap:6px;margin-bottom:28px;"><div style="flex:1;height:4px;background:#59B8A5;border-radius:2px;"></div><div style="flex:1;height:4px;background:#59B8A5;border-radius:2px;"></div><div style="flex:1;height:4px;background:#EDE7E1;border-radius:2px;"></div></div>
+            <div style="font-size:12px;color:#77736F;margin-bottom:6px;font-weight:600;">الخطوة 2 من 3</div>
+            <div style="font-size:24px;font-weight:800;color:#252525;margin-bottom:24px;">أخبريني عن طفلكِ 💛</div>
+          </div>
+          <div style="padding:0 24px 40px;display:flex;flex-direction:column;gap:18px;">
+            <div style="display:flex;flex-direction:column;gap:7px;"><label style="font-size:14px;font-weight:600;color:#252525;">اسم الطفل</label><input placeholder="اسم طفلكِ الحبيب" style="width:100%;height:52px;background:white;border:1.5px solid #EDE7E1;border-radius:14px;padding:0 16px;font-size:15px;color:#252525;outline:none;"/></div>
+            <div style="display:flex;flex-direction:column;gap:7px;"><label style="font-size:14px;font-weight:600;color:#252525;">تاريخ الميلاد</label><input type="date" style="width:100%;height:52px;background:white;border:1.5px solid #EDE7E1;border-radius:14px;padding:0 16px;font-size:15px;color:#252525;outline:none;direction:ltr;"/></div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <label style="font-size:14px;font-weight:600;color:#252525;">الجنس</label>
+              <div style="display:flex;gap:12px;"><button style="flex:1;height:52px;background:#E7F4F0;border:2px solid #59B8A5;border-radius:14px;color:#59B8A5;font-size:15px;font-weight:700;cursor:pointer;">بنت 👧</button><button style="flex:1;height:52px;background:white;border:1.5px solid #EDE7E1;border-radius:14px;color:#252525;font-size:15px;font-weight:500;cursor:pointer;">ولد 👦</button></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <label style="font-size:14px;font-weight:600;color:#252525;">نوع الرضاعة</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><button style="height:52px;background:#FDEBDF;border:2px solid #F3A26B;border-radius:14px;color:#F3A26B;font-size:14px;font-weight:700;cursor:pointer;">طبيعية 🤱</button><button style="height:52px;background:white;border:1.5px solid #EDE7E1;border-radius:14px;color:#252525;font-size:14px;cursor:pointer;">صناعية 🍼</button><button style="height:52px;background:white;border:1.5px solid #EDE7E1;border-radius:14px;color:#252525;font-size:14px;cursor:pointer;grid-column:1/-1;">مختلطة 🤱🍼</button></div>
+            </div>
+            <button onClick="{{ nextOnboarding2 }}" style="width:100%;height:56px;background:linear-gradient(135deg,#59B8A5,#3D9E8C);border:none;border-radius:18px;color:white;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(89,184,165,0.35);">التالي →</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ ONBOARDING 3 ═══ -->
+      <sc-if value="{{ isOnboarding3 }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background:#FBF8F4;direction:rtl;overflow-y:auto;">
+          <div style="padding:64px 24px 0;">
+            <div style="display:flex;gap:6px;margin-bottom:28px;"><div style="flex:1;height:4px;background:#59B8A5;border-radius:2px;"></div><div style="flex:1;height:4px;background:#59B8A5;border-radius:2px;"></div><div style="flex:1;height:4px;background:#59B8A5;border-radius:2px;"></div></div>
+            <div style="font-size:12px;color:#77736F;margin-bottom:6px;font-weight:600;">الخطوة 3 من 3 — اختياري</div>
+            <div style="font-size:24px;font-weight:800;color:#252525;margin-bottom:6px;">تفاصيل إضافية</div>
+            <div style="font-size:14px;color:#77736F;margin-bottom:24px;">يمكنكِ تخطيها وإضافتها لاحقاً</div>
+          </div>
+          <div style="padding:0 24px 40px;display:flex;flex-direction:column;gap:18px;">
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <label style="font-size:14px;font-weight:600;color:#252525;">فصيلة الدم <span style="color:#77736F;font-weight:400;">(اختياري)</span></label>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+                <button style="height:44px;background:white;border:1.5px solid #EDE7E1;border-radius:12px;color:#252525;font-size:14px;font-weight:600;cursor:pointer;">A+</button>
+                <button style="height:44px;background:white;border:1.5px solid #EDE7E1;border-radius:12px;color:#252525;font-size:14px;font-weight:600;cursor:pointer;">A−</button>
+                <button style="height:44px;background:white;border:1.5px solid #EDE7E1;border-radius:12px;color:#252525;font-size:14px;font-weight:600;cursor:pointer;">B+</button>
+                <button style="height:44px;background:white;border:1.5px solid #EDE7E1;border-radius:12px;color:#252525;font-size:14px;font-weight:600;cursor:pointer;">B−</button>
+                <button style="height:44px;background:#FDEBDF;border:2px solid #F3A26B;border-radius:12px;color:#F3A26B;font-size:14px;font-weight:700;cursor:pointer;">O+</button>
+                <button style="height:44px;background:white;border:1.5px solid #EDE7E1;border-radius:12px;color:#252525;font-size:14px;cursor:pointer;">O−</button>
+                <button style="height:44px;background:white;border:1.5px solid #EDE7E1;border-radius:12px;color:#252525;font-size:14px;cursor:pointer;">AB+</button>
+                <button style="height:44px;background:white;border:1.5px solid #EDE7E1;border-radius:12px;color:#252525;font-size:14px;cursor:pointer;">AB−</button>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:7px;"><label style="font-size:14px;font-weight:600;color:#252525;">وزن الولادة</label><input placeholder="3.25 كجم" style="width:100%;height:52px;background:white;border:1.5px solid #EDE7E1;border-radius:14px;padding:0 16px;font-size:15px;color:#252525;outline:none;"/></div>
+            <div style="border:2px dashed #EDE7E1;border-radius:20px;padding:22px;text-align:center;cursor:pointer;background:white;"><div style="font-size:30px;margin-bottom:8px;">📸</div><div style="font-size:15px;font-weight:600;color:#252525;margin-bottom:3px;">صورة طفلكِ</div><div style="font-size:13px;color:#77736F;">اختياري</div></div>
+            <div style="display:flex;gap:12px;margin-top:4px;">
+              <button onClick="{{ finishOnboarding }}" style="flex:1;height:56px;background:linear-gradient(135deg,#59B8A5,#3D9E8C);border:none;border-radius:18px;color:white;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(89,184,165,0.35);">لنبدأ! 🎉</button>
+              <button onClick="{{ finishOnboarding }}" style="height:56px;padding:0 20px;background:white;border:1.5px solid #EDE7E1;border-radius:18px;color:#77736F;font-size:15px;cursor:pointer;">تخطي</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ HOME ═══ -->
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;direction:rtl;background:#FBF8F4;">
+          <div style="padding:18px 18px 24px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+              <div><div style="font-size:21px;font-weight:800;color:#252525;">مرحباً ماما 💚</div><div style="font-size:13px;color:#77736F;margin-top:2px;">أنتِ تقومين بعمل رائع اليوم 🧡</div></div>
+              <button style="width:44px;height:44px;background:white;border:1px solid #EDE7E1;border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#252525" stroke-width="1.8" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <div style="position:absolute;top:9px;right:9px;width:8px;height:8px;background:#F3A26B;border-radius:50%;border:1.5px solid white;"></div>
+              </button>
+            </div>
+            <!-- Child Hero Card -->
+            <div onClick="{{ goProfile }}" style="background:linear-gradient(135deg,#E7F4F0,#D4EDE8);border-radius:24px;padding:20px;margin-bottom:18px;position:relative;overflow:hidden;cursor:pointer;">
+              <div style="position:absolute;top:-24px;left:-24px;width:90px;height:90px;background:rgba(89,184,165,0.15);border-radius:50%;"></div>
+              <div style="position:absolute;bottom:-32px;right:50px;width:110px;height:110px;background:rgba(89,184,165,0.1);border-radius:50%;"></div>
+              <div style="display:flex;align-items:center;gap:14px;position:relative;">
+                <div style="width:68px;height:68px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(89,184,165,0.25);flex-shrink:0;border:2.5px solid rgba(89,184,165,0.3);font-size:34px;">👶</div>
+                <div style="flex:1;">
+                  <div style="display:flex;align-items:center;gap:6px;"><div style="font-size:22px;font-weight:900;color:#252525;">يوسف</div><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 12l-4-4 4-4" stroke="#59B8A5" stroke-width="2" stroke-linecap="round"/></svg></div>
+                  <div style="font-size:13px;color:#59B8A5;font-weight:600;margin-top:2px;">9 أسابيع و 3 أيام</div>
+                  <div style="font-size:12px;color:#77736F;margin-top:1px;">بيانات اليوم من تسجيلاتكِ</div>
+                </div>
+              </div>
+            </div>
+            <!-- Summary header -->
+            <div style="display:flex;align-items:center;margin-bottom:12px;">
+              <div style="font-size:15px;font-weight:700;color:#252525;display:flex;align-items:center;gap:7px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#59B8A5" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>ملخص اليوم</div>
+            </div>
+            <!-- Summary Grid -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:18px;">
+              <div onClick="{{ goLogFeeding }}" style="background:white;border-radius:20px;padding:16px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.06);border:1px solid #EDE7E1;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;"><div><div style="font-size:11px;font-weight:700;color:#F3A26B;margin-bottom:3px;">آخر رضعة</div><div style="font-size:12px;color:#77736F;">منذ</div><div style="font-size:20px;font-weight:800;color:#252525;line-height:1.2;">ساعتين</div></div><div style="width:42px;height:42px;background:#FDEBDF;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">🍼</div></div>
+                <div style="font-size:11px;color:#77736F;background:#FDEBDF;border-radius:7px;padding:3px 8px;display:inline-block;">12 د · يمين</div>
+              </div>
+              <div onClick="{{ goLogSleep }}" style="background:white;border-radius:20px;padding:16px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.06);border:1px solid #EDE7E1;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;"><div><div style="font-size:11px;font-weight:700;color:#59B8A5;margin-bottom:3px;">نوم اليوم</div><div style="font-size:20px;font-weight:800;color:#252525;line-height:1.2;">11 ساعة</div><div style="font-size:12px;color:#77736F;">و 20 دقيقة</div></div><div style="width:42px;height:42px;background:#E7F4F0;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">🌙</div></div>
+                <div style="font-size:11px;color:#77736F;background:#E7F4F0;border-radius:7px;padding:3px 8px;display:inline-block;">3 فترات</div>
+              </div>
+              <div onClick="{{ goLogDiaper }}" style="background:white;border-radius:20px;padding:16px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.06);border:1px solid #EDE7E1;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;"><div><div style="font-size:11px;font-weight:700;color:#9B86D8;margin-bottom:3px;">آخر تغيير حفاضة</div><div style="font-size:12px;color:#77736F;">منذ</div><div style="font-size:20px;font-weight:800;color:#252525;line-height:1.2;">ساعة</div></div><div style="width:42px;height:42px;background:#F0EBFA;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">🧷</div></div>
+                <div style="font-size:11px;color:#77736F;background:#F0EBFA;border-radius:7px;padding:3px 8px;display:inline-block;">مبللة</div>
+              </div>
+              <div onClick="{{ goProfile }}" style="background:white;border-radius:20px;padding:16px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.06);border:1px solid #EDE7E1;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;"><div><div style="font-size:11px;font-weight:700;color:#E9BC5D;margin-bottom:3px;">التطعيم القادم</div><div style="font-size:12px;color:#77736F;">بعد</div><div style="font-size:20px;font-weight:800;color:#252525;line-height:1.2;">6 أيام</div></div><div style="width:42px;height:42px;background:#FFF3D7;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">💉</div></div>
+                <div style="font-size:11px;color:#77736F;background:#FFF3D7;border-radius:7px;padding:3px 8px;display:inline-block;">DTP · 10 يونيو</div>
+              </div>
+            </div>
+            <!-- Insight + Activity -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:18px;">
+              <div style="background:white;border-radius:20px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.06);border:1px solid #EDE7E1;"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;"><div style="font-size:13px;font-weight:700;color:#252525;">نصيحة اليوم</div><div style="width:30px;height:30px;background:#E7F4F0;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;">🌱</div></div><div style="font-size:12px;color:#77736F;line-height:1.6;margin-bottom:8px;">التواصل البصري أثناء الرضاعة يعزز الارتباط العاطفي.</div><div style="font-size:12px;color:#59B8A5;font-weight:600;cursor:pointer;">اقرئي المزيد ‹</div></div>
+              <div style="background:white;border-radius:20px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.06);border:1px solid #EDE7E1;"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;"><div style="font-size:13px;font-weight:700;color:#252525;">نشاط مناسب</div><div style="width:30px;height:30px;background:#FFF3D7;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;">⭐</div></div><div style="font-size:12px;font-weight:600;color:#252525;margin-bottom:3px;">وقت البطن</div><div style="font-size:12px;color:#77736F;margin-bottom:6px;">5–10 دقائق يومياً</div><div style="font-size:12px;color:#F3A26B;font-weight:600;cursor:pointer;">عرض الأنشطة ‹</div></div>
+            </div>
+            <!-- Tasks -->
+            <div style="background:white;border-radius:20px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);border:1px solid #EDE7E1;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><div style="font-size:14px;font-weight:700;color:#252525;display:flex;align-items:center;gap:7px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9B86D8" stroke-width="2"><rect x="9" y="3" width="13" height="13" rx="2"/><path d="M5 7H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg>مهام لم تكتمل</div><div style="width:22px;height:22px;background:#F0EBFA;border-radius:7px;display:flex;align-items:center;justify-content:center;"><span style="font-size:11px;font-weight:700;color:#9B86D8;">3</span></div></div>
+              <div style="display:flex;flex-direction:column;gap:11px;">
+                <div style="display:flex;align-items:center;gap:11px;"><div style="width:22px;height:22px;border:2px solid #EDE7E1;border-radius:50%;flex-shrink:0;cursor:pointer;"></div><span style="font-size:14px;color:#252525;">إعطاء فيتامين د</span></div>
+                <div style="display:flex;align-items:center;gap:11px;"><div style="width:22px;height:22px;border:2px solid #EDE7E1;border-radius:50%;flex-shrink:0;cursor:pointer;"></div><span style="font-size:14px;color:#252525;">وقت اللعب على البطن</span></div>
+                <div style="display:flex;align-items:center;gap:11px;"><div style="width:22px;height:22px;border:2px solid #EDE7E1;border-radius:50%;flex-shrink:0;cursor:pointer;"></div><span style="font-size:14px;color:#252525;">قراءة قصة قبل النوم</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ LOG GRID ═══ -->
+      <sc-if value="{{ isLog }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;direction:rtl;background:#FBF8F4;">
+          <div style="padding:18px 18px 24px;">
+            <div style="margin-bottom:22px;"><div style="font-size:21px;font-weight:800;color:#252525;">تسجيل سريع ✏️</div><div style="font-size:13px;color:#77736F;margin-top:3px;">سجّلي أحداث يوسف اليومية</div></div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:24px;">
+              <div onClick="{{ goLogFeeding }}" style="display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;"><div style="width:66px;height:66px;background:#FDEBDF;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:30px;border:2px solid #F3A26B;box-shadow:0 4px 12px rgba(243,162,107,0.2);">🍼</div><span style="font-size:12px;font-weight:600;color:#252525;text-align:center;">رضاعة</span></div>
+              <div onClick="{{ goLogSleep }}" style="display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;"><div style="width:66px;height:66px;background:#E7F4F0;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:30px;border:2px solid #59B8A5;box-shadow:0 4px 12px rgba(89,184,165,0.2);">🌙</div><span style="font-size:12px;font-weight:600;color:#252525;text-align:center;">نوم</span></div>
+              <div onClick="{{ goLogDiaper }}" style="display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;"><div style="width:66px;height:66px;background:#F0EBFA;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:30px;border:2px solid #9B86D8;box-shadow:0 4px 12px rgba(155,134,216,0.2);">🧷</div><span style="font-size:12px;font-weight:600;color:#252525;text-align:center;">حفاضة</span></div>
+              <div onClick="{{ goLogFood }}" style="display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;"><div style="width:66px;height:66px;background:#FFF3D7;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:30px;border:2px solid #E9BC5D;box-shadow:0 4px 12px rgba(233,188,93,0.2);">🥣</div><span style="font-size:12px;font-weight:600;color:#252525;text-align:center;">طعام</span></div>
+              <div onClick="{{ goLogMed }}" style="display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;"><div style="width:66px;height:66px;background:#EAF4FA;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:30px;border:2px solid #84B7D8;box-shadow:0 4px 12px rgba(132,183,216,0.2);">💊</div><span style="font-size:12px;font-weight:600;color:#252525;text-align:center;">دواء</span></div>
+              <div onClick="{{ goLogTemp }}" style="display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;"><div style="width:66px;height:66px;background:#FDEBDF;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:30px;border:2px solid #E77A68;box-shadow:0 4px 12px rgba(231,122,104,0.15);">🌡️</div><span style="font-size:12px;font-weight:600;color:#252525;text-align:center;">حرارة</span></div>
+              <div onClick="{{ goLogNote }}" style="display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;"><div style="width:66px;height:66px;background:#F5F0EB;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:30px;border:2px solid #C4B8AD;">📝</div><span style="font-size:12px;font-weight:600;color:#252525;text-align:center;">ملاحظة</span></div>
+            </div>
+            <div style="font-size:15px;font-weight:700;color:#252525;display:flex;align-items:center;gap:7px;margin-bottom:12px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#59B8A5" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>سجل اليوم</div>
+            <div style="background:white;border-radius:20px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+              <div style="padding:13px 15px;display:flex;align-items:center;gap:11px;border-bottom:1px solid #EDE7E1;cursor:pointer;"><div style="width:36px;height:36px;background:#FDEBDF;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px;">🍼</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;color:#252525;">رضاعة (يسار) — 12 دقيقة</div><div style="font-size:11px;color:#77736F;margin-top:1px;">8:20 ص</div></div><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C4B8AD" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+              <div style="padding:13px 15px;display:flex;align-items:center;gap:11px;border-bottom:1px solid #EDE7E1;cursor:pointer;"><div style="width:36px;height:36px;background:#E7F4F0;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px;">🌙</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;color:#252525;">نوم — 1 ساعة و 15 دقيقة</div><div style="font-size:11px;color:#77736F;margin-top:1px;">6:45 ص</div></div><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C4B8AD" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+              <div style="padding:13px 15px;display:flex;align-items:center;gap:11px;cursor:pointer;"><div style="width:36px;height:36px;background:#F0EBFA;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px;">🧷</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;color:#252525;">حفاضة مبللة</div><div style="font-size:11px;color:#77736F;margin-top:1px;">5:30 ص</div></div><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C4B8AD" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ LOG FEEDING TIMER ═══ -->
+      <sc-if value="{{ isLogFeeding }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;direction:rtl;background:#FBF8F4;">
+          <div style="padding:14px 18px 0;display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <button onClick="{{ backToLog }}" style="width:42px;height:42px;background:white;border:1.5px solid #EDE7E1;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.06);"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 5l5 5-5 5M5 10h12" stroke="#252525" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div style="font-size:18px;font-weight:700;color:#252525;">الرضاعة 🍼</div>
+          </div>
+          <div style="padding:0 18px 24px;display:flex;flex-direction:column;gap:13px;">
+            <div style="background:white;border-radius:24px;padding:26px 18px;box-shadow:0 4px 20px rgba(0,0,0,0.08);text-align:center;">
+              <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;">
+                <div style="{{ feedingDotStyle }}"></div>
+                <span style="font-size:14px;color:#59B8A5;font-weight:600;">{{ feedingStatusText }}</span>
+              </div>
+              <div style="font-size:54px;font-weight:800;color:#59B8A5;letter-spacing:-2px;direction:ltr;margin-bottom:22px;font-family:system-ui,monospace;">{{ feedingTime }}</div>
+              <button onClick="{{ feedingToggle }}" style="{{ feedingBtnStyle }}">{{ feedingBtnText }}</button>
+            </div>
+            <!-- Side -->
+            <div style="background:white;border-radius:20px;padding:15px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+              <div style="font-size:13px;font-weight:600;color:#252525;margin-bottom:11px;">الثدي</div>
+              <div style="display:flex;gap:9px;">
+                <button onClick="{{ setSideRight }}" style="{{ sideRightStyle }}">🍃 يمين</button>
+                <button onClick="{{ setSideLeft }}" style="{{ sideLeftStyle }}">🍃 يسار</button>
+                <button onClick="{{ setSideBoth }}" style="{{ sideBothStyle }}">كلاهما</button>
+              </div>
+            </div>
+            <div style="background:white;border-radius:20px;padding:15px;box-shadow:0 2px 10px rgba(0,0,0,0.06);"><div style="display:flex;align-items:center;justify-content:space-between;"><div style="font-size:13px;font-weight:600;color:#252525;">نوع الرضاعة</div><div style="font-size:13px;color:#77736F;">رضاعة طبيعية ∨</div></div></div>
+            <div style="background:white;border-radius:20px;padding:15px;box-shadow:0 2px 10px rgba(0,0,0,0.06);"><div style="display:flex;align-items:center;justify-content:space-between;"><div style="font-size:13px;font-weight:600;color:#252525;">كمية الحليب (مل)</div><div style="display:flex;align-items:center;gap:12px;"><button style="width:30px;height:30px;background:#E7F4F0;border:none;border-radius:8px;color:#59B8A5;font-size:18px;cursor:pointer;font-weight:700;">−</button><span style="font-size:14px;font-weight:600;color:#252525;direction:ltr;min-width:40px;text-align:center;">— مل</span><button style="width:30px;height:30px;background:#E7F4F0;border:none;border-radius:8px;color:#59B8A5;font-size:18px;cursor:pointer;font-weight:700;">+</button></div></div></div>
+            <div style="background:white;border-radius:20px;padding:15px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;"><span style="font-size:14px;color:#252525;">تجشّأ</span><div style="width:48px;height:28px;background:#EDE7E1;border-radius:14px;position:relative;cursor:pointer;"><div style="position:absolute;top:3px;right:3px;width:22px;height:22px;background:white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></div></div></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:14px;color:#252525;">استفرغ</span><div style="width:48px;height:28px;background:#EDE7E1;border-radius:14px;position:relative;cursor:pointer;"><div style="position:absolute;top:3px;right:3px;width:22px;height:22px;background:white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></div></div></div>
+            </div>
+            <div style="background:white;border-radius:20px;padding:15px;box-shadow:0 2px 10px rgba(0,0,0,0.06);"><textarea placeholder="أضفي ملاحظة... (اختياري)" style="width:100%;min-height:72px;background:transparent;border:none;outline:none;font-size:14px;color:#252525;resize:none;direction:rtl;line-height:1.6;"></textarea></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ LOG SLEEP ═══ -->
+      <sc-if value="{{ isLogSleep }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;direction:rtl;background:#FBF8F4;">
+          <div style="padding:14px 18px 0;display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <button onClick="{{ backToLog }}" style="width:42px;height:42px;background:white;border:1.5px solid #EDE7E1;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 5l5 5-5 5M5 10h12" stroke="#252525" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div style="font-size:18px;font-weight:700;color:#252525;">النوم 🌙</div>
+          </div>
+          <div style="padding:0 18px 24px;display:flex;flex-direction:column;gap:13px;">
+            <div style="background:white;border-radius:24px;padding:32px 18px;box-shadow:0 4px 20px rgba(0,0,0,0.08);text-align:center;">
+              <div style="width:72px;height:72px;background:#E7F4F0;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:36px;">🌙</div>
+              <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;">
+                <div style="{{ sleepDotStyle }}"></div>
+                <span style="font-size:14px;color:#9B86D8;font-weight:600;">{{ sleepStatusText }}</span>
+              </div>
+              <div style="font-size:54px;font-weight:800;color:#9B86D8;letter-spacing:-2px;direction:ltr;margin-bottom:22px;font-family:system-ui,monospace;">{{ sleepTime }}</div>
+              <button onClick="{{ sleepToggle }}" style="{{ sleepBtnStyle }}">{{ sleepBtnText }}</button>
+            </div>
+            <div style="background:white;border-radius:20px;padding:15px;box-shadow:0 2px 10px rgba(0,0,0,0.06);"><div style="font-size:13px;font-weight:600;color:#252525;margin-bottom:6px;">وقت البدء</div><div style="font-size:15px;color:#9B86D8;font-weight:600;direction:ltr;text-align:right;">{{ sleepStartTime }}</div></div>
+            <div style="background:white;border-radius:20px;padding:15px;box-shadow:0 2px 10px rgba(0,0,0,0.06);"><textarea placeholder="ملاحظات..." style="width:100%;min-height:64px;background:transparent;border:none;outline:none;font-size:14px;color:#252525;resize:none;direction:rtl;line-height:1.6;"></textarea></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ LOG DIAPER ═══ -->
+      <sc-if value="{{ isLogDiaper }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;direction:rtl;background:#FBF8F4;">
+          <div style="padding:14px 18px 0;display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <button onClick="{{ backToLog }}" style="width:42px;height:42px;background:white;border:1.5px solid #EDE7E1;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 5l5 5-5 5M5 10h12" stroke="#252525" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div style="font-size:18px;font-weight:700;color:#252525;">الحفاضة 🧷</div>
+          </div>
+          <div style="padding:0 18px 24px;display:flex;flex-direction:column;gap:13px;">
+            <div style="background:white;border-radius:24px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+              <div style="font-size:16px;font-weight:700;color:#252525;margin-bottom:16px;">نوع الحفاضة</div>
+              <div style="display:flex;flex-direction:column;gap:11px;">
+                <button onClick="{{ setDiaperWet }}" style="{{ diaperWetStyle }}"><span style="font-size:26px;">💧</span><div style="text-align:right;"><div style="{{ diaperWetTitleStyle }}">مبللة</div><div style="font-size:12px;color:#77736F;">بول فقط</div></div></button>
+                <button onClick="{{ setDiaperDirty }}" style="{{ diaperDirtyStyle }}"><span style="font-size:26px;">💩</span><div style="text-align:right;"><div style="{{ diaperDirtyTitleStyle }}">متسخة</div><div style="font-size:12px;color:#77736F;">براز فقط</div></div></button>
+                <button onClick="{{ setDiaperBoth }}" style="{{ diaperBothStyle }}"><span style="font-size:26px;">🧷</span><div style="text-align:right;"><div style="{{ diaperBothTitleStyle }}">مبللة ومتسخة</div><div style="font-size:12px;color:#77736F;">بول وبراز معاً</div></div></button>
+              </div>
+            </div>
+            <div style="background:white;border-radius:20px;padding:15px;box-shadow:0 2px 10px rgba(0,0,0,0.06);"><textarea placeholder="ملاحظات عن لون أو ملمس..." style="width:100%;min-height:64px;background:transparent;border:none;outline:none;font-size:14px;color:#252525;resize:none;direction:rtl;line-height:1.6;"></textarea></div>
+            <button onClick="{{ saveDiaper }}" style="width:100%;height:56px;background:linear-gradient(135deg,#9B86D8,#7E6BC0);border:none;border-radius:18px;color:white;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(155,134,216,0.4);">حفظ التسجيل ✓</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ LOG FOOD ═══ -->
+      <sc-if value="{{ isLogFood }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;direction:rtl;background:#FBF8F4;">
+          <div style="padding:14px 18px 0;display:flex;align-items:center;gap:12px;margin-bottom:16px;"><button onClick="{{ backToLog }}" style="width:42px;height:42px;background:white;border:1.5px solid #EDE7E1;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 5l5 5-5 5M5 10h12" stroke="#252525" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div style="font-size:18px;font-weight:700;color:#252525;">الطعام 🥣</div></div>
+          <div style="padding:0 18px 24px;display:flex;flex-direction:column;gap:13px;">
+            <div style="background:white;border-radius:20px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);display:flex;flex-direction:column;gap:14px;">
+              <div style="display:flex;flex-direction:column;gap:7px;"><label style="font-size:13px;font-weight:600;color:#252525;">اسم الطعام</label><input placeholder="مثل: خضار مهروسة، فاكهة..." style="width:100%;height:50px;background:#F8F5F1;border:1.5px solid #EDE7E1;border-radius:13px;padding:0 14px;font-size:14px;color:#252525;outline:none;"/></div>
+              <div style="display:flex;flex-direction:column;gap:7px;"><label style="font-size:13px;font-weight:600;color:#252525;">الكمية</label><input placeholder="مثل: نصف وعاء، 2 ملاعق..." style="width:100%;height:50px;background:#F8F5F1;border:1.5px solid #EDE7E1;border-radius:13px;padding:0 14px;font-size:14px;color:#252525;outline:none;"/></div>
+              <div style="display:flex;flex-direction:column;gap:7px;"><label style="font-size:13px;font-weight:600;color:#252525;">ردة الفعل</label><textarea placeholder="هل أعجبه؟" style="width:100%;height:64px;background:#F8F5F1;border:1.5px solid #EDE7E1;border-radius:13px;padding:12px 14px;font-size:14px;color:#252525;outline:none;resize:none;direction:rtl;"></textarea></div>
+            </div>
+            <button onClick="{{ saveGeneric }}" style="width:100%;height:56px;background:linear-gradient(135deg,#E9BC5D,#D4A83E);border:none;border-radius:18px;color:white;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(233,188,93,0.4);">حفظ التسجيل ✓</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ LOG MEDICINE ═══ -->
+      <sc-if value="{{ isLogMed }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;direction:rtl;background:#FBF8F4;">
+          <div style="padding:14px 18px 0;display:flex;align-items:center;gap:12px;margin-bottom:16px;"><button onClick="{{ backToLog }}" style="width:42px;height:42px;background:white;border:1.5px solid #EDE7E1;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 5l5 5-5 5M5 10h12" stroke="#252525" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div style="font-size:18px;font-weight:700;color:#252525;">الدواء 💊</div></div>
+          <div style="padding:0 18px 24px;display:flex;flex-direction:column;gap:13px;">
+            <div style="background:white;border-radius:20px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);display:flex;flex-direction:column;gap:14px;">
+              <div style="display:flex;flex-direction:column;gap:7px;"><label style="font-size:13px;font-weight:600;color:#252525;">اسم الدواء أو المكمّل</label><input placeholder="مثل: فيتامين د، باراسيتامول..." style="width:100%;height:50px;background:#F8F5F1;border:1.5px solid #EDE7E1;border-radius:13px;padding:0 14px;font-size:14px;color:#252525;outline:none;"/></div>
+              <div style="display:flex;flex-direction:column;gap:7px;"><label style="font-size:13px;font-weight:600;color:#252525;">الجرعة</label><input placeholder="مثل: 5 قطرات، 2.5 مل..." style="width:100%;height:50px;background:#F8F5F1;border:1.5px solid #EDE7E1;border-radius:13px;padding:0 14px;font-size:14px;color:#252525;outline:none;"/></div>
+            </div>
+            <button onClick="{{ saveGeneric }}" style="width:100%;height:56px;background:linear-gradient(135deg,#84B7D8,#5A9AC0);border:none;border-radius:18px;color:white;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(132,183,216,0.4);">حفظ التسجيل ✓</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ LOG TEMP ═══ -->
+      <sc-if value="{{ isLogTemp }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;direction:rtl;background:#FBF8F4;">
+          <div style="padding:14px 18px 0;display:flex;align-items:center;gap:12px;margin-bottom:16px;"><button onClick="{{ backToLog }}" style="width:42px;height:42px;background:white;border:1.5px solid #EDE7E1;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 5l5 5-5 5M5 10h12" stroke="#252525" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div style="font-size:18px;font-weight:700;color:#252525;">درجة الحرارة 🌡️</div></div>
+          <div style="padding:0 18px 24px;display:flex;flex-direction:column;gap:13px;">
+            <div style="background:white;border-radius:24px;padding:28px 18px;box-shadow:0 4px 20px rgba(0,0,0,0.08);text-align:center;">
+              <div style="font-size:72px;font-weight:900;color:#E77A68;direction:ltr;margin-bottom:6px;font-family:system-ui;">37.2</div>
+              <div style="font-size:18px;color:#77736F;margin-bottom:20px;">درجة مئوية</div>
+              <input type="number" placeholder="أدخلي درجة الحرارة" style="width:100%;height:50px;background:#F8F5F1;border:1.5px solid #EDE7E1;border-radius:13px;padding:0 16px;font-size:16px;color:#252525;outline:none;text-align:center;direction:ltr;" step="0.1" min="35" max="42"/>
+            </div>
+            <div style="background:#FFF3D7;border:1.5px solid #E9BC5D;border-radius:16px;padding:14px 16px;display:flex;align-items:flex-start;gap:10px;">⚠️<div style="font-size:13px;color:#77736F;line-height:1.6;">إذا تجاوزت الحرارة 38° تواصلي فوراً مع الطبيب. هذا التسجيل لا يُعدّ تشخيصاً طبياً.</div></div>
+            <button onClick="{{ saveGeneric }}" style="width:100%;height:56px;background:linear-gradient(135deg,#E77A68,#C85A50);border:none;border-radius:18px;color:white;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(231,122,104,0.4);">حفظ التسجيل ✓</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ LOG NOTE ═══ -->
+      <sc-if value="{{ isLogNote }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;direction:rtl;background:#FBF8F4;">
+          <div style="padding:14px 18px 0;display:flex;align-items:center;gap:12px;margin-bottom:16px;"><button onClick="{{ backToLog }}" style="width:42px;height:42px;background:white;border:1.5px solid #EDE7E1;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 5l5 5-5 5M5 10h12" stroke="#252525" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div style="font-size:18px;font-weight:700;color:#252525;">ملاحظة 📝</div></div>
+          <div style="padding:0 18px 24px;display:flex;flex-direction:column;gap:13px;">
+            <div style="background:white;border-radius:20px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);"><textarea placeholder="اكتبي ملاحظتكِ هنا..." style="width:100%;min-height:180px;background:transparent;border:none;outline:none;font-size:15px;color:#252525;resize:none;direction:rtl;line-height:1.7;"></textarea></div>
+            <button onClick="{{ saveGeneric }}" style="width:100%;height:56px;background:linear-gradient(135deg,#77736F,#5C5855);border:none;border-radius:18px;color:white;font-size:17px;font-weight:700;cursor:pointer;">حفظ الملاحظة ✓</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ PROFILE ═══ -->
+      <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;direction:rtl;background:#FBF8F4;">
+          <div style="background:linear-gradient(180deg,#E7F4F0 0%,#FBF8F4 100%);padding:18px 18px 24px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;"><div style="font-size:17px;font-weight:800;color:#252525;">يوسف ∨</div><button style="width:38px;height:38px;background:white;border:1.5px solid #EDE7E1;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#252525" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div>
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+              <div style="position:relative;flex-shrink:0;"><div style="width:80px;height:80px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;border:3px solid rgba(89,184,165,0.3);box-shadow:0 4px 16px rgba(89,184,165,0.2);">👶</div><div style="position:absolute;bottom:0;right:0;width:28px;height:28px;background:#59B8A5;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;cursor:pointer;font-size:13px;">📷</div></div>
+              <div><div style="font-size:24px;font-weight:900;color:#252525;">يوسف</div><div style="font-size:14px;color:#59B8A5;font-weight:600;margin-top:2px;">9 أسابيع و 3 أيام</div><div style="font-size:12px;color:#77736F;display:flex;align-items:center;gap:4px;margin-top:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>منذ 25 مارس 2024</div></div>
+            </div>
+            <div style="background:white;border-radius:16px;padding:14px 16px;display:flex;justify-content:space-between;border:1px solid #EDE7E1;">
+              <div style="text-align:center;"><div style="font-size:11px;color:#77736F;margin-bottom:3px;">الرضاعة</div><div style="font-size:13px;font-weight:700;color:#59B8A5;">طبيعية 🌱</div></div>
+              <div style="width:1px;background:#EDE7E1;"></div>
+              <div style="text-align:center;"><div style="font-size:11px;color:#77736F;margin-bottom:3px;">فصيلة الدم</div><div style="font-size:13px;font-weight:700;color:#F3A26B;">O+ 🩸</div></div>
+              <div style="width:1px;background:#EDE7E1;"></div>
+              <div style="text-align:center;"><div style="font-size:11px;color:#77736F;margin-bottom:3px;">وزن الولادة</div><div style="font-size:13px;font-weight:700;color:#9B86D8;">3.25 كجم</div></div>
+            </div>
+          </div>
+          <div style="padding:0 18px 24px;display:flex;flex-direction:column;gap:14px;">
+            <!-- Growth -->
+            <div style="background:white;border-radius:22px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);border:1px solid #EDE7E1;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div style="font-size:15px;font-weight:700;color:#252525;display:flex;align-items:center;gap:7px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#59B8A5" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>النمو</div><button style="font-size:12px;color:#59B8A5;font-weight:600;background:transparent;border:none;cursor:pointer;">إضافة قياس +</button></div>
+              <div style="display:flex;gap:8px;margin-bottom:14px;"><div style="height:32px;padding:0 16px;background:#E7F4F0;border-radius:20px;display:flex;align-items:center;font-size:13px;font-weight:700;color:#59B8A5;cursor:pointer;">الطول</div><div style="height:32px;padding:0 16px;background:transparent;border-radius:20px;display:flex;align-items:center;font-size:13px;color:#77736F;cursor:pointer;">الوزن</div></div>
+              <svg width="100%" viewBox="0 0 280 135" style="overflow:visible;display:block;">
+                <defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#59B8A5" stop-opacity="0.25"/><stop offset="100%" stop-color="#59B8A5" stop-opacity="0"/></linearGradient></defs>
+                <line x1="0" y1="108" x2="280" y2="108" stroke="#EDE7E1" stroke-width="1"/>
+                <line x1="0" y1="72" x2="280" y2="72" stroke="#EDE7E1" stroke-width="0.5" stroke-dasharray="4,4"/>
+                <line x1="0" y1="36" x2="280" y2="36" stroke="#EDE7E1" stroke-width="0.5" stroke-dasharray="4,4"/>
+                <path d="M 10,98 L 100,80 L 190,56 L 270,28 L 270,108 L 10,108 Z" fill="url(#hg)"/>
+                <path d="M 10,98 L 100,80 L 190,56 L 270,28" stroke="#59B8A5" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="10" cy="98" r="4" fill="#59B8A5"/>
+                <circle cx="100" cy="80" r="4" fill="#59B8A5"/>
+                <circle cx="190" cy="56" r="4" fill="#59B8A5"/>
+                <circle cx="270" cy="28" r="7" fill="white" stroke="#59B8A5" stroke-width="2.5"/>
+                <circle cx="270" cy="28" r="3" fill="#59B8A5"/>
+                <rect x="230" y="10" width="46" height="22" rx="6" fill="#59B8A5"/>
+                <text x="253" y="25" text-anchor="middle" font-size="11" fill="white" font-weight="700" font-family="Cairo,sans-serif">59 سم</text>
+                <text x="10" y="124" text-anchor="middle" font-size="10" fill="#77736F" font-family="Cairo,sans-serif">الولادة</text>
+                <text x="100" y="124" text-anchor="middle" font-size="10" fill="#77736F" font-family="Cairo,sans-serif">1 شهر</text>
+                <text x="190" y="124" text-anchor="middle" font-size="10" fill="#77736F" font-family="Cairo,sans-serif">2 شهر</text>
+                <text x="270" y="124" text-anchor="middle" font-size="10" fill="#77736F" font-family="Cairo,sans-serif">3 شهر</text>
+              </svg>
+            </div>
+            <!-- Vaccinations -->
+            <div style="background:white;border-radius:22px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);border:1px solid #EDE7E1;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><div style="font-size:15px;font-weight:700;color:#252525;display:flex;align-items:center;gap:7px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E9BC5D" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>التطعيمات</div><button style="font-size:12px;color:#59B8A5;font-weight:600;background:transparent;border:none;cursor:pointer;">إضافة +</button></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                <div style="background:#FDEBDF;border-radius:14px;padding:13px;"><div style="font-size:11px;font-weight:700;color:#F3A26B;margin-bottom:5px;">آخر تطعيم</div><div style="font-size:13px;font-weight:700;color:#252525;margin-bottom:3px;">التهاب الكبدي B</div><div style="font-size:11px;color:#77736F;">10 أبريل 2024</div><div style="margin-top:8px;width:22px;height:22px;background:#59B8A5;border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+                <div style="background:#F0EBFA;border-radius:14px;padding:13px;"><div style="font-size:11px;font-weight:700;color:#9B86D8;margin-bottom:5px;">التطعيم القادم</div><div style="font-size:13px;font-weight:700;color:#252525;margin-bottom:3px;">DTP الثلاثي</div><div style="font-size:11px;color:#77736F;">10 يونيو 2024</div><div style="margin-top:8px;background:#9B86D8;border-radius:8px;padding:3px 8px;display:inline-block;font-size:10px;font-weight:700;color:white;">تبقى 18 يوم</div></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;"><button style="height:44px;background:#E7F4F0;border:none;border-radius:12px;color:#59B8A5;font-size:13px;font-weight:600;cursor:pointer;">تقرير الطبيب</button><button style="height:44px;background:#59B8A5;border:none;border-radius:12px;color:white;font-size:13px;font-weight:600;cursor:pointer;">بطاقة التطعيم</button></div>
+            </div>
+            <!-- Tasks -->
+            <div style="background:white;border-radius:22px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);border:1px solid #EDE7E1;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><div style="font-size:15px;font-weight:700;color:#252525;display:flex;align-items:center;gap:7px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9B86D8" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>مهام العائلة</div><button style="font-size:12px;color:#59B8A5;font-weight:600;background:transparent;border:none;cursor:pointer;">إضافة +</button></div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;align-items:center;gap:11px;padding:10px 14px;background:#F8F5F1;border-radius:12px;"><div style="width:22px;height:22px;background:#59B8A5;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span style="font-size:14px;color:#77736F;text-decoration:line-through;">موعد الطبيب</span><div style="margin-right:auto;font-size:11px;color:#77736F;">28 مايو</div></div>
+                <div style="display:flex;align-items:center;gap:11px;padding:10px 14px;background:#F8F5F1;border-radius:12px;"><div style="width:22px;height:22px;border:2px solid #EDE7E1;border-radius:50%;flex-shrink:0;cursor:pointer;"></div><span style="font-size:14px;color:#252525;">شراء حفاضات مقاس 3</span><div style="margin-right:auto;font-size:11px;color:#F3A26B;font-weight:600;">اليوم</div></div>
+              </div>
+            </div>
+            <!-- Doctor Questions -->
+            <div style="background:white;border-radius:22px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);border:1px solid #EDE7E1;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><div style="font-size:15px;font-weight:700;color:#252525;display:flex;align-items:center;gap:7px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#84B7D8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>أسئلة الطبيب</div><button style="font-size:12px;color:#59B8A5;font-weight:600;background:transparent;border:none;cursor:pointer;">إضافة +</button></div>
+              <div style="background:#EAF4FA;border-radius:13px;padding:13px 14px;display:flex;align-items:flex-start;gap:10px;"><div style="width:8px;height:8px;background:#84B7D8;border-radius:50%;margin-top:5px;flex-shrink:0;"></div><div style="flex:1;font-size:14px;color:#252525;">متى يمكن تقديم الطعام الصلب؟</div><div style="font-size:11px;color:#84B7D8;font-weight:600;flex-shrink:0;background:#D0E8F5;border-radius:6px;padding:2px 8px;">معلّق</div></div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ ASSISTANT ═══ -->
+      <sc-if value="{{ isAssistant }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;direction:rtl;background:#FBF8F4;">
+          <div style="padding:16px 18px 14px;border-bottom:1px solid #EDE7E1;flex-shrink:0;background:white;"><div style="font-size:18px;font-weight:800;color:#252525;margin-bottom:2px;">اسأليِ المساعد 💬</div><div style="font-size:12px;color:#77736F;">واجهة آمنة لتنظيم البيانات والأسئلة</div></div>
+          <div style="margin:12px 18px 0;background:#FDEBDF;border:1.5px solid #F3A26B;border-radius:14px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;flex-shrink:0;"><span style="font-size:18px;flex-shrink:0;">⚠️</span><div style="font-size:12px;color:#77736F;line-height:1.6;">المساعد لا يقدّم تشخيصاً طبياً ولا يصف علاجاً. في الطوارئ تواصلي فوراً مع الطبيب.</div></div>
+          <sc-if value="{{ noMessages }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:14px 18px;flex-shrink:0;">
+              <div style="font-size:13px;font-weight:600;color:#77736F;margin-bottom:10px;">اقتراحات</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div onClick="{{ sendSummaryRequest }}" style="background:white;border:1.5px solid #EDE7E1;border-radius:14px;padding:13px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05);"><div style="width:36px;height:36px;background:#E7F4F0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📋</div><div><div style="font-size:14px;font-weight:600;color:#252525;">ملخص محلي للطبيب</div><div style="font-size:12px;color:#77736F;margin-top:2px;">إنشاء ملخص من البيانات المسجلة</div></div></div>
+                <div onClick="{{ sendDoctorQRequest }}" style="background:white;border:1.5px solid #EDE7E1;border-radius:14px;padding:13px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05);"><div style="width:36px;height:36px;background:#F0EBFA;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">💡</div><div><div style="font-size:14px;font-weight:600;color:#252525;">حضّري سؤالاً للطبيب</div><div style="font-size:12px;color:#77736F;margin-top:2px;">صياغة سؤال لزيارتكِ القادمة</div></div></div>
+              </div>
+            </div>
+          </sc-if>
+          <div style="flex:1;overflow-y:auto;padding:12px 18px;display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ assistantMessages }}" as="msg" hint-placeholder-count="0">
+              <div style="{{ msg.rowStyle }}">
+                <div style="{{ msg.bubbleStyle }}">
+                  <div style="font-size:14px;line-height:1.6;">{{ msg.text }}</div>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ assistantLoading }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:flex-start;gap:8px;"><div style="width:32px;height:32px;background:#E7F4F0;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">🤖</div><div style="background:white;border-radius:0 16px 16px 16px;padding:12px 14px;border:1px solid #EDE7E1;"><div style="display:flex;gap:5px;align-items:center;"><div style="width:7px;height:7px;background:#59B8A5;border-radius:50%;animation:pulse 1s 0s infinite;"></div><div style="width:7px;height:7px;background:#59B8A5;border-radius:50%;animation:pulse 1s 0.2s infinite;"></div><div style="width:7px;height:7px;background:#59B8A5;border-radius:50%;animation:pulse 1s 0.4s infinite;"></div></div></div></div>
+            </sc-if>
+          </div>
+          <div style="padding:10px 18px 12px;border-top:1px solid #EDE7E1;background:white;flex-shrink:0;display:flex;align-items:flex-end;gap:10px;">
+            <button onClick="{{ sendMsg }}" style="width:44px;height:44px;background:#59B8A5;border:none;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 4px 12px rgba(89,184,165,0.35);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
+            <textarea value="{{ assistantInput }}" onInput="{{ setAssistantInput }}" onKeyDown="{{ onAssistantKeydown }}" placeholder="اكتبي سؤالكِ هنا..." style="flex:1;min-height:44px;max-height:100px;background:#F8F5F1;border:1.5px solid #EDE7E1;border-radius:13px;padding:11px 14px;font-size:14px;color:#252525;resize:none;outline:none;direction:rtl;line-height:1.5;"></textarea>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ MORE ═══ -->
+      <sc-if value="{{ isMore }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;direction:rtl;background:#FBF8F4;">
+          <div style="padding:18px 18px 24px;">
+            <div style="margin-bottom:22px;"><div style="font-size:21px;font-weight:800;color:#252525;">المزيد ⚙️</div><div style="font-size:13px;color:#77736F;margin-top:3px;">الإعدادات والخدمات الإضافية</div></div>
+            <div style="font-size:12px;font-weight:700;color:#77736F;letter-spacing:0.5px;margin-bottom:9px;">أدوات المتابعة</div>
+            <div style="background:white;border-radius:20px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:16px;border:1px solid #EDE7E1;">
+              <div onClick="{{ setTabLog }}" style="padding:15px 16px;display:flex;align-items:center;gap:13px;border-bottom:1px solid #EDE7E1;cursor:pointer;"><div style="width:36px;height:36px;background:#E7F4F0;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">🌙</div><span style="flex:1;font-size:15px;color:#252525;font-weight:500;">متابعة النوم</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#77736F" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+              <div onClick="{{ setTabLog }}" style="padding:15px 16px;display:flex;align-items:center;gap:13px;border-bottom:1px solid #EDE7E1;cursor:pointer;"><div style="width:36px;height:36px;background:#F0EBFA;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">🧷</div><span style="flex:1;font-size:15px;color:#252525;font-weight:500;">متابعة الحفاضات</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#77736F" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+              <div onClick="{{ setTabLog }}" style="padding:15px 16px;display:flex;align-items:center;gap:13px;border-bottom:1px solid #EDE7E1;cursor:pointer;"><div style="width:36px;height:36px;background:#EAF4FA;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">💊</div><span style="flex:1;font-size:15px;color:#252525;font-weight:500;">الأدوية والمكمّلات</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#77736F" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+              <div style="padding:15px 16px;display:flex;align-items:center;gap:13px;cursor:pointer;"><div style="width:36px;height:36px;background:#FFF3D7;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">🔔</div><span style="flex:1;font-size:15px;color:#252525;font-weight:500;">التذكيرات والإشعارات</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#77736F" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+            </div>
+            <div style="font-size:12px;font-weight:700;color:#77736F;letter-spacing:0.5px;margin-bottom:9px;">التجربة</div>
+            <div style="background:white;border-radius:20px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:16px;border:1px solid #EDE7E1;">
+              <div onClick="{{ toggleNightMode }}" style="padding:15px 16px;display:flex;align-items:center;gap:13px;cursor:pointer;">
+                <div style="width:36px;height:36px;background:linear-gradient(135deg,#172130,#0F1923);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">🌙</div>
+                <div style="flex:1;"><div style="font-size:15px;color:#252525;font-weight:500;">وضع الليل الهادئ</div><div style="font-size:12px;color:#77736F;margin-top:2px;">للتسجيل في الظلام</div></div>
+                <div style="{{ nightToggleStyle }}"><div style="{{ nightKnobStyle }}"></div></div>
+              </div>
+            </div>
+            <div style="font-size:12px;font-weight:700;color:#77736F;letter-spacing:0.5px;margin-bottom:9px;">الحساب</div>
+            <div style="background:white;border-radius:20px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.06);border:1px solid #EDE7E1;">
+              <div style="padding:15px 16px;display:flex;align-items:center;gap:13px;border-bottom:1px solid #EDE7E1;cursor:pointer;"><div style="width:36px;height:36px;background:#E7F4F0;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">📧</div><div style="flex:1;"><div style="font-size:13px;color:#77736F;margin-bottom:2px;">الحساب</div><div style="font-size:14px;color:#252525;direction:ltr;text-align:right;">mama@example.com</div></div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#77736F" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+              <div onClick="{{ setTabProfile }}" style="padding:15px 16px;display:flex;align-items:center;gap:13px;border-bottom:1px solid #EDE7E1;cursor:pointer;"><div style="width:36px;height:36px;background:#FDEBDF;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">👶</div><div style="flex:1;"><div style="font-size:13px;color:#77736F;margin-bottom:2px;">الطفل المحدد</div><div style="font-size:14px;color:#252525;font-weight:500;">يوسف — 9 أسابيع و 3 أيام</div></div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#77736F" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+              <div style="padding:15px 16px;display:flex;align-items:center;gap:13px;border-bottom:1px solid #EDE7E1;cursor:pointer;"><div style="width:36px;height:36px;background:#F0EBFA;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">📄</div><span style="flex:1;font-size:15px;color:#252525;">تقرير الطبيب PDF</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#77736F" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+              <div style="padding:14px 16px;display:flex;align-items:center;gap:13px;border-bottom:1px solid #EDE7E1;cursor:pointer;"><div style="width:36px;height:36px;background:#FFF3D7;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">🔒</div><div style="flex:1;"><div style="font-size:14px;color:#252525;font-weight:500;">الخصوصية</div><div style="font-size:11px;color:#77736F;margin-top:2px;line-height:1.4;">بياناتكِ خاصة ولا يمكن الوصول إليها إلا من الحسابات التي تسمحين لها.</div></div></div>
+              <div style="padding:15px 16px;display:flex;align-items:center;gap:13px;border-bottom:1px solid #EDE7E1;"><div style="width:36px;height:36px;background:#F5F0EB;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">ℹ️</div><div style="flex:1;"><div style="font-size:14px;color:#252525;">إصدار التطبيق</div><div style="font-size:12px;color:#77736F;direction:ltr;text-align:right;">v1.0.0</div></div></div>
+              <div onClick="{{ doSignOut }}" style="padding:15px 16px;display:flex;align-items:center;gap:13px;cursor:pointer;"><div style="width:36px;height:36px;background:#FEF0EE;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">🚪</div><span style="flex:1;font-size:15px;color:#E77A68;font-weight:600;">تسجيل الخروج</span></div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ NIGHT HOME ═══ -->
+      <sc-if value="{{ isNightHome }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;direction:rtl;background:#0F1923;">
+          <div style="padding:18px 18px 24px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+              <div><div style="font-size:13px;color:#E8B86D;font-weight:600;margin-bottom:3px;">🌙 وضع الليل الهادئ</div><div style="font-size:20px;font-weight:800;color:#F5EDD8;">مرحباً ماما</div><div style="font-size:13px;color:#6B7D8E;margin-top:2px;">أنتِ تقومين بعمل رائع 💛</div></div>
+              <button onClick="{{ toggleNightMode }}" style="padding:8px 14px;background:rgba(232,184,109,0.15);border:1.5px solid rgba(232,184,109,0.4);border-radius:12px;color:#E8B86D;font-size:12px;font-weight:600;cursor:pointer;">نهاري ☀️</button>
+            </div>
+            <div style="background:linear-gradient(135deg,#172130,#1C2B3A);border-radius:24px;padding:20px;margin-bottom:18px;border:1px solid #243040;">
+              <div style="display:flex;align-items:center;gap:14px;"><div style="width:64px;height:64px;background:#243040;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;border:2px solid rgba(232,184,109,0.3);">👶</div><div><div style="font-size:22px;font-weight:900;color:#F5EDD8;">يوسف</div><div style="font-size:13px;color:#E8B86D;font-weight:600;margin-top:2px;">9 أسابيع و 3 أيام</div></div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:18px;">
+              <div onClick="{{ goNightFeeding }}" style="background:#172130;border-radius:20px;padding:16px;cursor:pointer;border:1px solid #243040;"><div style="font-size:11px;font-weight:700;color:#E8B86D;margin-bottom:8px;">آخر رضعة</div><div style="font-size:19px;font-weight:800;color:#F5EDD8;line-height:1.2;">ساعتين</div><div style="margin-top:8px;font-size:22px;">🍼</div></div>
+              <div style="background:#172130;border-radius:20px;padding:16px;border:1px solid #243040;"><div style="font-size:11px;font-weight:700;color:#7CA8C0;margin-bottom:8px;">يجب التغيير قريباً</div><div style="font-size:19px;font-weight:800;color:#F5EDD8;line-height:1.2;">حفاضة</div><div style="margin-top:8px;font-size:22px;">🧷</div></div>
+            </div>
+            <div style="font-size:13px;font-weight:600;color:#6B7D8E;margin-bottom:12px;">تسجيل سريع</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <button onClick="{{ goNightFeeding }}" style="width:100%;height:58px;background:#172130;border:1.5px solid rgba(232,184,109,0.4);border-radius:18px;color:#E8B86D;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:12px;padding:0 18px;direction:rtl;"><span style="font-size:24px;">🍼</span> بدء رضاعة جديدة</button>
+              <button style="width:100%;height:58px;background:#172130;border:1.5px solid rgba(124,168,192,0.4);border-radius:18px;color:#7CA8C0;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:12px;padding:0 18px;direction:rtl;"><span style="font-size:24px;">🧷</span> تغيير حفاضة</button>
+              <button style="width:100%;height:58px;background:#172130;border:1.5px solid rgba(155,134,216,0.3);border-radius:18px;color:#9B86D8;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:12px;padding:0 18px;direction:rtl;"><span style="font-size:24px;">🌙</span> بدء جلسة نوم</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ NIGHT FEEDING ═══ -->
+      <sc-if value="{{ isNightFeeding }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;overflow-y:auto;direction:rtl;background:#0F1923;">
+          <div style="padding:14px 18px 0;display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <button onClick="{{ backToNight }}" style="width:42px;height:42px;background:#172130;border:1.5px solid #243040;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 5l5 5-5 5M5 10h12" stroke="#F5EDD8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div style="font-size:18px;font-weight:700;color:#F5EDD8;">الرضاعة — وضع الليل 🌙</div>
+          </div>
+          <div style="padding:0 18px 24px;display:flex;flex-direction:column;gap:13px;">
+            <div style="background:#172130;border-radius:24px;padding:32px 18px;text-align:center;border:1px solid #243040;">
+              <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;"><div style="{{ feedingDotStyle }}"></div><span style="font-size:14px;color:#E8B86D;font-weight:600;">{{ feedingStatusText }}</span></div>
+              <div style="font-size:58px;font-weight:800;color:#E8B86D;letter-spacing:-2px;direction:ltr;margin-bottom:24px;font-family:system-ui,monospace;">{{ feedingTime }}</div>
+              <button onClick="{{ feedingToggle }}" style="{{ nightFeedingBtnStyle }}">{{ feedingBtnText }}</button>
+            </div>
+            <div style="background:#172130;border-radius:20px;padding:16px;border:1px solid #243040;">
+              <div style="font-size:13px;font-weight:600;color:#9BA8B5;margin-bottom:11px;">الثدي</div>
+              <div style="display:flex;gap:9px;">
+                <button onClick="{{ setSideRight }}" style="{{ nightSideRightStyle }}">🍃 يمين</button>
+                <button onClick="{{ setSideLeft }}" style="{{ nightSideLeftStyle }}">🍃 يسار</button>
+              </div>
+            </div>
+            <div style="background:#172130;border-radius:20px;padding:15px;border:1px solid #243040;"><textarea placeholder="ملاحظة مختصرة..." style="width:100%;min-height:64px;background:transparent;border:none;outline:none;font-size:14px;color:#F5EDD8;resize:none;direction:rtl;line-height:1.6;"></textarea></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ═══ SUCCESS TOAST ═══ -->
+      <sc-if value="{{ showSuccess }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);white-space:nowrap;background:#252525;color:white;padding:12px 20px;border-radius:14px;font-size:14px;font-weight:600;z-index:500;box-shadow:0 8px 24px rgba(0,0,0,0.3);pointer-events:none;">{{ successMsg }}</div>
+      </sc-if>
+
+    </div><!-- /main content area -->
+
+    <!-- ═══ BOTTOM NAV ═══ -->
+    <sc-if value="{{ showBottomNav }}" hint-placeholder-val="{{ false }}">
+      <div style="height:82px;flex-shrink:0;background:white;border-top:1px solid #EDE7E1;display:flex;align-items:stretch;padding:0 4px 10px;direction:rtl;position:relative;z-index:100;">
+        <button onClick="{{ setTabHome }}" style="{{ navHomeStyle }}">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1v-9"/></svg>
+          <span style="{{ navHomeLabelStyle }}">اليوم</span>
+        </button>
+        <button onClick="{{ setTabLog }}" style="{{ navLogStyle }}">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span style="{{ navLogLabelStyle }}">التسجيل</span>
+        </button>
+        <button onClick="{{ setTabProfile }}" style="{{ navProfileStyle }}">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0 1 12 0v1"/></svg>
+          <span style="{{ navProfileLabelStyle }}">طفلي</span>
+        </button>
+        <button onClick="{{ setTabAssistant }}" style="{{ navAssistantStyle }}">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span style="{{ navAssistantLabelStyle }}">اسأليِ</span>
+        </button>
+        <button onClick="{{ setTabMore }}" style="{{ navMoreStyle }}">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <span style="{{ navMoreLabelStyle }}">المزيد</span>
+        </button>
+      </div>
+    </sc-if>
+
+  </div><!-- /phone -->
+
+  <div style="display:flex;gap:20px;direction:rtl;"><span style="font-size:12px;color:#9E9690;">390 × 844 · iPhone 15 Pro</span><span style="font-size:12px;color:#9E9690;">Arabic RTL · Cairo · Premium</span></div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+class Component extends DCLogic {
+  state = {
+    screen: 'splash',
+    tab: 'home',
+    feedingActive: false,
+    feedingSeconds: 0,
+    feedingSide: 'right',
+    sleepActive: false,
+    sleepSeconds: 0,
+    sleepStartTime: '',
+    nightMode: false,
+    showSuccess: false,
+    successMsg: '',
+    onb1Selected: 'born',
+    assistantMessages: [],
+    assistantInput: '',
+    assistantLoading: false,
+    diaperType: 'wet',
+    _timer: null,
+  };
+
+  componentDidMount() {
+    setTimeout(() => {
+      if (this.state.screen === 'splash') this.setState({ screen: 'welcome' });
+    }, 2600);
+  }
+
+  componentWillUnmount() {
+    if (this.state._timer) clearInterval(this.state._timer);
+  }
+
+  nav(screen) { this.setState({ screen }); }
+
+  setTab(tab) {
+    const map = { home:'home', log:'log', profile:'profile', assistant:'assistant', more:'more' };
+    this.setState({ tab, screen: map[tab] });
+  }
+
+  startTimer(type) {
+    if (this.state._timer) clearInterval(this.state._timer);
+    const t = setInterval(() => {
+      if (type === 'feeding') this.setState(s => ({ feedingSeconds: s.feedingSeconds + 1 }));
+      else this.setState(s => ({ sleepSeconds: s.sleepSeconds + 1 }));
+    }, 1000);
+    const now = new Date();
+    const ts = now.toLocaleTimeString('ar-EG', { hour:'2-digit', minute:'2-digit' });
+    if (type === 'feeding') this.setState({ feedingActive: true, feedingSeconds: 0, _timer: t });
+    else this.setState({ sleepActive: true, sleepSeconds: 0, sleepStartTime: ts, _timer: t });
+  }
+
+  stopTimer(type) {
+    if (this.state._timer) clearInterval(this.state._timer);
+    const msg = type === 'feeding' ? '✓ تم حفظ الرضاعة بنجاح' : '✓ تم حفظ فترة النوم';
+    if (type === 'feeding') this.setState({ feedingActive: false, _timer: null, showSuccess: true, successMsg: msg });
+    else this.setState({ sleepActive: false, sleepSeconds: 0, _timer: null, showSuccess: true, successMsg: msg });
+    setTimeout(() => {
+      this.setState({ showSuccess: false });
+      if (type !== 'feeding') this.setState({ screen: 'home', tab: 'home' });
+    }, 2200);
+  }
+
+  fmt(s) {
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+    if (h > 0) return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  }
+
+  sendMsg(text) {
+    const txt = (text || this.state.assistantInput).trim();
+    if (!txt) return;
+    const msgs = [...this.state.assistantMessages, { role:'user', text: txt }];
+    this.setState({ assistantMessages: msgs, assistantInput: '', assistantLoading: true });
+    const responses = [
+      'بناءً على البيانات المسجلة، نمط رضاعة يوسف منتظم جيداً. تذكّري أن هذه المعلومات لتنظيم ملاحظاتكِ وليست تشخيصاً طبياً.',
+      'يبدو أن يوسف ينام جيداً بالنسبة لعمره. استمري بنفس الروتين الهادئ. أي قلق طبي يستحق التحدث مع الطبيب مباشرةً.',
+      'سجّلتِ عدداً جيداً من الرضعات اليوم. إذا كنتِ تودّين إعداد تقرير للطبيب، يمكنني مساعدتكِ في تنظيم هذه البيانات.',
+    ];
+    setTimeout(() => {
+      this.setState(prev => ({
+        assistantMessages: [...prev.assistantMessages, { role:'assistant', text: responses[prev.assistantMessages.length % responses.length] }],
+        assistantLoading: false
+      }));
+    }, 1600);
+  }
+
+  showSuccessToast(msg, then) {
+    this.setState({ showSuccess: true, successMsg: msg });
+    setTimeout(() => { this.setState({ showSuccess: false }); if (then) then(); }, 2200);
+  }
+
+  navStyle(tab) {
+    const active = this.state.tab === tab;
+    return { flex:'1', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'4px', background:'transparent', border:'none', cursor:'pointer', color: active ? '#59B8A5' : '#9E9690', padding:'0' };
+  }
+
+  navLabelStyle(tab) {
+    const active = this.state.tab === tab;
+    return { fontSize:'10px', fontWeight: active ? '700' : '500' };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const mainScreens = ['home','log','log-feeding','log-sleep','log-diaper','log-food','log-med','log-temp','log-note','profile','assistant','more','night-home','night-feeding'];
+
+    // Feeding
+    const fa = s.feedingActive;
+    const sr = s.feedingSide === 'right', sl = s.feedingSide === 'left', sb = s.feedingSide === 'both';
+
+    const sideBtn = (active, col, bg) => ({ flex:'1', height:'46px', background: active ? bg : 'white', border: `2px solid ${active ? col : '#EDE7E1'}`, borderRadius:'13px', color: active ? col : '#77736F', fontSize:'14px', fontWeight: active ? '700' : '500', cursor:'pointer' });
+
+    // Sleep
+    const spa = s.sleepActive;
+
+    // Diaper
+    const dw = s.diaperType === 'wet', dd = s.diaperType === 'dirty', db = s.diaperType === 'both';
+    const diaperBtn = (active, col, bg) => ({ width:'100%', height:'60px', background: active ? bg : 'white', border:`2.5px solid ${active ? col : '#EDE7E1'}`, borderRadius:'18px', display:'flex', alignItems:'center', gap:'14px', padding:'0 18px', cursor:'pointer', direction:'rtl' });
+    const diaperTitle = (active, col) => ({ fontSize:'15px', fontWeight:'700', color: active ? col : '#252525' });
+
+    // Onboarding 1
+    const ob = (v) => s.onb1Selected === v;
+    const onbBtn = (sel) => ({ width:'100%', padding:'22px 20px', background: ob(sel) ? '#59B8A5' : 'white', border:`2.5px solid ${ob(sel) ? '#59B8A5' : '#EDE7E1'}`, borderRadius:'22px', display:'flex', alignItems:'center', gap:'16px', cursor:'pointer', textAlign:'right', direction:'rtl' });
+    const onbIcon = (sel, darkBg, lightBg) => ({ width:'60px', height:'60px', background: ob(sel) ? 'rgba(255,255,255,0.2)' : lightBg, borderRadius:'18px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:'0', fontSize:'30px' });
+    const onbTitle = (sel) => ({ fontSize:'17px', fontWeight:'700', color: ob(sel) ? 'white' : '#252525' });
+    const onbSub = (sel) => ({ fontSize:'13px', color: ob(sel) ? 'rgba(255,255,255,0.8)' : '#77736F', marginTop:'3px' });
+
+    // Enriched assistant messages
+    const enrichedMsgs = s.assistantMessages.map(m => ({
+      ...m,
+      rowStyle: { display:'flex', flexDirection:'column', alignItems: m.role === 'user' ? 'flex-end' : 'flex-start' },
+      bubbleStyle: { maxWidth:'260px', background: m.role === 'user' ? '#59B8A5' : 'white', borderRadius: m.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px', padding:'12px 14px', boxShadow:'0 2px 8px rgba(0,0,0,0.08)', color: m.role === 'user' ? 'white' : '#252525', border: m.role === 'user' ? 'none' : '1px solid #EDE7E1' },
+    }));
+
+    // Night mode toggle UI
+    const nm = s.nightMode;
+    const nightToggleStyle = { width:'48px', height:'28px', background: nm ? '#E8B86D' : '#EDE7E1', borderRadius:'14px', position:'relative', flexShrink:'0', transition:'background 0.2s' };
+    const nightKnobStyle = { position:'absolute', top:'3px', left: nm ? '3px' : undefined, right: nm ? undefined : '3px', width:'22px', height:'22px', background:'white', borderRadius:'50%', boxShadow:'0 1px 4px rgba(0,0,0,0.25)' };
+
+    // Night feeding btn
+    const nightFeedingBtnStyle = { width:'100%', height:'54px', background: fa ? '#E77A68' : 'rgba(232,184,109,0.2)', border: fa ? 'none' : '2px solid rgba(232,184,109,0.5)', borderRadius:'17px', color: fa ? 'white' : '#E8B86D', fontSize:'16px', fontWeight:'700', cursor:'pointer', boxShadow: fa ? '0 6px 20px rgba(231,122,104,0.35)' : 'none' };
+    const nightSideR = s.feedingSide === 'right';
+    const nightSideL = s.feedingSide === 'left';
+    const nightSideBtn = (active) => ({ flex:'1', height:'46px', background: active ? 'rgba(232,184,109,0.2)' : '#172130', border:`2px solid ${active ? '#E8B86D' : '#243040'}`, borderRadius:'13px', color: active ? '#E8B86D' : '#9BA8B5', fontSize:'14px', fontWeight: active ? '700' : '500', cursor:'pointer' });
+
+    return {
+      // Screens
+      isSplash: s.screen === 'splash',
+      isWelcome: s.screen === 'welcome',
+      isSignIn: s.screen === 'signin',
+      isSignUp: s.screen === 'signup',
+      isEmailConfirm: s.screen === 'email-confirm',
+      isOnboarding1: s.screen === 'onboarding-1',
+      isOnboarding2: s.screen === 'onboarding-2',
+      isOnboarding3: s.screen === 'onboarding-3',
+      isHome: s.screen === 'home',
+      isLog: s.screen === 'log',
+      isLogFeeding: s.screen === 'log-feeding',
+      isLogSleep: s.screen === 'log-sleep',
+      isLogDiaper: s.screen === 'log-diaper',
+      isLogFood: s.screen === 'log-food',
+      isLogMed: s.screen === 'log-med',
+      isLogTemp: s.screen === 'log-temp',
+      isLogNote: s.screen === 'log-note',
+      isProfile: s.screen === 'profile',
+      isAssistant: s.screen === 'assistant',
+      isMore: s.screen === 'more',
+      isNightHome: s.screen === 'night-home',
+      isNightFeeding: s.screen === 'night-feeding',
+      showSuccess: s.showSuccess,
+      successMsg: s.successMsg,
+
+      // Nav
+      showBottomNav: mainScreens.includes(s.screen),
+      navHomeStyle: this.navStyle('home'),
+      navLogStyle: this.navStyle('log'),
+      navProfileStyle: this.navStyle('profile'),
+      navAssistantStyle: this.navStyle('assistant'),
+      navMoreStyle: this.navStyle('more'),
+      navHomeLabelStyle: this.navLabelStyle('home'),
+      navLogLabelStyle: this.navLabelStyle('log'),
+      navProfileLabelStyle: this.navLabelStyle('profile'),
+      navAssistantLabelStyle: this.navLabelStyle('assistant'),
+      navMoreLabelStyle: this.navLabelStyle('more'),
+
+      // Feeding
+      feedingActive: fa,
+      feedingTime: this.fmt(s.feedingSeconds),
+      feedingStatusText: fa ? 'جارية الآن' : 'جاهزة للبدء',
+      feedingDotStyle: { width:'8px', height:'8px', background: fa ? '#59B8A5' : '#C4B8AD', borderRadius:'50%', animation: fa ? 'pulse 1s ease-in-out infinite' : 'none' },
+      feedingBtnStyle: { width:'100%', height:'54px', background: fa ? '#E77A68' : '#59B8A5', border:'none', borderRadius:'17px', color:'white', fontSize:'16px', fontWeight:'700', cursor:'pointer', boxShadow: fa ? '0 6px 20px rgba(231,122,104,0.35)' : '0 6px 20px rgba(89,184,165,0.35)' },
+      feedingBtnText: fa ? '⏹ إيقاف وحفظ' : '▶ بدء الرضاعة',
+      sideRightStyle: sideBtn(sr, '#59B8A5', '#E7F4F0'),
+      sideLeftStyle: sideBtn(sl, '#59B8A5', '#E7F4F0'),
+      sideBothStyle: sideBtn(sb, '#59B8A5', '#E7F4F0'),
+
+      // Sleep
+      sleepActive: spa,
+      sleepTime: this.fmt(s.sleepSeconds),
+      sleepStatusText: spa ? 'ينام الآن' : 'جاهز للنوم',
+      sleepDotStyle: { width:'8px', height:'8px', background: spa ? '#9B86D8' : '#C4B8AD', borderRadius:'50%', animation: spa ? 'pulse 1s ease-in-out infinite' : 'none' },
+      sleepBtnStyle: { width:'100%', height:'54px', background: spa ? '#E77A68' : '#9B86D8', border:'none', borderRadius:'17px', color:'white', fontSize:'16px', fontWeight:'700', cursor:'pointer', boxShadow: spa ? '0 6px 20px rgba(231,122,104,0.35)' : '0 6px 20px rgba(155,134,216,0.4)' },
+      sleepBtnText: spa ? '⏹ استيقظ — حفظ النوم' : '▶ بدء النوم',
+      sleepStartTime: s.sleepStartTime || '--:--',
+
+      // Diaper
+      diaperWetStyle: diaperBtn(dw, '#59B8A5', '#E7F4F0'),
+      diaperWetTitleStyle: diaperTitle(dw, '#59B8A5'),
+      diaperDirtyStyle: diaperBtn(dd, '#F3A26B', '#FDEBDF'),
+      diaperDirtyTitleStyle: diaperTitle(dd, '#F3A26B'),
+      diaperBothStyle: diaperBtn(db, '#9B86D8', '#F0EBFA'),
+      diaperBothTitleStyle: diaperTitle(db, '#9B86D8'),
+
+      // Onboarding 1
+      onb1BornBtnStyle: onbBtn('born'),
+      onb1BornIconStyle: onbIcon('born', null, '#E7F4F0'),
+      onb1BornTitleStyle: onbTitle('born'),
+      onb1BornSubStyle: onbSub('born'),
+      onb1PregnantBtnStyle: onbBtn('pregnant'),
+      onb1PregnantIconStyle: onbIcon('pregnant', null, '#FDEBDF'),
+      onb1PregnantTitleStyle: onbTitle('pregnant'),
+      onb1PregnantSubStyle: onbSub('pregnant'),
+
+      // Night mode
+      nightToggleStyle,
+      nightKnobStyle,
+      nightFeedingBtnStyle,
+      nightSideRightStyle: nightSideBtn(nightSideR),
+      nightSideLeftStyle: nightSideBtn(nightSideL),
+
+      // Assistant
+      assistantMessages: enrichedMsgs,
+      assistantInput: s.assistantInput,
+      assistantLoading: s.assistantLoading,
+      noMessages: s.assistantMessages.length === 0,
+
+      // Handlers — auth
+      goWelcome: () => this.nav('welcome'),
+      goSignIn: () => this.nav('signin'),
+      goSignUp: () => this.nav('signup'),
+      doSignIn: () => this.setState({ screen:'home', tab:'home' }),
+      doSignUp: () => this.nav('email-confirm'),
+      goOnboarding: () => this.nav('onboarding-1'),
+      nextOnboarding1: () => this.nav('onboarding-2'),
+      nextOnboarding2: () => this.nav('onboarding-3'),
+      finishOnboarding: () => this.setState({ screen:'home', tab:'home' }),
+      selectBorn: () => this.setState({ onb1Selected:'born' }),
+      selectPregnant: () => this.setState({ onb1Selected:'pregnant' }),
+      doSignOut: () => this.nav('welcome'),
+
+      // Handlers — nav
+      setTabHome: () => this.setTab('home'),
+      setTabLog: () => this.setTab('log'),
+      setTabProfile: () => this.setTab('profile'),
+      setTabAssistant: () => this.setTab('assistant'),
+      setTabMore: () => this.setTab('more'),
+      goProfile: () => this.setState({ screen:'profile', tab:'profile' }),
+
+      // Handlers — log
+      goLogFeeding: () => this.setState({ screen:'log-feeding', tab:'log' }),
+      goLogSleep: () => this.setState({ screen:'log-sleep', tab:'log' }),
+      goLogDiaper: () => this.setState({ screen:'log-diaper', tab:'log' }),
+      goLogFood: () => this.setState({ screen:'log-food', tab:'log' }),
+      goLogMed: () => this.setState({ screen:'log-med', tab:'log' }),
+      goLogTemp: () => this.setState({ screen:'log-temp', tab:'log' }),
+      goLogNote: () => this.setState({ screen:'log-note', tab:'log' }),
+      backToLog: () => this.setState({ screen:'log', tab:'log' }),
+
+      // Handlers — timers
+      feedingToggle: () => fa ? this.stopTimer('feeding') : this.startTimer('feeding'),
+      sleepToggle: () => spa ? this.stopTimer('sleep') : this.startTimer('sleep'),
+      setSideRight: () => this.setState({ feedingSide:'right' }),
+      setSideLeft: () => this.setState({ feedingSide:'left' }),
+      setSideBoth: () => this.setState({ feedingSide:'both' }),
+
+      // Handlers — diaper & misc
+      setDiaperWet: () => this.setState({ diaperType:'wet' }),
+      setDiaperDirty: () => this.setState({ diaperType:'dirty' }),
+      setDiaperBoth: () => this.setState({ diaperType:'both' }),
+      saveDiaper: () => this.showSuccessToast('✓ تم حفظ تغيير الحفاضة', () => this.setState({ screen:'log', tab:'log' })),
+      saveGeneric: () => this.showSuccessToast('✓ تم حفظ التسجيل', () => this.setState({ screen:'log', tab:'log' })),
+
+      // Handlers — assistant
+      setAssistantInput: (e) => this.setState({ assistantInput: e.target.value }),
+      sendMsg: () => this.sendMsg(),
+      onAssistantKeydown: (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendMsg(); } },
+      sendSummaryRequest: () => this.sendMsg('أنشئي لي ملخصاً من بيانات يوسف لعرضه على الطبيب'),
+      sendDoctorQRequest: () => this.sendMsg('ساعديني في صياغة سؤال للطبيب عن موعد بدء الطعام الصلب'),
+
+      // Handlers — night mode
+      toggleNightMode: () => this.setState(prev => ({ nightMode:!prev.nightMode, screen: prev.nightMode ? 'more' : 'night-home', tab:'more' })),
+      goNightFeeding: () => this.nav('night-feeding'),
+      backToNight: () => this.nav('night-home'),
+    };
+  }
+}
+
+</script>
+</body>
+</html>
