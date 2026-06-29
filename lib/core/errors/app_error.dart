@@ -9,7 +9,7 @@ class AppException implements Exception {
 
 class MissingSessionException extends AppException {
   const MissingSessionException()
-    : super('انتهت الجلسة. سجلي الدخول مرة أخرى.');
+    : super('انتهت الجلسة. سجّلي الدخول مرة أخرى.');
 }
 
 class MissingChildException extends AppException {
@@ -19,8 +19,9 @@ class MissingChildException extends AppException {
 String readableError(Object error) {
   if (error is AppException) return error.userMessage;
   if (error is AuthException) return _authError(error.message);
-  if (error is PostgrestException)
+  if (error is PostgrestException) {
     return 'خطأ قاعدة البيانات (${error.code ?? 'بدون كود'}): ${error.message}';
+  }
   final message = error.toString().toLowerCase();
   if (message.contains('socket') ||
       message.contains('network') ||
@@ -32,14 +33,18 @@ String readableError(Object error) {
 
 String _authError(String message) {
   final normalized = message.toLowerCase();
-  if (normalized.contains('invalid login credentials'))
+  if (normalized.contains('invalid login credentials')) {
     return 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
-  if (normalized.contains('email not confirmed'))
+  }
+  if (normalized.contains('email not confirmed')) {
     return 'يرجى تأكيد البريد الإلكتروني قبل تسجيل الدخول.';
-  if (normalized.contains('already registered'))
+  }
+  if (normalized.contains('already registered')) {
     return 'هذا البريد الإلكتروني مسجل بالفعل.';
-  if (normalized.contains('password'))
+  }
+  if (normalized.contains('password')) {
     return 'تحققي من كلمة المرور. يجب أن تكون 6 أحرف على الأقل.';
+  }
   return 'تعذر إتمام عملية الحساب. حاولي مرة أخرى.';
 }
 

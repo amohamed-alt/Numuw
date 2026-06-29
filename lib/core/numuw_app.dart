@@ -25,16 +25,46 @@ class NumuwApp extends StatelessWidget {
         useMaterial3: true,
         brightness: Brightness.light,
         scaffoldBackgroundColor: AppColors.background,
+        fontFamily: 'Cairo',
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.mint,
           brightness: Brightness.light,
+          surface: AppColors.surface,
         ),
-        fontFamily: 'NotoNaskhArabic',
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            backgroundColor: AppColors.mint,
+            foregroundColor: Colors.white,
+            textStyle: const TextStyle(fontWeight: FontWeight.w800),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(foregroundColor: AppColors.mint),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          labelStyle: TextStyle(color: AppColors.secondaryText),
+          hintStyle: TextStyle(color: AppColors.mutedText),
+        ),
       ),
-      home: Directionality(
+      builder: (context, child) => Directionality(
         textDirection: TextDirection.rtl,
-        child: AuthGate(startupError: startupError),
+        child: ColoredBox(
+          color: AppColors.webBackground,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 430),
+              child: ColoredBox(
+                color: AppColors.background,
+                child: child ?? const SizedBox.shrink(),
+              ),
+            ),
+          ),
+        ),
       ),
+      home: AuthGate(startupError: startupError),
     );
   }
 }

@@ -89,100 +89,106 @@ class _MoreScreenState extends State<MoreScreen> {
               subtitle: 'الإعدادات والخدمات الإضافية',
             ),
             const SizedBox(height: 22),
-            SoftCard(
-              child: Column(
-                children: [
-                  _Item(
-                    icon: Icons.bedtime_outlined,
-                    title: 'متابعة النوم',
-                    color: AppColors.purple,
-                  ),
-                  const Divider(color: AppColors.border),
-                  _Item(
-                    icon: Icons.baby_changing_station_outlined,
-                    title: 'متابعة الحفاضات',
-                    color: AppColors.blue,
-                  ),
-                  const Divider(color: AppColors.border),
-                  _Item(
-                    icon: Icons.medication_outlined,
-                    title: 'الأدوية والمكملات',
-                    color: AppColors.peach,
-                  ),
-                  const Divider(color: AppColors.border),
-                  _Item(
-                    icon: Icons.notifications_outlined,
-                    title: 'التذكيرات والإشعارات',
-                    color: AppColors.yellow,
-                  ),
-                  const Divider(color: AppColors.border),
-                  _Item(
-                    icon: Icons.settings_outlined,
-                    title: 'إعدادات التطبيق',
-                    color: AppColors.mint,
-                  ),
-                ],
-              ),
+            _Group(
+              children: const [
+                _Item(
+                  icon: Icons.bedtime_outlined,
+                  title: 'متابعة النوم',
+                  color: AppColors.purple,
+                ),
+                _Item(
+                  icon: Icons.baby_changing_station_outlined,
+                  title: 'متابعة الحفاضات',
+                  color: AppColors.blue,
+                ),
+                _Item(
+                  icon: Icons.medication_outlined,
+                  title: 'الأدوية والمكملات',
+                  color: AppColors.peach,
+                ),
+                _Item(
+                  icon: Icons.notifications_outlined,
+                  title: 'التذكيرات والإشعارات',
+                  color: AppColors.yellow,
+                ),
+                _Item(
+                  icon: Icons.settings_outlined,
+                  title: 'إعدادات التطبيق',
+                  color: AppColors.mint,
+                ),
+              ],
             ),
             const SizedBox(height: 16),
-            SoftCard(
-              child: Column(
-                children: [
-                  _Item(
-                    icon: Icons.email_outlined,
-                    title: 'الحساب: $email',
-                    color: AppColors.blue,
-                  ),
-                  const Divider(color: AppColors.border),
-                  _Item(
-                    icon: Icons.child_care_rounded,
-                    title: 'الطفل المحدد: ${child?.name ?? 'غير محدد'}',
-                    color: AppColors.mint,
-                    onTap: _switchChild,
-                  ),
-                  const Divider(color: AppColors.border),
-                  _Item(
-                    icon: Icons.picture_as_pdf_outlined,
-                    title: 'تقرير الطبيب PDF',
-                    color: AppColors.purple,
-                    onTap: _exportReport,
-                  ),
-                  const Divider(color: AppColors.border),
-                  _Item(
-                    icon: Icons.privacy_tip_outlined,
-                    title:
-                        'الخصوصية: تستخدم بياناتك داخل حسابك وفق صلاحيات Supabase RLS',
-                    color: AppColors.yellow,
-                  ),
-                  const Divider(color: AppColors.border),
-                  _Item(
-                    icon: Icons.info_outline_rounded,
-                    title:
-                        'إصدار التطبيق: ${_version.isEmpty ? '...' : _version}',
-                    color: AppColors.blue,
-                  ),
-                  const Divider(color: AppColors.border),
-                  _Item(
-                    icon: Icons.logout_rounded,
-                    title: 'تسجيل الخروج',
-                    color: AppColors.peach,
-                    onTap: () async {
-                      await AuthService().signOut();
-                      ChildSession.instance.clear();
-                    },
-                  ),
-                ],
-              ),
+            _Group(
+              children: [
+                _Item(
+                  icon: Icons.email_outlined,
+                  title: 'الحساب: $email',
+                  color: AppColors.blue,
+                ),
+                _Item(
+                  icon: Icons.child_care_rounded,
+                  title: 'الطفل المحدد: ${child?.name ?? 'غير محدد'}',
+                  color: AppColors.mint,
+                  onTap: _switchChild,
+                ),
+                _Item(
+                  icon: Icons.picture_as_pdf_outlined,
+                  title: 'تقرير الطبيب PDF',
+                  color: AppColors.purple,
+                  onTap: _exportReport,
+                ),
+                const _Item(
+                  icon: Icons.privacy_tip_outlined,
+                  title:
+                      'الخصوصية: تستخدم بياناتك داخل حسابك وفق صلاحيات Supabase RLS',
+                  color: AppColors.yellow,
+                ),
+                _Item(
+                  icon: Icons.info_outline_rounded,
+                  title:
+                      'إصدار التطبيق: ${_version.isEmpty ? '...' : _version}',
+                  color: AppColors.blue,
+                ),
+                _Item(
+                  icon: Icons.logout_rounded,
+                  title: 'تسجيل الخروج',
+                  color: AppColors.peach,
+                  onTap: () async {
+                    await AuthService().signOut();
+                    ChildSession.instance.clear();
+                  },
+                ),
+              ],
             ),
             if (_message != null) ...[
               const SizedBox(height: 14),
-              EmptyState(message: _message!, icon: Icons.info_outline_rounded),
+              InfoBanner(message: _message!, icon: Icons.info_outline_rounded),
             ],
           ],
         ),
       ),
     );
   }
+}
+
+class _Group extends StatelessWidget {
+  const _Group({required this.children});
+  final List<_Item> children;
+
+  @override
+  Widget build(BuildContext context) => SoftCard(
+    padding: EdgeInsets.zero,
+    child: Column(
+      children: [
+        for (var i = 0; i < children.length; i++) ...[
+          children[i],
+          if (i != children.length - 1)
+            const Divider(height: 1, color: AppColors.border),
+        ],
+      ],
+    ),
+  );
 }
 
 class _Item extends StatelessWidget {
@@ -192,25 +198,27 @@ class _Item extends StatelessWidget {
     required this.color,
     this.onTap,
   });
+
   final IconData icon;
   final String title;
   final Color color;
   final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) => ListTile(
-    contentPadding: EdgeInsets.zero,
-    leading: const Icon(
-      Icons.chevron_left_rounded,
-      color: AppColors.secondaryText,
-    ),
-    trailing: CircleAvatar(
-      backgroundColor: color.withValues(alpha: 0.12),
+    contentPadding: const EdgeInsetsDirectional.fromSTEB(15, 6, 15, 6),
+    leading: CircleAvatar(
+      backgroundColor: color.withValues(alpha: .12),
       child: Icon(icon, color: color),
     ),
     title: Text(
       title,
       textAlign: TextAlign.start,
-      style: const TextStyle(fontWeight: FontWeight.w700),
+      style: const TextStyle(fontWeight: FontWeight.w700, height: 1.4),
+    ),
+    trailing: const Icon(
+      Icons.chevron_left_rounded,
+      color: AppColors.mutedText,
     ),
     onTap: onTap,
   );

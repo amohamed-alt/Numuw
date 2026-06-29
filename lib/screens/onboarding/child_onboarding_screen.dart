@@ -7,6 +7,7 @@ import '../../widgets/app_widgets.dart';
 
 class ChildOnboardingScreen extends StatefulWidget {
   const ChildOnboardingScreen({super.key, required this.onSaved});
+
   final Future<void> Function() onSaved;
 
   @override
@@ -70,35 +71,55 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AppHeader(
-                title: 'بيانات الطفل',
-                subtitle: 'أضيفي أول ملف لطفلك لبدء المتابعة',
-                showNotification: false,
+              const _ProgressHeader(),
+              const SizedBox(height: 28),
+              const Text(
+                'هل ما زالت الأم حامل أم الطفل وُلد؟',
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: AppColors.text,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900,
+                  height: 1.35,
+                ),
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                'أضيفي أول ملف لطفلك لبدء المتابعة',
+                textAlign: TextAlign.start,
+                style: TextStyle(color: AppColors.secondaryText),
               ),
               const SizedBox(height: 24),
               SoftCard(
+                radius: 24,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'هل ما زالت الأم حامل أم الطفل وُلد؟',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 17,
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ChoicePill(
+                            label: 'الطفل وُلد',
+                            icon: '👶',
+                            selected: _stage == 'born',
+                            onTap: () => setState(() => _stage = 'born'),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ChoicePill(
+                            label: 'الأم حامل',
+                            icon: '🤰',
+                            selected: _stage == 'pregnancy',
+                            onTap: () => setState(() => _stage = 'pregnancy'),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 10),
-                    _Chips(
-                      value: _stage,
-                      items: const {
-                        'born': 'الطفل وُلد',
-                        'pregnancy': 'الأم حامل',
-                      },
-                      onChanged: (v) => setState(() => _stage = v),
-                    ),
-                    const SizedBox(height: 16),
-                    _Field(
+                    const SizedBox(height: 18),
+                    AppTextField(
                       controller: _name,
                       label: 'اسم الطفل',
                       icon: Icons.badge_outlined,
@@ -107,62 +128,88 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
                     ),
                     const SizedBox(height: 12),
                     if (_stage == 'born')
-                      _Field(
+                      AppTextField(
                         controller: _birthDate,
                         label: 'تاريخ الميلاد',
                         hint: 'YYYY-MM-DD',
                         icon: Icons.cake_outlined,
                         textDirection: TextDirection.ltr,
+                        keyboardType: TextInputType.datetime,
                         validator: _birthDateValidator,
                       )
                     else
-                      _Field(
+                      AppTextField(
                         controller: _dueDate,
                         label: 'موعد الولادة المتوقع',
                         hint: 'YYYY-MM-DD',
                         icon: Icons.event_available_outlined,
                         textDirection: TextDirection.ltr,
+                        keyboardType: TextInputType.datetime,
                         validator: _dueDateValidator,
                       ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'الجنس',
-                      style: TextStyle(fontWeight: FontWeight.w900),
-                    ),
+                    const SizedBox(height: 18),
+                    const _FieldLabel('الجنس'),
                     const SizedBox(height: 8),
-                    _Chips(
-                      value: _gender,
-                      items: const {
-                        'male': 'ذكر',
-                        'female': 'أنثى',
-                        'unspecified': 'غير محدد',
-                      },
-                      onChanged: (v) => setState(() => _gender = v),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        ChoicePill(
+                          label: 'ذكر',
+                          icon: '👦',
+                          selected: _gender == 'male',
+                          onTap: () => setState(() => _gender = 'male'),
+                        ),
+                        ChoicePill(
+                          label: 'أنثى',
+                          icon: '👧',
+                          selected: _gender == 'female',
+                          onTap: () => setState(() => _gender = 'female'),
+                        ),
+                        ChoicePill(
+                          label: 'غير محدد',
+                          selected: _gender == 'unspecified',
+                          onTap: () => setState(() => _gender = 'unspecified'),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'نوع الرضاعة',
-                      style: TextStyle(fontWeight: FontWeight.w900),
-                    ),
+                    const SizedBox(height: 18),
+                    const _FieldLabel('نوع الرضاعة'),
                     const SizedBox(height: 8),
-                    _Chips(
-                      value: _feeding,
-                      items: const {
-                        'breast': 'طبيعية',
-                        'formula': 'صناعية',
-                        'mixed': 'مختلطة',
-                        'not_set': 'غير محدد',
-                      },
-                      onChanged: (v) => setState(() => _feeding = v),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        ChoicePill(
+                          label: 'طبيعية',
+                          selected: _feeding == 'breast',
+                          onTap: () => setState(() => _feeding = 'breast'),
+                        ),
+                        ChoicePill(
+                          label: 'صناعية',
+                          selected: _feeding == 'formula',
+                          onTap: () => setState(() => _feeding = 'formula'),
+                        ),
+                        ChoicePill(
+                          label: 'مختلطة',
+                          selected: _feeding == 'mixed',
+                          onTap: () => setState(() => _feeding = 'mixed'),
+                        ),
+                        ChoicePill(
+                          label: 'غير محدد',
+                          selected: _feeding == 'not_set',
+                          onTap: () => setState(() => _feeding = 'not_set'),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    _Field(
+                    const SizedBox(height: 18),
+                    AppTextField(
                       controller: _bloodType,
                       label: 'فصيلة الدم اختياري',
                       icon: Icons.water_drop_outlined,
                     ),
                     const SizedBox(height: 12),
-                    _Field(
+                    AppTextField(
                       controller: _weight,
                       label: 'وزن الولادة اختياري',
                       hint: '3.2',
@@ -175,20 +222,18 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
                     ),
                     if (_error != null) ...[
                       const SizedBox(height: 12),
-                      _Message(_error!),
-                    ],
-                    const SizedBox(height: 18),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 54,
-                      child: FilledButton(
-                        onPressed: _loading ? null : _save,
-                        child: _loading
-                            ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
-                            : const Text('حفظ وبدء المتابعة'),
+                      InfoBanner(
+                        message: _error!,
+                        color: AppColors.danger,
+                        background: AppColors.peachLight,
+                        icon: Icons.error_outline_rounded,
                       ),
+                    ],
+                    const SizedBox(height: 20),
+                    PrimaryButton(
+                      label: 'حفظ وبدء المتابعة',
+                      loading: _loading,
+                      onPressed: _save,
                     ),
                   ],
                 ),
@@ -201,17 +246,67 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
   }
 }
 
+class _ProgressHeader extends StatelessWidget {
+  const _ProgressHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: List.generate(
+            3,
+            (index) => Expanded(
+              child: Container(
+                height: 4,
+                margin: EdgeInsetsDirectional.only(end: index == 2 ? 0 : 6),
+                decoration: BoxDecoration(
+                  color: AppColors.mint,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          'إضافة طفلك',
+          style: TextStyle(
+            color: AppColors.secondaryText,
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _FieldLabel extends StatelessWidget {
+  const _FieldLabel(this.text);
+  final String text;
+  @override
+  Widget build(BuildContext context) => Text(
+    text,
+    textAlign: TextAlign.start,
+    style: const TextStyle(fontWeight: FontWeight.w900),
+  );
+}
+
 String? _birthDateValidator(String? value) {
   final date = _parseDate(value);
   if (date == null) return 'اكتبي تاريخ الميلاد بصيغة YYYY-MM-DD.';
-  if (date.isAfter(DateTime.now()))
+  if (date.isAfter(DateTime.now())) {
     return 'تاريخ الميلاد لا يمكن أن يكون في المستقبل.';
+  }
   return null;
 }
 
 String? _dueDateValidator(String? value) => _parseDate(value) == null
     ? 'موعد الولادة المتوقع مطلوب بصيغة YYYY-MM-DD.'
     : null;
+
 String? _weightValidator(String? value) {
   final text = value?.trim() ?? '';
   if (text.isEmpty) return null;
@@ -233,88 +328,3 @@ DateTime? _parseDate(String? value) {
 
 double? _parseDouble(String? value) =>
     double.tryParse((value ?? '').trim().replaceAll(',', '.'));
-
-class _Chips extends StatelessWidget {
-  const _Chips({
-    required this.value,
-    required this.items,
-    required this.onChanged,
-  });
-  final String value;
-  final Map<String, String> items;
-  final ValueChanged<String> onChanged;
-  @override
-  Widget build(BuildContext context) => Wrap(
-    spacing: 8,
-    runSpacing: 8,
-    children: items.entries
-        .map(
-          (entry) => ChoiceChip(
-            selected: entry.key == value,
-            label: Text(entry.value),
-            selectedColor: AppColors.mintLight,
-            side: BorderSide(
-              color: entry.key == value ? AppColors.mint : AppColors.border,
-            ),
-            onSelected: (_) => onChanged(entry.key),
-          ),
-        )
-        .toList(),
-  );
-}
-
-class _Field extends StatelessWidget {
-  const _Field({
-    required this.controller,
-    required this.label,
-    required this.icon,
-    this.hint,
-    this.keyboardType,
-    this.validator,
-    this.textDirection,
-  });
-  final TextEditingController controller;
-  final String label;
-  final IconData icon;
-  final String? hint;
-  final TextInputType? keyboardType;
-  final String? Function(String?)? validator;
-  final TextDirection? textDirection;
-  @override
-  Widget build(BuildContext context) => TextFormField(
-    controller: controller,
-    textAlign: TextAlign.start,
-    textDirection: textDirection,
-    keyboardType: keyboardType,
-    validator: validator,
-    decoration: InputDecoration(
-      labelText: label,
-      hintText: hint,
-      prefixIcon: Icon(icon, color: AppColors.mint),
-      filled: true,
-      fillColor: AppColors.mintLight.withValues(alpha: 0.35),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(18)),
-    ),
-  );
-}
-
-class _Message extends StatelessWidget {
-  const _Message(this.text);
-  final String text;
-  @override
-  Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: const EdgeInsets.all(12),
-    decoration: BoxDecoration(
-      color: AppColors.peachLight,
-      borderRadius: BorderRadius.circular(16),
-    ),
-    child: Text(
-      text,
-      style: const TextStyle(
-        color: AppColors.peach,
-        fontWeight: FontWeight.w800,
-      ),
-    ),
-  );
-}

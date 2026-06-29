@@ -18,21 +18,20 @@ class AppPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final content = Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 560),
-        child: Padding(padding: padding, child: child),
+        constraints: const BoxConstraints(maxWidth: 430),
+        child: ColoredBox(
+          color: AppColors.background,
+          child: Padding(padding: padding, child: child),
+        ),
       ),
     );
 
     return SafeArea(
       bottom: false,
       child: scrollable
-          ? RefreshIndicator.adaptive(
-              onRefresh: () async {},
-              notificationPredicate: (_) => false,
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: content,
-              ),
+          ? SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: content,
             )
           : content,
     );
@@ -62,35 +61,24 @@ class AppHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.favorite_rounded,
-                    color: Color(0xFFBDE0D6),
-                    size: 23,
-                  ),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      title,
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        color: AppColors.text,
-                        fontSize: 27,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                ],
+              Text(
+                title,
+                textAlign: TextAlign.start,
+                style: const TextStyle(
+                  color: AppColors.text,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900,
+                  height: 1.25,
+                ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 4),
               Text(
                 subtitle,
                 textAlign: TextAlign.start,
                 style: const TextStyle(
                   color: AppColors.secondaryText,
-                  fontSize: 14,
+                  fontSize: 13,
+                  height: 1.5,
                 ),
               ),
             ],
@@ -99,46 +87,68 @@ class AppHeader extends StatelessWidget {
         if (trailing != null) ...[const SizedBox(width: 12), trailing!],
         if (showNotification && trailing == null) ...[
           const SizedBox(width: 12),
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.border),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 12,
-                ),
-              ],
-            ),
-            child: Stack(
-              children: [
-                const Center(
-                  child: Icon(
-                    Icons.notifications_none_rounded,
-                    color: AppColors.text,
-                    size: 24,
-                  ),
-                ),
-                PositionedDirectional(
-                  top: 6,
-                  end: 7,
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: AppColors.peach,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          AppIconButton(
+            icon: Icons.notifications_none_rounded,
+            onPressed: () {},
+            badge: true,
           ),
         ],
       ],
+    );
+  }
+}
+
+class AppIconButton extends StatelessWidget {
+  const AppIconButton({
+    super.key,
+    required this.icon,
+    this.onPressed,
+    this.badge = false,
+  });
+
+  final IconData icon;
+  final VoidCallback? onPressed;
+  final bool badge;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(14),
+      onTap: onPressed,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.border),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x0F000000),
+              blurRadius: 8,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            Center(child: Icon(icon, color: AppColors.text, size: 22)),
+            if (badge)
+              PositionedDirectional(
+                top: 8,
+                end: 9,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: AppColors.peach,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -148,8 +158,8 @@ class SoftCard extends StatelessWidget {
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(18),
-    this.color = Colors.white,
-    this.radius = 24,
+    this.color = AppColors.surface,
+    this.radius = 20,
     this.borderColor = AppColors.border,
     this.onTap,
   });
@@ -164,16 +174,17 @@ class SoftCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final card = Container(
+      width: double.infinity,
       padding: padding,
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(radius),
         border: Border.all(color: borderColor),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.045),
-            blurRadius: 18,
-            offset: const Offset(0, 7),
+            color: Color(0x0F000000),
+            blurRadius: 10,
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -184,6 +195,71 @@ class SoftCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(radius),
       onTap: onTap,
       child: card,
+    );
+  }
+}
+
+class PrimaryButton extends StatelessWidget {
+  const PrimaryButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    this.loading = false,
+  });
+
+  final String label;
+  final VoidCallback? onPressed;
+  final bool loading;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: onPressed == null ? null : AppColors.primaryGradient,
+          color: onPressed == null ? AppColors.border : null,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: onPressed == null
+              ? null
+              : const [
+                  BoxShadow(
+                    color: Color(0x6659B8A5),
+                    blurRadius: 24,
+                    offset: Offset(0, 8),
+                  ),
+                ],
+        ),
+        child: FilledButton(
+          style: FilledButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            disabledBackgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
+          ),
+          onPressed: loading ? null : onPressed,
+          child: loading
+              ? const SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.4,
+                    color: Colors.white,
+                  ),
+                )
+              : Text(
+                  label,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+        ),
+      ),
     );
   }
 }
@@ -204,13 +280,17 @@ class SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, color: AppColors.mint),
-        const SizedBox(width: 8),
+        Icon(icon, color: AppColors.mint, size: 17),
+        const SizedBox(width: 7),
         Expanded(
           child: Text(
             title,
             textAlign: TextAlign.start,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+            style: const TextStyle(
+              color: AppColors.text,
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+            ),
           ),
         ),
         if (action != null) action!,
@@ -243,13 +323,196 @@ class EmptyState extends StatelessWidget {
               message,
               textAlign: TextAlign.start,
               style: const TextStyle(
-                color: AppColors.mint,
+                color: AppColors.mintDark,
                 fontWeight: FontWeight.w800,
+                height: 1.5,
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class AppTextField extends StatelessWidget {
+  const AppTextField({
+    super.key,
+    required this.controller,
+    required this.label,
+    this.icon,
+    this.hint,
+    this.keyboardType,
+    this.obscureText = false,
+    this.validator,
+    this.textDirection,
+    this.minLines,
+    this.maxLines = 1,
+  });
+
+  final TextEditingController controller;
+  final String label;
+  final IconData? icon;
+  final String? hint;
+  final TextInputType? keyboardType;
+  final bool obscureText;
+  final String? Function(String?)? validator;
+  final TextDirection? textDirection;
+  final int? minLines;
+  final int? maxLines;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      validator: validator,
+      minLines: minLines,
+      maxLines: obscureText ? 1 : maxLines,
+      textDirection: textDirection ?? TextDirection.rtl,
+      textAlign: TextAlign.start,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        prefixIcon: icon == null ? null : Icon(icon, color: AppColors.mint),
+        filled: true,
+        fillColor: AppColors.surface,
+        contentPadding: const EdgeInsetsDirectional.symmetric(
+          horizontal: 16,
+          vertical: 15,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.border, width: 1.5),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.border, width: 1.5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.mint, width: 1.8),
+        ),
+      ),
+    );
+  }
+}
+
+class ChoicePill extends StatelessWidget {
+  const ChoicePill({
+    super.key,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+    this.icon,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  final String? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(14),
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 160),
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: 14,
+          vertical: 12,
+        ),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.mintLight : AppColors.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: selected ? AppColors.mint : AppColors.border,
+            width: selected ? 2 : 1.5,
+          ),
+        ),
+        child: Text(
+          icon == null ? label : '$label $icon',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: selected ? AppColors.mintDark : AppColors.text,
+            fontSize: 14,
+            fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class InfoBanner extends StatelessWidget {
+  const InfoBanner({
+    super.key,
+    required this.message,
+    this.color = AppColors.mint,
+    this.background = AppColors.mintLight,
+    this.icon = Icons.check_circle_outline_rounded,
+  });
+
+  final String message;
+  final Color color;
+  final Color background;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsetsDirectional.all(12),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              message,
+              textAlign: TextAlign.start,
+              style: TextStyle(color: color, fontWeight: FontWeight.w800),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class IconBadge extends StatelessWidget {
+  const IconBadge({
+    super.key,
+    required this.icon,
+    required this.background,
+    this.size = 42,
+    this.borderColor,
+  });
+
+  final String icon;
+  final Color background;
+  final double size;
+  final Color? borderColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(size * .31),
+        border: borderColor == null ? null : Border.all(color: borderColor!),
+      ),
+      child: Text(icon, style: TextStyle(fontSize: size * .46)),
     );
   }
 }

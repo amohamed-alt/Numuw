@@ -22,6 +22,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
   final _question = TextEditingController();
   String? _summary;
   String? _message;
+  bool _loading = false;
 
   @override
   void dispose() {
@@ -32,12 +33,15 @@ class _AssistantScreenState extends State<AssistantScreen> {
   Future<void> _makeSummary() async {
     final child = ChildSession.instance.selectedChild;
     if (child == null) return;
+    setState(() => _loading = true);
     try {
       final events = await _careRepo.fetchRecent(child.id, limit: 50);
       setState(() => _summary = _assistant.localSummary(child, events));
     } catch (error, stackTrace) {
       logError(error, stackTrace);
       setState(() => _summary = readableError(error));
+    } finally {
+      if (mounted) setState(() => _loading = false);
     }
   }
 
@@ -48,9 +52,9 @@ class _AssistantScreenState extends State<AssistantScreen> {
       await _questionRepo.add(childId: child.id, question: _question.text);
       _question.clear();
       setState(() => _message = 'تم حفظ السؤال للطبيب.');
-    } catch (e, s) {
-      logError(e, s);
-      setState(() => _message = readableError(e));
+    } catch (error, stackTrace) {
+      logError(error, stackTrace);
+      setState(() => _message = readableError(error));
     }
   }
 
@@ -69,78 +73,94 @@ class _AssistantScreenState extends State<AssistantScreen> {
             SoftCard(
               color: AppColors.peachLight,
               borderColor: AppColors.peachLight,
-              child: Text(
-                _assistant.safetyNotice(),
-                style: const TextStyle(
-                  color: AppColors.peach,
-                  fontWeight: FontWeight.w800,
-                  height: 1.7,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            SoftCard(
-              child: Column(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'ملخص محلي للطبيب',
-                    style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
+                  const IconBadge(
+                    icon: '⚠️',
+                    background: AppColors.surface,
+                    size: 42,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    _summary ??
-                        'اضغطي لإنشاء ملخص من بيانات ${child?.name ?? 'الطفل'} المسجلة. لا يتضمن تشخيصًا أو وصف علاج.',
-                    style: const TextStyle(height: 1.6),
-                  ),
-                  const SizedBox(height: 12),
-                  FilledButton(
-                    onPressed: child == null ? null : _makeSummary,
-                    child: const Text('إنشاء ملخص'),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      _assistant.safetyNotice(),
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(
+                        color: AppColors.danger,
+                        fontWeight: FontWeight.w800,
+                        height: 1.7,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 16),
             SoftCard(
+              radius: 24,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'ملخص محلي للطبيب',
+                    textAlign: TextAlign.start,
+                    style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsetsDirectional.all(14),
+                    decoration: BoxDecoration(
+                      color: AppColors.mintLight,
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Text(
+                      _summary ??
+                          'اضغطي لإنشاء ملخص من بيانات ${child?.name ?? 'الطفل'} المسجلة. لا يتضمن تشخيصًا أو وصف علاج.',
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(
+                        height: 1.7,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  PrimaryButton(
+                    label: 'إنشاء ملخص',
+                    loading: _loading,
+                    onPressed: child == null ? null : _makeSummary,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            SoftCard(
+              radius: 24,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
                     'حضّري سؤالًا للطبيب',
+                    textAlign: TextAlign.start,
                     style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
                   ),
-                  const SizedBox(height: 8),
-                  TextField(
+                  const SizedBox(height: 10),
+                  AppTextField(
                     controller: _question,
+                    label: 'اكتبي السؤال',
                     minLines: 2,
                     maxLines: 4,
-                    textAlign: TextAlign.start,
-                    decoration: InputDecoration(
-                      labelText: 'اكتبي السؤال',
-                      filled: true,
-                      fillColor: AppColors.mintLight.withValues(alpha: .25),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
                   ),
                   const SizedBox(height: 12),
-                  FilledButton(
+                  PrimaryButton(
+                    label: 'حفظ السؤال',
                     onPressed: child == null ? null : _saveQuestion,
-                    child: const Text('حفظ السؤال'),
                   ),
-                  if (_message != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Text(
-                        _message!,
-                        style: const TextStyle(
-                          color: AppColors.mint,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
+                  if (_message != null) ...[
+                    const SizedBox(height: 10),
+                    InfoBanner(message: _message!),
+                  ],
                 ],
               ),
             ),

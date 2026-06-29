@@ -23,35 +23,37 @@ class AppBottomNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: const Border(top: BorderSide(color: AppColors.border)),
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        border: Border(top: BorderSide(color: AppColors.border)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Color(0x12000000),
             blurRadius: 18,
-            offset: const Offset(0, -4),
+            offset: Offset(0, -4),
           ),
         ],
       ),
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 76,
+          height: 82,
           child: Row(
             children: List.generate(items.length, (index) {
               final item = items[index];
               final selected = selectedIndex == index;
-              final color = selected ? AppColors.mint : const Color(0xFF737373);
+              final color = selected ? AppColors.mint : AppColors.mutedText;
               return Expanded(
                 child: InkWell(
                   onTap: () => onChanged(index),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    padding: const EdgeInsetsDirectional.symmetric(
+                      horizontal: 2,
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(item.icon, size: 24, color: color),
+                        Icon(item.icon, size: 23, color: color),
                         const SizedBox(height: 4),
                         FittedBox(
                           fit: BoxFit.scaleDown,
@@ -61,10 +63,10 @@ class AppBottomNavigation extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: color,
-                              fontSize: 11,
+                              fontSize: 10.5,
                               fontWeight: selected
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
+                                  ? FontWeight.w800
+                                  : FontWeight.w600,
                             ),
                           ),
                         ),

@@ -60,6 +60,11 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
   Future<void> _save() async {
     final child = ChildSession.instance.selectedChild;
     if (child == null || _loading) return;
+    final validation = _validate();
+    if (validation != null) {
+      setState(() => _error = validation);
+      return;
+    }
     setState(() {
       _loading = true;
       _error = null;
@@ -77,8 +82,9 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
         started = _activeSleepStart!;
         ended = now;
       }
-      if (ended != null && ended.isBefore(started))
+      if (ended != null && ended.isBefore(started)) {
         throw const AppException('لا يمكن حفظ مدة سالبة.');
+      }
       await _repo.insert(
         childId: child.id,
         eventType: _type,
@@ -110,6 +116,25 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     }
   }
 
+  String? _validate() {
+    if (_type == 'temperature') {
+      final value = _double(_temp.text);
+      if (value == null || value < 30 || value > 45) {
+        return 'اكتبي درجة حرارة صحيحة بين 30 و45.';
+      }
+    }
+    if (_type == 'medicine' && _food.text.trim().isEmpty) {
+      return 'اكتبي اسم الدواء.';
+    }
+    if (_type == 'food' && _food.text.trim().isEmpty) {
+      return 'اكتبي اسم الطعام.';
+    }
+    if (_type == 'note' && _notes.text.trim().isEmpty) {
+      return 'اكتبي الملاحظة أولًا.';
+    }
+    return null;
+  }
+
   String? _buildNotes() {
     final note = _notes.text.trim();
     if (_type == 'food') {
@@ -120,11 +145,12 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     return note.isEmpty ? null : note;
   }
 
-  Map<String, dynamic>? _metadata() {
-    if (_type == 'food')
+  Map<String, dynamic> _metadata() {
+    if (_type == 'food') {
       return {'food_name': _food.text.trim(), 'description': _dose.text.trim()};
+    }
     if (_type == 'diaper') return {'details': _dose.text.trim()};
-    return null;
+    return <String, dynamic>{};
   }
 
   void _clearAfterSave() {
@@ -143,50 +169,62 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
   @override
   Widget build(BuildContext context) {
     final child = ChildSession.instance.selectedChild;
-    if (child == null)
+    if (child == null) {
       return const Scaffold(
         body: AppPage(
           child: EmptyState(message: 'اختاري طفلًا أولًا للتسجيل.'),
         ),
       );
+    }
     return Scaffold(
       body: AppPage(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AppHeader(
-              title: 'التسجيل',
+              title: 'تسجيل سريع ✏️',
               subtitle: 'سجّلي أحداث ${child.name} اليومية',
             ),
             const SizedBox(height: 22),
+            _CategoryGrid(
+              value: _type,
+              onChanged: (v) => setState(() => _type = v),
+            ),
+            const SizedBox(height: 22),
             SoftCard(
+              radius: 24,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _TypeChips(
-                    value: _type,
-                    onChanged: (v) => setState(() => _type = v),
+                  Text(
+                    _typeTitle(_type),
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 14),
                   _timerControls(),
                   _fields(),
                   if (_message != null) ...[
                     const SizedBox(height: 12),
-                    _Info(_message!, AppColors.mint, AppColors.mintLight),
+                    InfoBanner(message: _message!),
                   ],
                   if (_error != null) ...[
                     const SizedBox(height: 12),
-                    _Info(_error!, AppColors.peach, AppColors.peachLight),
+                    InfoBanner(
+                      message: _error!,
+                      color: AppColors.danger,
+                      background: AppColors.peachLight,
+                      icon: Icons.error_outline_rounded,
+                    ),
                   ],
                   const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: FilledButton(
-                      onPressed: _loading ? null : _save,
-                      child: _loading
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text('حفظ التسجيل'),
-                    ),
+                  PrimaryButton(
+                    label: _saveLabel(),
+                    loading: _loading,
+                    onPressed: _save,
                   ),
                 ],
               ),
@@ -200,32 +238,18 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
             FutureBuilder<List<CareEvent>>(
               future: _recent,
               builder: (context, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done)
+                if (snapshot.connectionState != ConnectionState.done) {
                   return const SoftCard(
                     child: Center(child: CircularProgressIndicator()),
                   );
+                }
                 final events = snapshot.data ?? const <CareEvent>[];
-                if (events.isEmpty)
+                if (events.isEmpty) {
                   return const EmptyState(message: 'لا توجد تسجيلات بعد.');
+                }
                 return SoftCard(
-                  child: Column(
-                    children: events
-                        .map(
-                          (e) => ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: Text(
-                              ArabicFormatters.eventType(e.eventType),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            subtitle: Text(
-                              '${ArabicFormatters.time(e.startedAt)}${e.notes == null ? '' : ' · ${e.notes}'}',
-                            ),
-                          ),
-                        )
-                        .toList(),
-                  ),
+                  padding: EdgeInsets.zero,
+                  child: Column(children: events.map(_eventTile).toList()),
                 );
               },
             ),
@@ -235,47 +259,45 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     );
   }
 
+  String _saveLabel() {
+    if (_type == 'feeding' && _activeFeedingStart != null)
+      return 'إيقاف وحفظ الرضاعة';
+    if (_type == 'sleep' && _activeSleepStart != null)
+      return 'استيقظ وحفظ النوم';
+    return 'حفظ التسجيل';
+  }
+
   Widget _timerControls() {
-    if (_type == 'feeding')
-      return Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: _activeFeedingStart == null
-                  ? () => setState(() => _activeFeedingStart = DateTime.now())
-                  : null,
-              child: const Text('بدء الرضاعة'),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: OutlinedButton(
-              onPressed: _activeFeedingStart != null ? _save : null,
-              child: const Text('إيقاف وحفظ'),
-            ),
-          ),
-        ],
+    if (_type == 'feeding') {
+      return _TimerCard(
+        color: AppColors.mint,
+        active: _activeFeedingStart != null,
+        title: _activeFeedingStart == null
+            ? 'لا توجد رضعة نشطة'
+            : 'الرضاعة نشطة الآن',
+        onStart: _activeFeedingStart == null
+            ? () => setState(() => _activeFeedingStart = DateTime.now())
+            : null,
+        onStop: _activeFeedingStart != null ? _save : null,
+        startLabel: 'بدء الرضاعة',
+        stopLabel: 'إيقاف وحفظ',
       );
-    if (_type == 'sleep')
-      return Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: _activeSleepStart == null
-                  ? () => setState(() => _activeSleepStart = DateTime.now())
-                  : null,
-              child: const Text('بدء النوم'),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: OutlinedButton(
-              onPressed: _activeSleepStart != null ? _save : null,
-              child: const Text('استيقظ وحفظ'),
-            ),
-          ),
-        ],
+    }
+    if (_type == 'sleep') {
+      return _TimerCard(
+        color: AppColors.purple,
+        active: _activeSleepStart != null,
+        title: _activeSleepStart == null
+            ? 'لا توجد نومة نشطة'
+            : 'النوم نشط الآن',
+        onStart: _activeSleepStart == null
+            ? () => setState(() => _activeSleepStart = DateTime.now())
+            : null,
+        onStop: _activeSleepStart != null ? _save : null,
+        startLabel: 'بدء النوم',
+        stopLabel: 'استيقظ وحفظ',
       );
+    }
     return const SizedBox.shrink();
   }
 
@@ -289,7 +311,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
           items: const {'right': 'يمين', 'left': 'يسار', 'both': 'كلاهما'},
           onChanged: (v) => setState(() => _side = v),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         _Choice(
           value: _feedingMethod,
           items: const {
@@ -301,12 +323,18 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
           },
           onChanged: (v) => setState(() => _feedingMethod = v),
         ),
-        _Field(_amount, 'الكمية بالمل اختياري', TextInputType.number),
+        const SizedBox(height: 10),
+        AppTextField(
+          controller: _amount,
+          label: 'كمية الحليب (مل) اختياري',
+          keyboardType: TextInputType.number,
+          textDirection: TextDirection.ltr,
+        ),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
           value: _burped,
           onChanged: (v) => setState(() => _burped = v),
-          title: const Text('تجشأ'),
+          title: const Text('تجشّأ'),
         ),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
@@ -328,42 +356,228 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
           onChanged: (v) => setState(() => _dirty = v),
           title: const Text('متسخة'),
         ),
-        _Field(_dose, 'تفاصيل اختيارية'),
+        AppTextField(controller: _dose, label: 'تفاصيل اختيارية'),
       ],
       if (_type == 'food') ...[
-        _Field(_food, 'اسم الطعام'),
-        _Field(_dose, 'الكمية أو الوصف'),
+        AppTextField(controller: _food, label: 'اسم الطعام'),
+        const SizedBox(height: 10),
+        AppTextField(controller: _dose, label: 'الكمية أو الوصف'),
       ],
       if (_type == 'medicine') ...[
-        _Field(_food, 'اسم الدواء'),
-        _Field(_dose, 'الجرعة'),
+        AppTextField(controller: _food, label: 'اسم الدواء'),
+        const SizedBox(height: 10),
+        AppTextField(controller: _dose, label: 'الجرعة'),
       ],
       if (_type == 'temperature')
-        _Field(_temp, 'درجة الحرارة °C', TextInputType.number),
-      const SizedBox(height: 8),
-      _Field(_notes, 'ملاحظات اختيارية'),
+        AppTextField(
+          controller: _temp,
+          label: 'درجة الحرارة °C',
+          keyboardType: TextInputType.number,
+          textDirection: TextDirection.ltr,
+        ),
+      const SizedBox(height: 10),
+      AppTextField(
+        controller: _notes,
+        label: 'ملاحظات اختيارية',
+        minLines: 2,
+        maxLines: 4,
+      ),
     ],
+  );
+
+  Widget _eventTile(CareEvent event) => ListTile(
+    contentPadding: const EdgeInsetsDirectional.fromSTEB(15, 8, 15, 8),
+    leading: IconBadge(
+      icon: _typeIcon(event.eventType),
+      background: _typeBg(event.eventType),
+      size: 36,
+    ),
+    title: Text(
+      ArabicFormatters.eventType(event.eventType),
+      textAlign: TextAlign.start,
+      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+    ),
+    subtitle: Text(
+      '${ArabicFormatters.time(event.startedAt)}${event.notes == null ? '' : ' · ${event.notes}'}',
+      textAlign: TextAlign.start,
+      style: const TextStyle(fontSize: 11, color: AppColors.secondaryText),
+    ),
   );
 }
 
-class _TypeChips extends StatelessWidget {
-  const _TypeChips({required this.value, required this.onChanged});
+class _CategoryGrid extends StatelessWidget {
+  const _CategoryGrid({required this.value, required this.onChanged});
+
   final String value;
   final ValueChanged<String> onChanged;
+
   @override
-  Widget build(BuildContext context) => _Choice(
-    value: value,
-    items: const {
-      'feeding': 'رضاعة',
-      'sleep': 'نوم',
-      'diaper': 'حفاضة',
-      'food': 'طعام',
-      'medicine': 'دواء',
-      'temperature': 'حرارة',
-      'note': 'ملاحظة',
-    },
-    onChanged: onChanged,
-  );
+  Widget build(BuildContext context) {
+    const items = [
+      _Category(
+        'feeding',
+        'رضاعة',
+        '🍼',
+        AppColors.peachLight,
+        AppColors.peach,
+      ),
+      _Category('sleep', 'نوم', '🌙', AppColors.mintLight, AppColors.mint),
+      _Category(
+        'diaper',
+        'حفاضة',
+        '🧷',
+        AppColors.purpleLight,
+        AppColors.purple,
+      ),
+      _Category('food', 'طعام', '🥣', AppColors.yellowLight, AppColors.yellow),
+      _Category('medicine', 'دواء', '💊', AppColors.blueLight, AppColors.blue),
+      _Category(
+        'temperature',
+        'حرارة',
+        '🌡️',
+        AppColors.peachLight,
+        AppColors.danger,
+      ),
+      _Category('note', 'ملاحظة', '📝', AppColors.mintLight, AppColors.mint),
+    ];
+    return Wrap(
+      spacing: 13,
+      runSpacing: 14,
+      children: items
+          .map(
+            (item) => SizedBox(
+              width: 74,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(22),
+                onTap: () => onChanged(item.type),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 66,
+                      height: 66,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: item.bg,
+                        borderRadius: BorderRadius.circular(22),
+                        border: Border.all(
+                          color: value == item.type ? item.color : item.bg,
+                          width: 2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: item.color.withValues(alpha: .18),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        item.icon,
+                        style: const TextStyle(fontSize: 30),
+                      ),
+                    ),
+                    const SizedBox(height: 7),
+                    Text(
+                      item.label,
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+class _Category {
+  const _Category(this.type, this.label, this.icon, this.bg, this.color);
+  final String type;
+  final String label;
+  final String icon;
+  final Color bg;
+  final Color color;
+}
+
+class _TimerCard extends StatelessWidget {
+  const _TimerCard({
+    required this.color,
+    required this.active,
+    required this.title,
+    required this.onStart,
+    required this.onStop,
+    required this.startLabel,
+    required this.stopLabel,
+  });
+
+  final Color color;
+  final bool active;
+  final String title;
+  final VoidCallback? onStart;
+  final VoidCallback? onStop;
+  final String startLabel;
+  final String stopLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsetsDirectional.only(bottom: 12),
+      padding: const EdgeInsetsDirectional.all(14),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: .10),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: active ? color : AppColors.mutedText,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  title,
+                  textAlign: TextAlign.start,
+                  style: TextStyle(color: color, fontWeight: FontWeight.w800),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: onStart,
+                  child: Text(startLabel),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: onStop,
+                  child: Text(stopLabel),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _Choice extends StatelessWidget {
@@ -372,67 +586,53 @@ class _Choice extends StatelessWidget {
     required this.items,
     required this.onChanged,
   });
+
   final String value;
   final Map<String, String> items;
   final ValueChanged<String> onChanged;
+
   @override
   Widget build(BuildContext context) => Wrap(
     spacing: 8,
     runSpacing: 8,
     children: items.entries
         .map(
-          (e) => ChoiceChip(
-            selected: e.key == value,
-            label: Text(e.value),
-            selectedColor: AppColors.mintLight,
-            onSelected: (_) => onChanged(e.key),
+          (entry) => ChoicePill(
+            label: entry.value,
+            selected: entry.key == value,
+            onTap: () => onChanged(entry.key),
           ),
         )
         .toList(),
   );
 }
 
-class _Field extends StatelessWidget {
-  const _Field(this.controller, this.label, [this.keyboardType]);
-  final TextEditingController controller;
-  final String label;
-  final TextInputType? keyboardType;
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(top: 10),
-    child: TextField(
-      controller: controller,
-      keyboardType: keyboardType,
-      textAlign: TextAlign.start,
-      textDirection: keyboardType == TextInputType.number
-          ? TextDirection.ltr
-          : TextDirection.rtl,
-      decoration: InputDecoration(
-        labelText: label,
-        filled: true,
-        fillColor: AppColors.mintLight.withValues(alpha: .25),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
-      ),
-    ),
-  );
-}
+String _typeTitle(String type) => switch (type) {
+  'feeding' => 'تسجيل رضاعة',
+  'sleep' => 'تسجيل نوم',
+  'diaper' => 'تسجيل حفاضة',
+  'food' => 'تسجيل طعام',
+  'medicine' => 'تسجيل دواء',
+  'temperature' => 'تسجيل حرارة',
+  _ => 'تسجيل ملاحظة',
+};
 
-class _Info extends StatelessWidget {
-  const _Info(this.text, this.color, this.bg);
-  final String text;
-  final Color color;
-  final Color bg;
-  @override
-  Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: const EdgeInsets.all(12),
-    decoration: BoxDecoration(
-      color: bg,
-      borderRadius: BorderRadius.circular(16),
-    ),
-    child: Text(
-      text,
-      style: TextStyle(color: color, fontWeight: FontWeight.w800),
-    ),
-  );
-}
+String _typeIcon(String type) => switch (type) {
+  'feeding' => '🍼',
+  'sleep' => '🌙',
+  'diaper' => '🧷',
+  'food' => '🥣',
+  'medicine' => '💊',
+  'temperature' => '🌡️',
+  _ => '📝',
+};
+
+Color _typeBg(String type) => switch (type) {
+  'feeding' => AppColors.peachLight,
+  'sleep' => AppColors.mintLight,
+  'diaper' => AppColors.purpleLight,
+  'food' => AppColors.yellowLight,
+  'medicine' => AppColors.blueLight,
+  'temperature' => AppColors.peachLight,
+  _ => AppColors.mintLight,
+};

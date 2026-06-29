@@ -80,6 +80,7 @@ class ReportService {
       style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
     ),
   );
+
   pw.Widget _p(String text) => pw.Padding(
     padding: const pw.EdgeInsets.only(bottom: 4),
     child: pw.Text(text, style: const pw.TextStyle(fontSize: 12)),
@@ -88,8 +89,10 @@ class ReportService {
 
 class AssistantService {
   const AssistantService();
+
   String safetyNotice() =>
       'المساعد الشخصي غير متصل بتحليل طبي آلي الآن. يمكنه تنظيم بياناتك وأسئلتك فقط. في الطوارئ أو صعوبة التنفس أو حرارة عالية أو خمول شديد تواصلي مع الطبيب أو الطوارئ فورًا.';
+
   String localSummary(ChildProfile child, List<CareEvent> events) {
     final feeding = events.where((e) => e.eventType == 'feeding').length;
     final sleep = events.where((e) => e.eventType == 'sleep').length;

@@ -132,6 +132,7 @@ class _EmailConfirmationScreen extends StatelessWidget {
     required this.email,
     required this.onSignOut,
   });
+
   final String email;
   final Future<void> Function() onSignOut;
 
@@ -146,32 +147,31 @@ class _EmailConfirmationScreen extends StatelessWidget {
               subtitle: 'تبقت خطوة واحدة قبل البدء',
               showNotification: false,
             ),
-            const SizedBox(height: 22),
+            const SizedBox(height: 28),
             SoftCard(
+              padding: const EdgeInsetsDirectional.all(24),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.mark_email_read_outlined,
-                    color: AppColors.mint,
-                    size: 44,
+                  const IconBadge(
+                    icon: '📧',
+                    background: AppColors.mintLight,
+                    size: 96,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 20),
                   Text(
                     'أرسلنا رسالة تأكيد إلى $email. افتحي الرابط من بريدك ثم سجّلي الدخول من جديد.',
-                    textAlign: TextAlign.start,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
+                      color: AppColors.secondaryText,
                       height: 1.7,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 18),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      onPressed: onSignOut,
-                      child: const Text('العودة إلى تسجيل الدخول'),
-                    ),
+                  const SizedBox(height: 22),
+                  PrimaryButton(
+                    label: 'العودة إلى تسجيل الدخول',
+                    onPressed: () => onSignOut(),
                   ),
                 ],
               ),
@@ -191,6 +191,7 @@ class _StateScreen extends StatelessWidget {
     this.loading = false,
     this.onRetry,
   });
+
   final String title;
   final String message;
   final IconData icon;
@@ -206,6 +207,7 @@ class _StateScreen extends StatelessWidget {
             AppHeader(title: title, subtitle: message, showNotification: false),
             const SizedBox(height: 24),
             SoftCard(
+              padding: const EdgeInsetsDirectional.all(24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -224,10 +226,7 @@ class _StateScreen extends StatelessWidget {
                   ),
                   if (onRetry != null) ...[
                     const SizedBox(height: 16),
-                    FilledButton(
-                      onPressed: onRetry,
-                      child: const Text('إعادة المحاولة'),
-                    ),
+                    PrimaryButton(label: 'إعادة المحاولة', onPressed: onRetry),
                   ],
                 ],
               ),

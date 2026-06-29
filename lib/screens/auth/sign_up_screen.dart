@@ -65,13 +65,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
           key: _formKey,
           child: Column(
             children: [
-              const AppHeader(
-                title: 'حساب جديد',
-                subtitle: 'ابدئي متابعة يوم طفلك من مكان واحد',
-                showNotification: false,
+              Row(
+                children: [
+                  AppIconButton(
+                    icon: Icons.arrow_forward_rounded,
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: AppHeader(
+                      title: 'حساب جديد',
+                      subtitle: 'ابدئي متابعة يوم طفلك من مكان واحد',
+                      showNotification: false,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
               SoftCard(
+                radius: 24,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -91,56 +103,50 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     const SizedBox(height: 18),
-                    TextFormField(
+                    AppTextField(
                       controller: _email,
+                      label: 'البريد الإلكتروني',
+                      icon: Icons.email_outlined,
                       textDirection: TextDirection.ltr,
-                      textAlign: TextAlign.start,
                       keyboardType: TextInputType.emailAddress,
                       validator: _emailValidator,
-                      decoration: _decoration(
-                        'البريد الإلكتروني',
-                        Icons.email_outlined,
-                      ),
                     ),
                     const SizedBox(height: 12),
-                    TextFormField(
+                    AppTextField(
                       controller: _password,
-                      textDirection: TextDirection.ltr,
-                      textAlign: TextAlign.start,
+                      label: 'كلمة المرور',
+                      icon: Icons.lock_outline_rounded,
                       obscureText: true,
+                      textDirection: TextDirection.ltr,
                       validator: _passwordValidator,
-                      decoration: _decoration(
-                        'كلمة المرور',
-                        Icons.lock_outline_rounded,
-                      ),
                     ),
                     if (_message != null) ...[
                       const SizedBox(height: 12),
-                      _Message(_message!, AppColors.mint, AppColors.mintLight),
+                      InfoBanner(message: _message!),
                     ],
                     if (_error != null) ...[
                       const SizedBox(height: 12),
-                      _Message(_error!, AppColors.peach, AppColors.peachLight),
+                      InfoBanner(
+                        message: _error!,
+                        color: AppColors.danger,
+                        background: AppColors.peachLight,
+                        icon: Icons.error_outline_rounded,
+                      ),
                     ],
                     const SizedBox(height: 18),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 54,
-                      child: FilledButton(
-                        onPressed: _loading ? null : _submit,
-                        child: _loading
-                            ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
-                            : const Text('إنشاء الحساب'),
-                      ),
+                    PrimaryButton(
+                      label: 'إنشاء الحساب',
+                      loading: _loading,
+                      onPressed: _submit,
                     ),
-                    const SizedBox(height: 8),
-                    TextButton(
-                      onPressed: _loading
-                          ? null
-                          : () => Navigator.of(context).pop(),
-                      child: const Text('لديكِ حساب؟ عودي لتسجيل الدخول'),
+                    const SizedBox(height: 10),
+                    Center(
+                      child: TextButton(
+                        onPressed: _loading
+                            ? null
+                            : () => Navigator.of(context).pop(),
+                        child: const Text('لديكِ حساب؟ تسجيل الدخول'),
+                      ),
                     ),
                   ],
                 ),
@@ -153,46 +159,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 }
 
-InputDecoration _decoration(String label, IconData icon) => InputDecoration(
-  labelText: label,
-  prefixIcon: Icon(icon, color: AppColors.mint),
-  filled: true,
-  fillColor: AppColors.mintLight.withValues(alpha: 0.35),
-  border: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(18),
-    borderSide: const BorderSide(color: AppColors.border),
-  ),
-);
-
 String? _emailValidator(String? value) {
   final email = value?.trim() ?? '';
   if (email.isEmpty) return 'اكتبي البريد الإلكتروني.';
-  if (!email.contains('@') || !email.contains('.'))
+  if (!email.contains('@') || !email.contains('.')) {
     return 'اكتبي بريدًا إلكترونيًا صحيحًا.';
+  }
   return null;
 }
 
 String? _passwordValidator(String? value) => (value ?? '').length < 6
     ? 'كلمة المرور يجب أن تكون 6 أحرف على الأقل.'
     : null;
-
-class _Message extends StatelessWidget {
-  const _Message(this.message, this.color, this.background);
-  final String message;
-  final Color color;
-  final Color background;
-  @override
-  Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: const EdgeInsets.all(12),
-    decoration: BoxDecoration(
-      color: background,
-      borderRadius: BorderRadius.circular(16),
-    ),
-    child: Text(
-      message,
-      textAlign: TextAlign.start,
-      style: TextStyle(color: color, fontWeight: FontWeight.w800, height: 1.5),
-    ),
-  );
-}
