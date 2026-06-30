@@ -4,10 +4,12 @@ import '../../core/app_colors.dart';
 import '../../core/errors/app_error.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/app_widgets.dart';
-import 'sign_up_screen.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+  const SignInScreen({super.key, this.onBack, this.onSignUp});
+
+  final VoidCallback? onBack;
+  final VoidCallback? onSignUp;
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
@@ -60,11 +62,10 @@ class _SignInScreenState extends State<SignInScreen> {
     });
     try {
       await _auth.resetPassword(_email.text);
-      if (mounted) {
+      if (mounted)
         setState(
           () => _message = 'تم إرسال رابط استعادة كلمة المرور إلى بريدك.',
         );
-      }
     } catch (error, stackTrace) {
       logError(error, stackTrace);
       if (mounted) setState(() => _error = readableError(error));
@@ -77,113 +78,96 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: AppPage(
+        padding: const EdgeInsetsDirectional.fromSTEB(24, 64, 24, 40),
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 28),
-              const IconBadge(
-                icon: '👶',
-                background: AppColors.mintLight,
-                size: 120,
-                borderColor: AppColors.mintSoft,
-              ),
-              const SizedBox(height: 22),
-              const Text(
-                'مرحبًا بكِ في نُمُوّ',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.text,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900,
-                  height: 1.25,
+              NumuwHeader(
+                title: 'مرحباً بعودتكِ 👋',
+                subtitle: 'سجّلي الدخول للمتابعة',
+                leading: AppIconButton(
+                  icon: Icons.arrow_forward_rounded,
+                  onPressed: widget.onBack,
+                  badge: false,
+                  size: 42,
+                  radius: 13,
+                  iconSize: 20,
+                  borderWidth: 1.5,
                 ),
               ),
-              const SizedBox(height: 8),
-              const Text(
-                'سجّلي الدخول لمتابعة يوم طفلك بهدوء',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: AppColors.secondaryText, height: 1.6),
+              const SizedBox(height: 28),
+              NumuwTextField(
+                controller: _email,
+                label: 'البريد الإلكتروني',
+                hint: 'example@email.com',
+                keyboardType: TextInputType.emailAddress,
+                textDirection: TextDirection.ltr,
+                validator: _emailValidator,
               ),
-              const SizedBox(height: 24),
-              SoftCard(
-                radius: 24,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              const SizedBox(height: 16),
+              NumuwPasswordField(
+                controller: _password,
+                label: 'كلمة المرور',
+                validator: _passwordValidator,
+              ),
+              const SizedBox(height: 10),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: TextActionButton(
+                  label: 'نسيتِ كلمة المرور؟',
+                  onTap: _resetPassword,
+                ),
+              ),
+              if (_message != null) ...[
+                const SizedBox(height: 12),
+                InfoBanner(message: _message!),
+              ],
+              if (_error != null) ...[
+                const SizedBox(height: 12),
+                ErrorMessageCard(message: _error!),
+              ],
+              const SizedBox(height: 18),
+              PrimaryButton(
+                label: 'تسجيل الدخول',
+                loading: _loading,
+                onPressed: _submit,
+              ),
+              const SizedBox(height: 18),
+              Row(
+                children: [
+                  const Expanded(child: Divider(color: AppColors.border)),
+                  Padding(
+                    padding: const EdgeInsetsDirectional.symmetric(
+                      horizontal: 12,
+                    ),
+                    child: Text(
+                      'أو',
+                      style: TextStyle(
+                        color: numuwSecondaryTextColor(),
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                  const Expanded(child: Divider(color: AppColors.border)),
+                ],
+              ),
+              const SizedBox(height: 14),
+              Center(
+                child: Wrap(
+                  alignment: WrapAlignment.center,
                   children: [
-                    const Text(
-                      'تسجيل الدخول',
-                      textAlign: TextAlign.start,
+                    Text(
+                      'ليس لديكِ حساب؟ ',
                       style: TextStyle(
-                        fontSize: 23,
-                        fontWeight: FontWeight.w900,
+                        color: numuwSecondaryTextColor(),
+                        fontSize: 14,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'استخدمي بريدك الإلكتروني وكلمة المرور.',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        color: AppColors.secondaryText,
-                        height: 1.6,
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-                    AppTextField(
-                      controller: _email,
-                      label: 'البريد الإلكتروني',
-                      icon: Icons.email_outlined,
-                      keyboardType: TextInputType.emailAddress,
-                      textDirection: TextDirection.ltr,
-                      validator: _emailValidator,
-                    ),
-                    const SizedBox(height: 12),
-                    AppTextField(
-                      controller: _password,
-                      label: 'كلمة المرور',
-                      icon: Icons.lock_outline_rounded,
-                      obscureText: true,
-                      textDirection: TextDirection.ltr,
-                      validator: _passwordValidator,
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional.centerStart,
-                      child: TextButton(
-                        onPressed: _loading ? null : _resetPassword,
-                        child: const Text('نسيتِ كلمة المرور؟'),
-                      ),
-                    ),
-                    if (_message != null) ...[
-                      const SizedBox(height: 8),
-                      InfoBanner(message: _message!),
-                    ],
-                    if (_error != null) ...[
-                      const SizedBox(height: 8),
-                      InfoBanner(
-                        message: _error!,
-                        color: AppColors.danger,
-                        background: AppColors.peachLight,
-                        icon: Icons.error_outline_rounded,
-                      ),
-                    ],
-                    const SizedBox(height: 18),
-                    PrimaryButton(
-                      label: 'تسجيل الدخول',
-                      loading: _loading,
-                      onPressed: _submit,
-                    ),
-                    const SizedBox(height: 10),
-                    Center(
-                      child: TextButton(
-                        onPressed: _loading
-                            ? null
-                            : () => Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) => const SignUpScreen(),
-                                ),
-                              ),
-                        child: const Text('ليس لديكِ حساب؟ إنشاء حساب'),
-                      ),
+                    TextActionButton(
+                      label: 'إنشاء حساب',
+                      onTap: widget.onSignUp ?? () {},
                     ),
                   ],
                 ),
@@ -199,15 +183,11 @@ class _SignInScreenState extends State<SignInScreen> {
 String? _emailValidator(String? value) {
   final email = value?.trim() ?? '';
   if (email.isEmpty) return 'اكتبي البريد الإلكتروني.';
-  if (!email.contains('@') || !email.contains('.')) {
+  if (!email.contains('@') || !email.contains('.'))
     return 'اكتبي بريدًا إلكترونيًا صحيحًا.';
-  }
   return null;
 }
 
-String? _passwordValidator(String? value) {
-  if ((value ?? '').length < 6) {
-    return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل.';
-  }
-  return null;
-}
+String? _passwordValidator(String? value) => (value ?? '').length < 6
+    ? 'كلمة المرور يجب أن تكون 6 أحرف على الأقل.'
+    : null;

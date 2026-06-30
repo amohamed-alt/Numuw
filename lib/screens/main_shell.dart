@@ -26,12 +26,35 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(index: selectedIndex, children: pages),
-      bottomNavigationBar: AppBottomNavigation(
-        selectedIndex: selectedIndex,
-        onChanged: (index) => setState(() => selectedIndex = index),
+    return MainShellScope(
+      selectedIndex: selectedIndex,
+      selectTab: (index) => setState(() => selectedIndex = index),
+      child: Scaffold(
+        body: IndexedStack(index: selectedIndex, children: pages),
+        bottomNavigationBar: AppBottomNavigation(
+          selectedIndex: selectedIndex,
+          onChanged: (index) => setState(() => selectedIndex = index),
+        ),
       ),
     );
   }
+}
+
+class MainShellScope extends InheritedWidget {
+  const MainShellScope({
+    super.key,
+    required this.selectedIndex,
+    required this.selectTab,
+    required super.child,
+  });
+
+  final int selectedIndex;
+  final ValueChanged<int> selectTab;
+
+  static MainShellScope? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<MainShellScope>();
+
+  @override
+  bool updateShouldNotify(MainShellScope oldWidget) =>
+      selectedIndex != oldWidget.selectedIndex;
 }

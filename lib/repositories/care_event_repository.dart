@@ -40,6 +40,26 @@ class CareEventRepository {
         .toList();
   }
 
+  Future<List<CareEvent>> fetchSleepOverlappingDay(
+    String childId,
+    DateTime start,
+    DateTime end,
+  ) async {
+    final startIso = start.toUtc().toIso8601String();
+    final endIso = end.toUtc().toIso8601String();
+    final rows = await _client
+        .from('care_events')
+        .select(columns)
+        .eq('child_id', childId)
+        .eq('event_type', 'sleep')
+        .lt('started_at', endIso)
+        .or('ended_at.is.null,ended_at.gte.$startIso')
+        .order('started_at', ascending: false);
+    return (rows as List)
+        .map((row) => CareEvent.fromMap(Map<String, dynamic>.from(row as Map)))
+        .toList();
+  }
+
   Future<CareEvent?> latestByType(String childId, String eventType) async {
     final rows = await _client
         .from('care_events')
@@ -95,4 +115,49 @@ class CareEventRepository {
         .single();
     return CareEvent.fromMap(Map<String, dynamic>.from(row));
   }
+
+  Future<CareEvent> update({
+    required String id,
+    DateTime? startedAt,
+    DateTime? endedAt,
+    String? side,
+    String? feedingMethod,
+    double? amountMl,
+    bool? diaperWet,
+    bool? diaperDirty,
+    double? temperatureC,
+    String? medicineName,
+    String? medicineDose,
+    bool? burped,
+    bool? vomited,
+    String? notes,
+    Map<String, dynamic>? metadata,
+  }) async {
+    final values = <String, dynamic>{
+      if (startedAt != null) 'started_at': startedAt.toUtc().toIso8601String(),
+      if (endedAt != null) 'ended_at': endedAt.toUtc().toIso8601String(),
+      if (side != null) 'side': side,
+      if (feedingMethod != null) 'feeding_method': feedingMethod,
+      if (amountMl != null) 'amount_ml': amountMl,
+      if (diaperWet != null) 'diaper_wet': diaperWet,
+      if (diaperDirty != null) 'diaper_dirty': diaperDirty,
+      if (temperatureC != null) 'temperature_c': temperatureC,
+      if (medicineName != null) 'medicine_name': blankToNull(medicineName),
+      if (medicineDose != null) 'medicine_dose': blankToNull(medicineDose),
+      if (burped != null) 'burped': burped,
+      if (vomited != null) 'vomited': vomited,
+      'notes': blankToNull(notes),
+      if (metadata != null) 'metadata': metadata,
+    };
+    final row = await _client
+        .from('care_events')
+        .update(values)
+        .eq('id', id)
+        .select(columns)
+        .single();
+    return CareEvent.fromMap(Map<String, dynamic>.from(row));
+  }
+
+  Future<void> delete(String id) async =>
+      _client.from('care_events').delete().eq('id', id);
 }

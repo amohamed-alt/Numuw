@@ -19,27 +19,36 @@ class _AssistantScreenState extends State<AssistantScreen> {
   final _assistant = const AssistantService();
   final _careRepo = CareEventRepository();
   final _questionRepo = DoctorQuestionRepository();
-  final _question = TextEditingController();
-  String? _summary;
-  String? _message;
+  final _input = TextEditingController();
+  final List<_ChatMessage> _messages = [];
   bool _loading = false;
+  String? _notice;
 
   @override
   void dispose() {
-    _question.dispose();
+    _input.dispose();
     super.dispose();
   }
 
   Future<void> _makeSummary() async {
     final child = ChildSession.instance.selectedChild;
     if (child == null) return;
-    setState(() => _loading = true);
+    setState(() {
+      _loading = true;
+      _notice = null;
+    });
     try {
       final events = await _careRepo.fetchRecent(child.id, limit: 50);
-      setState(() => _summary = _assistant.localSummary(child, events));
+      final summary = _assistant.localSummary(child, events);
+      setState(() {
+        _messages.add(
+          _ChatMessage.user('أنشئي لي ملخصاً من بيانات ${child.name} للطبيب'),
+        );
+        _messages.add(_ChatMessage.assistant(summary));
+      });
     } catch (error, stackTrace) {
       logError(error, stackTrace);
-      setState(() => _summary = readableError(error));
+      setState(() => _notice = readableError(error));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -47,15 +56,42 @@ class _AssistantScreenState extends State<AssistantScreen> {
 
   Future<void> _saveQuestion() async {
     final child = ChildSession.instance.selectedChild;
-    if (child == null || _question.text.trim().isEmpty) return;
+    final text = _input.text.trim();
+    if (child == null || text.isEmpty) return;
+    setState(() {
+      _messages.add(_ChatMessage.user(text));
+      _loading = true;
+      _notice = null;
+      _input.clear();
+    });
     try {
-      await _questionRepo.add(childId: child.id, question: _question.text);
-      _question.clear();
-      setState(() => _message = 'تم حفظ السؤال للطبيب.');
+      await _questionRepo.add(childId: child.id, question: text);
+      await Future<void>.delayed(const Duration(milliseconds: 350));
+      setState(() {
+        _messages.add(
+          _ChatMessage.assistant(
+            'تم حفظ السؤال للطبيب. يمكنك مراجعته من ملف الطفل وتضمينه في التقرير.',
+          ),
+        );
+      });
     } catch (error, stackTrace) {
       logError(error, stackTrace);
-      setState(() => _message = readableError(error));
+      setState(() => _notice = readableError(error));
+    } finally {
+      if (mounted) setState(() => _loading = false);
     }
+  }
+
+  void _prepareQuestion() {
+    _input.text = 'أريد سؤال الطبيب عن ';
+    _input.selection = TextSelection.collapsed(offset: _input.text.length);
+  }
+
+  void _showEmergencyNotice() {
+    setState(
+      () => _notice =
+          'في الطوارئ أو صعوبة التنفس أو خمول شديد تواصلي مع الطبيب أو الطوارئ فوراً.',
+    );
   }
 
   @override
@@ -64,109 +100,313 @@ class _AssistantScreenState extends State<AssistantScreen> {
     return Scaffold(
       body: AppPage(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const AppHeader(
-              title: 'اسألي المساعد',
-              subtitle: 'واجهة آمنة لتنظيم البيانات والأسئلة',
+              title: 'اسألي المساعد 💬',
+              subtitle: 'رتّبي بياناتك وأسئلتك للطبيب بأمان',
+              showNotification: false,
             ),
-            const SizedBox(height: 22),
-            SoftCard(
-              color: AppColors.peachLight,
-              borderColor: AppColors.peachLight,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const IconBadge(
-                    icon: '⚠️',
-                    background: AppColors.surface,
-                    size: 42,
+            const SizedBox(height: 16),
+            WarningBanner(message: _assistant.safetyNotice()),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: _AssistantActionCard(
+                    icon: '📝',
+                    title: 'ملخص للطبيب',
+                    subtitle: 'من آخر التسجيلات',
+                    color: AppColors.mint,
+                    background: AppColors.mintLight,
+                    onTap: child == null ? null : _makeSummary,
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      _assistant.safetyNotice(),
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        color: AppColors.danger,
-                        fontWeight: FontWeight.w800,
-                        height: 1.7,
-                      ),
-                    ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _AssistantActionCard(
+                    icon: '❔',
+                    title: 'صياغة سؤال',
+                    subtitle: 'احفظيه للتقرير',
+                    color: AppColors.blue,
+                    background: AppColors.blueLight,
+                    onTap: _prepareQuestion,
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            _AssistantActionCard(
+              icon: '⚠️',
+              title: 'تنبيه الطوارئ',
+              subtitle: 'المساعد لا يشخّص ولا يؤكد السلامة الطبية',
+              color: AppColors.danger,
+              background: AppColors.peachLight,
+              onTap: _showEmergencyNotice,
+              wide: true,
             ),
             const SizedBox(height: 16),
             SoftCard(
               radius: 24,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'ملخص محلي للطبيب',
-                    textAlign: TextAlign.start,
-                    style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsetsDirectional.all(14),
-                    decoration: BoxDecoration(
-                      color: AppColors.mintLight,
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Text(
-                      _summary ??
-                          'اضغطي لإنشاء ملخص من بيانات ${child?.name ?? 'الطفل'} المسجلة. لا يتضمن تشخيصًا أو وصف علاج.',
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        height: 1.7,
-                        fontWeight: FontWeight.w700,
+              padding: const EdgeInsetsDirectional.all(14),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 230),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (_messages.isEmpty)
+                      _EmptyConversation(childName: child?.name)
+                    else
+                      ..._messages.map((message) => _Bubble(message)),
+                    if (_loading) ...[
+                      const SizedBox(height: 10),
+                      const Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: LoadingDots(),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  PrimaryButton(
-                    label: 'إنشاء ملخص',
-                    loading: _loading,
-                    onPressed: child == null ? null : _makeSummary,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            SoftCard(
-              radius: 24,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'حضّري سؤالًا للطبيب',
-                    textAlign: TextAlign.start,
-                    style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
-                  ),
-                  const SizedBox(height: 10),
-                  AppTextField(
-                    controller: _question,
-                    label: 'اكتبي السؤال',
-                    minLines: 2,
-                    maxLines: 4,
-                  ),
-                  const SizedBox(height: 12),
-                  PrimaryButton(
-                    label: 'حفظ السؤال',
-                    onPressed: child == null ? null : _saveQuestion,
-                  ),
-                  if (_message != null) ...[
-                    const SizedBox(height: 10),
-                    InfoBanner(message: _message!),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
+            const SizedBox(height: 12),
+            _Composer(
+              controller: _input,
+              loading: _loading,
+              enabled: child != null,
+              onSend: _saveQuestion,
+            ),
+            if (_notice != null) ...[
+              const SizedBox(height: 12),
+              InfoBanner(message: _notice!, icon: Icons.info_outline_rounded),
+            ],
           ],
         ),
       ),
     );
   }
+}
+
+class _AssistantActionCard extends StatelessWidget {
+  const _AssistantActionCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    required this.background,
+    required this.onTap,
+    this.wide = false,
+  });
+
+  final String icon;
+  final String title;
+  final String subtitle;
+  final Color color;
+  final Color background;
+  final VoidCallback? onTap;
+  final bool wide;
+
+  @override
+  Widget build(BuildContext context) => SoftCard(
+    onTap: onTap,
+    radius: 20,
+    padding: EdgeInsetsDirectional.fromSTEB(14, wide ? 13 : 15, 14, 14),
+    child: Row(
+      children: [
+        IconBadge(icon: icon, background: background, size: wide ? 42 : 46),
+        const SizedBox(width: 11),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: color,
+                  fontSize: wide ? 14 : 13,
+                  fontWeight: FontWeight.w900,
+                  height: 1.25,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                subtitle,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: numuwSecondaryTextColor(),
+                  fontSize: 11,
+                  height: 1.35,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _EmptyConversation extends StatelessWidget {
+  const _EmptyConversation({required this.childName});
+
+  final String? childName;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const IconBadge(icon: '🤍', background: AppColors.mintLight, size: 54),
+      const SizedBox(height: 12),
+      Text(
+        'كيف أقدر أساعدك اليوم؟',
+        textAlign: TextAlign.start,
+        style: TextStyle(
+          color: numuwTextColor(),
+          fontSize: 18,
+          fontWeight: FontWeight.w900,
+          height: 1.25,
+        ),
+      ),
+      const SizedBox(height: 7),
+      Text(
+        'يمكنني تنظيم ملخص من بيانات ${childName ?? 'الطفل'} أو حفظ أسئلتك للطبيب. التحليل الطبي الشخصي غير مفعّل حتى يتوفر خادم آمن.',
+        textAlign: TextAlign.start,
+        style: TextStyle(
+          color: numuwSecondaryTextColor(),
+          fontSize: 13,
+          height: 1.65,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ],
+  );
+}
+
+class _Composer extends StatelessWidget {
+  const _Composer({
+    required this.controller,
+    required this.loading,
+    required this.enabled,
+    required this.onSend,
+  });
+
+  final TextEditingController controller;
+  final bool loading;
+  final bool enabled;
+  final VoidCallback onSend;
+
+  @override
+  Widget build(BuildContext context) => SoftCard(
+    radius: 22,
+    padding: const EdgeInsetsDirectional.fromSTEB(14, 12, 14, 12),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(
+          child: TextField(
+            controller: controller,
+            enabled: enabled && !loading,
+            minLines: 1,
+            maxLines: 4,
+            textDirection: TextDirection.rtl,
+            textAlign: TextAlign.start,
+            decoration: const InputDecoration(
+              hintText: 'اكتبي سؤالك للطبيب...',
+              border: InputBorder.none,
+              isDense: true,
+            ),
+            style: TextStyle(
+              color: numuwTextColor(),
+              fontSize: 14,
+              height: 1.45,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: enabled && !loading ? onSend : null,
+          child: Container(
+            width: 46,
+            height: 46,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              gradient: AppColors.primaryGradient,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: loading
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                : const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _Bubble extends StatelessWidget {
+  const _Bubble(this.message);
+  final _ChatMessage message;
+
+  @override
+  Widget build(BuildContext context) {
+    final user = message.role == 'user';
+    return Align(
+      alignment: user
+          ? AlignmentDirectional.centerEnd
+          : AlignmentDirectional.centerStart,
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 282),
+        margin: const EdgeInsetsDirectional.only(bottom: 10),
+        padding: const EdgeInsetsDirectional.symmetric(
+          horizontal: 14,
+          vertical: 12,
+        ),
+        decoration: BoxDecoration(
+          color: user ? AppColors.mint : numuwSurfaceColor(),
+          borderRadius: BorderRadiusDirectional.only(
+            topStart: const Radius.circular(18),
+            topEnd: const Radius.circular(18),
+            bottomStart: Radius.circular(user ? 18 : 5),
+            bottomEnd: Radius.circular(user ? 5 : 18),
+          ),
+          border: user ? null : Border.all(color: numuwBorderColor()),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x12000000),
+              blurRadius: 8,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Text(
+          message.text,
+          textAlign: TextAlign.start,
+          style: TextStyle(
+            color: user ? Colors.white : numuwTextColor(),
+            height: 1.6,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ChatMessage {
+  const _ChatMessage(this.role, this.text);
+  factory _ChatMessage.user(String text) => _ChatMessage('user', text);
+  factory _ChatMessage.assistant(String text) =>
+      _ChatMessage('assistant', text);
+  final String role;
+  final String text;
 }

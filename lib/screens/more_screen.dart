@@ -7,6 +7,7 @@ import '../core/app_colors.dart';
 import '../core/errors/app_error.dart';
 import '../services/auth_service.dart';
 import '../services/report_service.dart';
+import '../state/app_preferences.dart';
 import '../state/child_session.dart';
 import '../widgets/app_widgets.dart';
 
@@ -28,7 +29,16 @@ class _MoreScreenState extends State<MoreScreen> {
       if (mounted)
         setState(() => _version = '${info.version}+${info.buildNumber}');
     });
+    AppPreferences.instance.addListener(_prefsChanged);
   }
+
+  @override
+  void dispose() {
+    AppPreferences.instance.removeListener(_prefsChanged);
+    super.dispose();
+  }
+
+  void _prefsChanged() => setState(() {});
 
   Future<void> _exportReport() async {
     final child = ChildSession.instance.selectedChild;
@@ -75,82 +85,133 @@ class _MoreScreenState extends State<MoreScreen> {
     setState(() {});
   }
 
+  void _feature(String title, String message) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => _FeatureInfoScreen(title: title, message: message),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final email =
         Supabase.instance.client.auth.currentUser?.email ?? 'غير معروف';
     final child = ChildSession.instance.selectedChild;
+    final night = AppPreferences.instance.nightMode;
     return Scaffold(
       body: AppPage(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const AppHeader(
-              title: 'المزيد',
+              title: 'المزيد ⚙️',
               subtitle: 'الإعدادات والخدمات الإضافية',
+              showNotification: false,
             ),
             const SizedBox(height: 22),
-            _Group(
-              children: const [
-                _Item(
+            const _GroupLabel('أدوات المتابعة'),
+            const SizedBox(height: 9),
+            SettingsGroup(
+              children: [
+                SettingsRow(
                   icon: Icons.bedtime_outlined,
                   title: 'متابعة النوم',
                   color: AppColors.purple,
+                  onTap: () => _feature(
+                    'متابعة النوم',
+                    'تظهر تسجيلات النوم الفعلية في صفحة التسجيل ولوحة اليوم.',
+                  ),
                 ),
-                _Item(
+                SettingsRow(
                   icon: Icons.baby_changing_station_outlined,
                   title: 'متابعة الحفاضات',
                   color: AppColors.blue,
+                  onTap: () => _feature(
+                    'متابعة الحفاضات',
+                    'استخدمي تبويب التسجيل لحفظ تغييرات الحفاضة ومراجعتها.',
+                  ),
                 ),
-                _Item(
+                SettingsRow(
                   icon: Icons.medication_outlined,
                   title: 'الأدوية والمكملات',
                   color: AppColors.peach,
+                  onTap: () => _feature(
+                    'الأدوية والمكملات',
+                    'يمكنك تسجيل الدواء والجرعة الموصوفة فقط دون أي توصية طبية.',
+                  ),
                 ),
-                _Item(
+                SettingsRow(
                   icon: Icons.notifications_outlined,
                   title: 'التذكيرات والإشعارات',
                   color: AppColors.yellow,
-                ),
-                _Item(
-                  icon: Icons.settings_outlined,
-                  title: 'إعدادات التطبيق',
-                  color: AppColors.mint,
+                  onTap: () => _feature(
+                    'التذكيرات',
+                    'سيتم تفعيل تذكيرات متقدمة لاحقًا. حاليًا يمكنك متابعة المهام من ملف الطفل.',
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            _Group(
+            const _GroupLabel('التجربة'),
+            const SizedBox(height: 9),
+            SettingsGroup(
               children: [
-                _Item(
+                SettingsRow(
+                  icon: Icons.nightlight_round,
+                  title: 'وضع الليل الهادئ',
+                  color: AppColors.nightGold,
+                  trailing: NumuwSwitch(
+                    value: night,
+                    onChanged: (_) => AppPreferences.instance.toggleNightMode(),
+                  ),
+                  onTap: AppPreferences.instance.toggleNightMode,
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const _GroupLabel('الحساب والطفل'),
+            const SizedBox(height: 9),
+            SettingsGroup(
+              children: [
+                SettingsRow(
                   icon: Icons.email_outlined,
                   title: 'الحساب: $email',
                   color: AppColors.blue,
+                  onTap: () => _feature('الحساب', email),
                 ),
-                _Item(
+                SettingsRow(
                   icon: Icons.child_care_rounded,
                   title: 'الطفل المحدد: ${child?.name ?? 'غير محدد'}',
                   color: AppColors.mint,
                   onTap: _switchChild,
                 ),
-                _Item(
+                SettingsRow(
                   icon: Icons.picture_as_pdf_outlined,
                   title: 'تقرير الطبيب PDF',
                   color: AppColors.purple,
                   onTap: _exportReport,
                 ),
-                const _Item(
+                SettingsRow(
                   icon: Icons.privacy_tip_outlined,
-                  title:
-                      'الخصوصية: تستخدم بياناتك داخل حسابك وفق صلاحيات Supabase RLS',
+                  title: 'الخصوصية',
                   color: AppColors.yellow,
+                  onTap: () => _feature(
+                    'الخصوصية',
+                    'تُستخدم بياناتك داخل حسابك فقط وفق صلاحيات الوصول الآمنة. لا نضع مفاتيح سرية داخل التطبيق.',
+                  ),
                 ),
-                _Item(
+                SettingsRow(
                   icon: Icons.info_outline_rounded,
                   title:
                       'إصدار التطبيق: ${_version.isEmpty ? '...' : _version}',
                   color: AppColors.blue,
+                  onTap: () => _feature(
+                    'إصدار التطبيق',
+                    _version.isEmpty ? 'غير متاح' : _version,
+                  ),
                 ),
-                _Item(
+                SettingsRow(
                   icon: Icons.logout_rounded,
                   title: 'تسجيل الخروج',
                   color: AppColors.peach,
@@ -172,54 +233,65 @@ class _MoreScreenState extends State<MoreScreen> {
   }
 }
 
-class _Group extends StatelessWidget {
-  const _Group({required this.children});
-  final List<_Item> children;
+class _GroupLabel extends StatelessWidget {
+  const _GroupLabel(this.text);
+
+  final String text;
 
   @override
-  Widget build(BuildContext context) => SoftCard(
-    padding: EdgeInsets.zero,
-    child: Column(
-      children: [
-        for (var i = 0; i < children.length; i++) ...[
-          children[i],
-          if (i != children.length - 1)
-            const Divider(height: 1, color: AppColors.border),
-        ],
-      ],
+  Widget build(BuildContext context) => Align(
+    alignment: AlignmentDirectional.centerStart,
+    child: Text(
+      text,
+      textAlign: TextAlign.start,
+      style: TextStyle(
+        color: numuwSecondaryTextColor(),
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+        letterSpacing: .5,
+      ),
     ),
   );
 }
 
-class _Item extends StatelessWidget {
-  const _Item({
-    required this.icon,
-    required this.title,
-    required this.color,
-    this.onTap,
-  });
-
-  final IconData icon;
+class _FeatureInfoScreen extends StatelessWidget {
+  const _FeatureInfoScreen({required this.title, required this.message});
   final String title;
-  final Color color;
-  final VoidCallback? onTap;
+  final String message;
 
   @override
-  Widget build(BuildContext context) => ListTile(
-    contentPadding: const EdgeInsetsDirectional.fromSTEB(15, 6, 15, 6),
-    leading: CircleAvatar(
-      backgroundColor: color.withValues(alpha: .12),
-      child: Icon(icon, color: color),
+  Widget build(BuildContext context) => Scaffold(
+    body: AppPage(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          NumuwHeader(
+            title: title,
+            subtitle: 'معلومات آمنة داخل التطبيق',
+            leading: AppIconButton(
+              icon: Icons.arrow_forward_rounded,
+              onPressed: () => Navigator.pop(context),
+              badge: false,
+              size: 42,
+              radius: 13,
+              iconSize: 20,
+              borderWidth: 1.5,
+            ),
+          ),
+          const SizedBox(height: 22),
+          SoftCard(
+            child: Text(
+              message,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                color: numuwTextColor(),
+                height: 1.7,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
     ),
-    title: Text(
-      title,
-      textAlign: TextAlign.start,
-      style: const TextStyle(fontWeight: FontWeight.w700, height: 1.4),
-    ),
-    trailing: const Icon(
-      Icons.chevron_left_rounded,
-      color: AppColors.mutedText,
-    ),
-    onTap: onTap,
   );
 }

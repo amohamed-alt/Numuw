@@ -16,12 +16,13 @@ class AppBottomNavigation extends StatelessWidget {
     _NavData(Icons.home_rounded, 'اليوم'),
     _NavData(Icons.edit_note_rounded, 'التسجيل'),
     _NavData(Icons.child_care_rounded, 'طفلي'),
-    _NavData(Icons.chat_bubble_outline_rounded, 'اسألي المساعد'),
+    _NavData(Icons.chat_bubble_outline_rounded, 'اسألي'),
     _NavData(Icons.menu_rounded, 'المزيد'),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.surface,
@@ -34,10 +35,15 @@ class AppBottomNavigation extends StatelessWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        top: false,
-        child: SizedBox(
-          height: 82,
+      child: SizedBox(
+        height: 72 + (bottomInset > 10 ? bottomInset : 10),
+        child: Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(
+            4,
+            0,
+            4,
+            bottomInset > 10 ? bottomInset : 10,
+          ),
           child: Row(
             children: List.generate(items.length, (index) {
               final item = items[index];
@@ -46,32 +52,27 @@ class AppBottomNavigation extends StatelessWidget {
               return Expanded(
                 child: InkWell(
                   onTap: () => onChanged(index),
-                  child: Padding(
-                    padding: const EdgeInsetsDirectional.symmetric(
-                      horizontal: 2,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(item.icon, size: 23, color: color),
-                        const SizedBox(height: 4),
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            item.label,
-                            maxLines: 1,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: color,
-                              fontSize: 10.5,
-                              fontWeight: selected
-                                  ? FontWeight.w800
-                                  : FontWeight.w600,
-                            ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(item.icon, size: 24, color: color),
+                      const SizedBox(height: 4),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          item.label,
+                          maxLines: 1,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: color,
+                            fontSize: 10,
+                            fontWeight: selected
+                                ? FontWeight.w700
+                                : FontWeight.w500,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               );

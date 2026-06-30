@@ -74,4 +74,32 @@ class VaccinationRepository {
         })
         .eq('id', id);
   }
+
+  Future<void> delete(String id) async =>
+      _client.from('vaccinations').delete().eq('id', id);
+
+  Future<Vaccination> update({
+    required String id,
+    required String name,
+    String? doseLabel,
+    DateTime? scheduledDate,
+    DateTime? administeredDate,
+    String? provider,
+    required String status,
+  }) async {
+    final row = await _client
+        .from('vaccinations')
+        .update({
+          'name': name.trim(),
+          'dose_label': blankToNull(doseLabel),
+          'scheduled_date': dateOnly(scheduledDate),
+          'administered_date': dateOnly(administeredDate),
+          'provider': blankToNull(provider),
+          'status': status,
+        })
+        .eq('id', id)
+        .select(columns)
+        .single();
+    return Vaccination.fromMap(Map<String, dynamic>.from(row));
+  }
 }

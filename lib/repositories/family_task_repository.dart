@@ -18,6 +18,7 @@ class FamilyTaskRepository {
         .order('created_at', ascending: false);
     return (rows as List)
         .map((row) => FamilyTask.fromMap(Map<String, dynamic>.from(row as Map)))
+        .where((task) => _validTitle(task.title))
         .toList();
   }
 
@@ -30,6 +31,7 @@ class FamilyTaskRepository {
         .order('due_at');
     return (rows as List)
         .map((row) => FamilyTask.fromMap(Map<String, dynamic>.from(row as Map)))
+        .where((task) => _validTitle(task.title))
         .toList();
   }
 
@@ -68,4 +70,30 @@ class FamilyTaskRepository {
 
   Future<void> delete(String id) async =>
       _client.from('family_tasks').delete().eq('id', id);
+
+  Future<FamilyTask> update({
+    required String id,
+    required String title,
+    String? category,
+    DateTime? dueAt,
+    String visibility = 'family',
+  }) async {
+    final row = await _client
+        .from('family_tasks')
+        .update({
+          'title': title.trim(),
+          'category': blankToNull(category),
+          'due_at': dueAt?.toUtc().toIso8601String(),
+          'visibility': visibility,
+        })
+        .eq('id', id)
+        .select(columns)
+        .single();
+    return FamilyTask.fromMap(Map<String, dynamic>.from(row));
+  }
+
+  bool _validTitle(String title) {
+    final value = title.trim();
+    return value.isNotEmpty && value != '..' && value != '.';
+  }
 }

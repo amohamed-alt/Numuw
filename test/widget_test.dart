@@ -74,6 +74,23 @@ void main() {
     expect(event.toMap()['metadata'], <String, dynamic>{});
   });
 
+  test('CareEvent mapping keeps feeding methods metadata', () {
+    final event = CareEvent.fromMap({
+      'id': 'e3',
+      'child_id': 'c1',
+      'created_by': 'u1',
+      'event_type': 'feeding',
+      'started_at': '2026-06-29T10:00:00Z',
+      'feeding_method': 'breast',
+      'metadata': {
+        'feeding_methods': ['breast', 'bottle'],
+      },
+    });
+
+    expect(event.metadata?['feeding_methods'], ['breast', 'bottle']);
+    expect(event.toMap()['metadata'], isA<Map<String, dynamic>>());
+  });
+
   test('Dashboard sleep calculation sums overlapping sleep events', () {
     final start = DateTime(2026, 6, 29);
     final end = start.add(const Duration(days: 1));
@@ -101,12 +118,41 @@ void main() {
     );
   });
 
+  test('Dashboard sleep calculation clips sessions crossing midnight', () {
+    final start = DateTime(2026, 6, 29);
+    final end = start.add(const Duration(days: 1));
+    final now = DateTime(2026, 6, 29, 10);
+    final events = [
+      CareEvent(
+        id: '1',
+        childId: 'c',
+        createdBy: 'u',
+        eventType: 'sleep',
+        startedAt: DateTime(2026, 6, 28, 22),
+        endedAt: DateTime(2026, 6, 29, 2),
+      ),
+      CareEvent(
+        id: '2',
+        childId: 'c',
+        createdBy: 'u',
+        eventType: 'sleep',
+        startedAt: DateTime(2026, 6, 29, 23),
+        endedAt: DateTime(2026, 6, 30, 2),
+      ),
+    ];
+    expect(
+      DashboardRepository.calculateSleepToday(events, start, end, now),
+      const Duration(hours: 3),
+    );
+  });
+
   testWidgets('Numuw app shows setup error without Supabase config', (
     tester,
   ) async {
     await tester.pumpWidget(
       const NumuwApp(startupError: 'إعدادات Supabase غير مكتملة'),
     );
+    await tester.pump(const Duration(milliseconds: 1600));
     expect(find.text('إعدادات مطلوبة'), findsOneWidget);
   });
 }

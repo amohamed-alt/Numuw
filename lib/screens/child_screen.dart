@@ -13,6 +13,7 @@ import '../repositories/doctor_question_repository.dart';
 import '../repositories/family_task_repository.dart';
 import '../repositories/growth_repository.dart';
 import '../repositories/vaccination_repository.dart';
+import '../state/app_events.dart';
 import '../state/child_session.dart';
 import '../widgets/app_widgets.dart';
 
@@ -64,114 +65,62 @@ class _ChildScreenState extends State<ChildScreen> {
     }
     return Scaffold(
       body: AppPage(
+        padding: EdgeInsets.zero,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppHeader(
-              title: child.name,
-              subtitle: ArabicFormatters.age(child),
-              trailing: AppIconButton(
-                icon: Icons.edit_outlined,
-                onPressed: () => _editChild(child),
+            _ProfileHeader(child: child, onEdit: () => _editChild(child)),
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(18, 0, 18, 24),
+              child: FutureBuilder<_ChildData>(
+                future: _future,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return const LoadingSkeleton(height: 220);
+                  }
+                  if (snapshot.hasError) {
+                    return EmptyState(
+                      message: readableError(snapshot.error!),
+                      icon: Icons.error_outline_rounded,
+                    );
+                  }
+                  final data = snapshot.data!;
+                  return Column(
+                    children: [
+                      _GrowthSection(items: data.growth, onAdd: _addGrowth),
+                      const SizedBox(height: 14),
+                      _VaccinationSection(
+                        items: data.vaccinations,
+                        onAdd: _addVaccination,
+                        onStatus: (v, s) async {
+                          await _vaccRepo.updateStatus(v.id, s);
+                          AppEvents.instance.vaccinationsChanged();
+                          await _refresh();
+                        },
+                      ),
+                      const SizedBox(height: 14),
+                      _FamilyTasksSection(
+                        items: data.tasks,
+                        onAdd: _addTask,
+                        onChanged: (t, done) async {
+                          await _taskRepo.setCompleted(t.id, done);
+                          AppEvents.instance.tasksChanged();
+                          await _refresh();
+                        },
+                      ),
+                      const SizedBox(height: 14),
+                      _DoctorQuestionsSection(
+                        items: data.questions,
+                        onAdd: _addQuestion,
+                        onAnswered: (q, done) async {
+                          await _questionRepo.setAnswered(q.id, done);
+                          await _refresh();
+                        },
+                      ),
+                    ],
+                  );
+                },
               ),
-            ),
-            const SizedBox(height: 18),
-            _ProfileCard(child: child),
-            const SizedBox(height: 22),
-            FutureBuilder<_ChildData>(
-              future: _future,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return const SoftCard(
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-                if (snapshot.hasError) {
-                  return EmptyState(
-                    message: readableError(snapshot.error!),
-                    icon: Icons.error_outline_rounded,
-                  );
-                }
-                final data = snapshot.data!;
-                return Column(
-                  children: [
-                    SectionTitle(
-                      title: 'النمو',
-                      icon: Icons.trending_up_rounded,
-                      action: TextButton(
-                        onPressed: _addGrowth,
-                        child: const Text('إضافة'),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    data.growth.isEmpty
-                        ? const EmptyState(
-                            message:
-                                'لا توجد قياسات نمو بعد. أضيفي قياسًا عند توفره.',
-                          )
-                        : _GrowthList(data.growth),
-                    const SizedBox(height: 20),
-                    SectionTitle(
-                      title: 'التطعيمات',
-                      icon: Icons.shield_outlined,
-                      action: TextButton(
-                        onPressed: _addVaccination,
-                        child: const Text('إضافة'),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    data.vaccinations.isEmpty
-                        ? const EmptyState(
-                            message:
-                                'أضيفي مواعيد التطعيم حسب تعليمات الجهة الصحية أو الطبيب.',
-                          )
-                        : _VaccinationList(
-                            items: data.vaccinations,
-                            onStatus: (v, s) async {
-                              await _vaccRepo.updateStatus(v.id, s);
-                              await _refresh();
-                            },
-                          ),
-                    const SizedBox(height: 20),
-                    SectionTitle(
-                      title: 'مهام العائلة',
-                      icon: Icons.assignment_rounded,
-                      action: TextButton(
-                        onPressed: _addTask,
-                        child: const Text('إضافة'),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    data.tasks.isEmpty
-                        ? const EmptyState(message: 'لا توجد مهام عائلية بعد.')
-                        : _TaskList(
-                            items: data.tasks,
-                            onChanged: (t, done) async {
-                              await _taskRepo.setCompleted(t.id, done);
-                              await _refresh();
-                            },
-                          ),
-                    const SizedBox(height: 20),
-                    SectionTitle(
-                      title: 'أسئلة الطبيب',
-                      icon: Icons.help_outline_rounded,
-                      action: TextButton(
-                        onPressed: _addQuestion,
-                        child: const Text('إضافة'),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    data.questions.isEmpty
-                        ? const EmptyState(message: 'لا توجد أسئلة للطبيب بعد.')
-                        : _QuestionList(
-                            items: data.questions,
-                            onAnswered: (q, done) async {
-                              await _questionRepo.setAnswered(q.id, done);
-                              await _refresh();
-                            },
-                          ),
-                  ],
-                );
-              },
             ),
           ],
         ),
@@ -209,10 +158,12 @@ class _ChildScreenState extends State<ChildScreen> {
     final head = TextEditingController();
     final source = TextEditingController();
     final notes = TextEditingController();
+    final measuredAt = TextEditingController(text: _dateOnly(DateTime.now()));
     if (await _showForm('إضافة قياس نمو', [
           _DialogField(w, 'الوزن كجم', TextInputType.number),
           _DialogField(h, 'الطول سم', TextInputType.number),
           _DialogField(head, 'محيط الرأس سم', TextInputType.number),
+          _DialogDateField(measuredAt, 'تاريخ القياس'),
           _DialogField(source, 'المصدر'),
           _DialogField(notes, 'ملاحظات'),
         ]) ==
@@ -220,7 +171,7 @@ class _ChildScreenState extends State<ChildScreen> {
       final c = ChildSession.instance.selectedChild!;
       await _growthRepo.add(
         childId: c.id,
-        measuredAt: DateTime.now(),
+        measuredAt: _date(measuredAt.text) ?? DateTime.now(),
         weightKg: _num(w),
         heightCm: _num(h),
         headCm: _num(head),
@@ -235,11 +186,11 @@ class _ChildScreenState extends State<ChildScreen> {
     final n = TextEditingController();
     final dose = TextEditingController();
     final provider = TextEditingController();
-    final date = TextEditingController();
+    final date = TextEditingController(text: _dateOnly(DateTime.now()));
     if (await _showForm('إضافة تطعيم', [
               _DialogField(n, 'اسم التطعيم'),
               _DialogField(dose, 'الجرعة'),
-              _DialogField(date, 'التاريخ YYYY-MM-DD', TextInputType.datetime),
+              _DialogDateField(date, 'التاريخ المتوقع'),
               _DialogField(provider, 'الجهة/الطبيب'),
             ]) ==
             true &&
@@ -251,6 +202,7 @@ class _ChildScreenState extends State<ChildScreen> {
         scheduledDate: _date(date.text),
         provider: provider.text,
       );
+      AppEvents.instance.vaccinationsChanged();
       await _refresh();
     }
   }
@@ -258,9 +210,11 @@ class _ChildScreenState extends State<ChildScreen> {
   Future<void> _addTask() async {
     final t = TextEditingController();
     final cat = TextEditingController();
+    final due = TextEditingController();
     if (await _showForm('إضافة مهمة', [
               _DialogField(t, 'عنوان المهمة'),
               _DialogField(cat, 'التصنيف'),
+              _DialogDateField(due, 'تاريخ الاستحقاق', optional: true),
             ]) ==
             true &&
         t.text.trim().isNotEmpty) {
@@ -268,7 +222,9 @@ class _ChildScreenState extends State<ChildScreen> {
         childId: ChildSession.instance.selectedChild!.id,
         title: t.text,
         category: cat.text,
+        dueAt: _date(due.text),
       );
+      AppEvents.instance.tasksChanged();
       await _refresh();
     }
   }
@@ -289,6 +245,8 @@ class _ChildScreenState extends State<ChildScreen> {
   double? _num(TextEditingController c) =>
       double.tryParse(c.text.trim().replaceAll(',', '.'));
   DateTime? _date(String text) => DateTime.tryParse(text.trim());
+  String _dateOnly(DateTime value) =>
+      '${value.year.toString().padLeft(4, '0')}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')}';
 
   Future<bool?> _showForm(String title, List<Widget> fields) =>
       showDialog<bool>(
@@ -345,243 +303,677 @@ class _ChildData {
   }
 }
 
-class _ProfileCard extends StatelessWidget {
-  const _ProfileCard({required this.child});
+class _ProfileHeader extends StatelessWidget {
+  const _ProfileHeader({required this.child, required this.onEdit});
 
   final ChildProfile child;
+  final VoidCallback onEdit;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsetsDirectional.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: AlignmentDirectional.topStart,
-          end: AlignmentDirectional.bottomEnd,
-          colors: [AppColors.mintLight, AppColors.mintSoft],
-        ),
-        borderRadius: BorderRadius.circular(24),
+  Widget build(BuildContext context) => Container(
+    width: double.infinity,
+    padding: const EdgeInsetsDirectional.fromSTEB(18, 18, 18, 24),
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [AppColors.mintLight, AppColors.background],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const IconBadge(
-                icon: '👶',
-                background: AppColors.surface,
-                size: 68,
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                '${child.name} ?',
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: numuwTextColor(),
+                  fontSize: 17,
+                  fontWeight: FontWeight.w800,
+                  height: 1.35,
+                ),
               ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Text(
-                  child.name,
-                  textAlign: TextAlign.start,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w900,
+            ),
+            AppIconButton(
+              icon: Icons.edit_outlined,
+              onPressed: onEdit,
+              badge: false,
+              size: 38,
+              radius: 12,
+              iconSize: 17,
+              borderWidth: 1.5,
+            ),
+          ],
+        ),
+        const SizedBox(height: 18),
+        Row(
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                IconBadge(
+                  icon: '👶',
+                  background: numuwSurfaceColor(),
+                  size: 80,
+                  borderColor: AppColors.mint.withValues(alpha: .30),
+                ),
+                PositionedDirectional(
+                  end: -2,
+                  bottom: -2,
+                  child: Container(
+                    width: 28,
+                    height: 28,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: AppColors.mint,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.surface, width: 2),
+                    ),
+                    child: const Text('📷', style: TextStyle(fontSize: 12)),
                   ),
+                ),
+              ],
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    child.name,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      color: numuwTextColor(),
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                      height: 1.25,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    ArabicFormatters.age(child),
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(
+                      color: AppColors.mint,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_month_outlined,
+                        size: 13,
+                        color: numuwSecondaryTextColor(),
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          child.isBorn
+                              ? 'منذ ${ArabicFormatters.date(child.birthDate)}'
+                              : 'الموعد ${ArabicFormatters.date(child.dueDate)}',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            color: numuwSecondaryTextColor(),
+                            fontSize: 12,
+                            height: 1.35,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        SoftCard(
+          padding: const EdgeInsetsDirectional.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
+          radius: 16,
+          child: Row(
+            children: [
+              Expanded(
+                child: _ProfileStat(
+                  label: 'الرضاعة',
+                  value:
+                      '${ArabicFormatters.feedingType(child.feedingType)} 🌱',
+                  color: AppColors.mint,
+                ),
+              ),
+              _VerticalDivider(),
+              Expanded(
+                child: _ProfileStat(
+                  label: 'فصيلة الدم',
+                  value: child.bloodType?.isNotEmpty == true
+                      ? '${child.bloodType} 🩸'
+                      : 'غير محدد',
+                  color: AppColors.peach,
+                ),
+              ),
+              _VerticalDivider(),
+              Expanded(
+                child: _ProfileStat(
+                  label: 'وزن الولادة',
+                  value: child.birthWeightKg == null
+                      ? 'غير محدد'
+                      : '${child.birthWeightKg} كجم',
+                  color: AppColors.purple,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          _Line('الجنس', ArabicFormatters.gender(child.gender)),
-          _Line('الرضاعة', ArabicFormatters.feedingType(child.feedingType)),
-          _Line(
-            'فصيلة الدم',
-            child.bloodType?.isNotEmpty == true ? child.bloodType! : 'غير محدد',
-          ),
-          _Line(
-            'وزن الولادة',
-            child.birthWeightKg == null
-                ? 'غير محدد'
-                : '${child.birthWeightKg} كجم',
-          ),
-          _Line(
-            child.isBorn ? 'تاريخ الميلاد' : 'موعد الولادة المتوقع',
-            child.isBorn
-                ? ArabicFormatters.date(child.birthDate)
-                : ArabicFormatters.date(child.dueDate),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Line extends StatelessWidget {
-  const _Line(this.label, this.value);
-  final String label;
-  final String value;
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsetsDirectional.only(top: 8),
-    child: Row(
-      children: [
-        Expanded(
-          child: Text(
-            label,
-            textAlign: TextAlign.start,
-            style: const TextStyle(
-              color: AppColors.secondaryText,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Text(
-          value,
-          textAlign: TextAlign.start,
-          style: const TextStyle(fontWeight: FontWeight.w900),
         ),
       ],
     ),
   );
 }
 
-class _GrowthList extends StatelessWidget {
-  const _GrowthList(this.items);
+class _ProfileStat extends StatelessWidget {
+  const _ProfileStat({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  final String label;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    children: [
+      Text(
+        label,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: numuwSecondaryTextColor(),
+          fontSize: 11,
+          height: 1.3,
+        ),
+      ),
+      const SizedBox(height: 3),
+      Text(
+        value,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: color,
+          fontSize: 13,
+          fontWeight: FontWeight.w800,
+          height: 1.3,
+        ),
+      ),
+    ],
+  );
+}
+
+class _VerticalDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 1,
+    height: 34,
+    margin: const EdgeInsetsDirectional.symmetric(horizontal: 8),
+    color: numuwBorderColor(),
+  );
+}
+
+class _SectionCard extends StatelessWidget {
+  const _SectionCard({
+    required this.title,
+    required this.icon,
+    required this.children,
+    this.actionLabel,
+    this.onAction,
+  });
+
+  final String title;
+  final IconData icon;
+  final List<Widget> children;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+
+  @override
+  Widget build(BuildContext context) => SoftCard(
+    radius: 22,
+    padding: const EdgeInsetsDirectional.all(18),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, color: AppColors.mint, size: 16),
+            const SizedBox(width: 7),
+            Expanded(
+              child: Text(
+                title,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: numuwTextColor(),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            if (actionLabel != null)
+              TextButton(
+                onPressed: onAction,
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: const Size(0, 30),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(
+                  actionLabel!,
+                  style: const TextStyle(
+                    color: AppColors.mint,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 14),
+        ...children,
+      ],
+    ),
+  );
+}
+
+class _GrowthSection extends StatelessWidget {
+  const _GrowthSection({required this.items, required this.onAdd});
+
   final List<GrowthMeasurement> items;
+  final VoidCallback onAdd;
+
   @override
-  Widget build(BuildContext context) => SoftCard(
-    padding: EdgeInsets.zero,
-    child: Column(
-      children: items
-          .map(
-            (e) => ListTile(
-              contentPadding: const EdgeInsetsDirectional.fromSTEB(
-                15,
-                8,
-                15,
-                8,
-              ),
-              leading: const IconBadge(
-                icon: '📏',
-                background: AppColors.mintLight,
-                size: 36,
-              ),
-              title: Text(
-                ArabicFormatters.date(e.measuredAt),
-                textAlign: TextAlign.start,
-              ),
-              subtitle: Text(
-                'وزن ${e.weightKg ?? '-'} كجم · طول ${e.heightCm ?? '-'} سم · رأس ${e.headCircumferenceCm ?? '-'} سم',
-                textAlign: TextAlign.start,
-              ),
+  Widget build(BuildContext context) {
+    final latest = items.isEmpty ? null : items.first;
+    return _SectionCard(
+      title: 'النمو',
+      icon: Icons.trending_up_rounded,
+      actionLabel: 'إضافة قياس +',
+      onAction: onAdd,
+      children: [
+        Row(
+          children: [
+            _SmallTab(label: 'الطول', active: true),
+            const SizedBox(width: 8),
+            _SmallTab(label: 'الوزن', active: false),
+          ],
+        ),
+        const SizedBox(height: 14),
+        SizedBox(
+          height: 135,
+          width: double.infinity,
+          child: items.isEmpty
+              ? Center(
+                  child: Text(
+                    'لا توجد قياسات نمو بعد',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: numuwSecondaryTextColor(),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                )
+              : CustomPaint(
+                  painter: _GrowthChartPainter(items.take(5).toList()),
+                ),
+        ),
+        if (latest != null) ...[
+          const SizedBox(height: 8),
+          Text(
+            'آخر قياس: وزن ${latest.weightKg ?? '-'} كجم · طول ${latest.heightCm ?? '-'} سم · رأس ${latest.headCircumferenceCm ?? '-'} سم',
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              color: numuwSecondaryTextColor(),
+              fontSize: 12,
+              height: 1.45,
             ),
-          )
-          .toList(),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _SmallTab extends StatelessWidget {
+  const _SmallTab({required this.label, required this.active});
+
+  final String label;
+  final bool active;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    height: 32,
+    padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      color: active ? AppColors.mintLight : Colors.transparent,
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Text(
+      label,
+      style: TextStyle(
+        color: active ? AppColors.mint : numuwSecondaryTextColor(),
+        fontSize: 13,
+        fontWeight: active ? FontWeight.w800 : FontWeight.w600,
+      ),
     ),
   );
 }
 
-class _VaccinationList extends StatelessWidget {
-  const _VaccinationList({required this.items, required this.onStatus});
+class _GrowthChartPainter extends CustomPainter {
+  const _GrowthChartPainter(this.items);
+  final List<GrowthMeasurement> items;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final grid = Paint()
+      ..color = AppColors.border
+      ..strokeWidth = 1;
+    final dashed = Paint()
+      ..color = AppColors.border
+      ..strokeWidth = .7;
+    canvas.drawLine(
+      Offset(0, size.height * .80),
+      Offset(size.width, size.height * .80),
+      grid,
+    );
+    canvas.drawLine(
+      Offset(0, size.height * .52),
+      Offset(size.width, size.height * .52),
+      dashed,
+    );
+    canvas.drawLine(
+      Offset(0, size.height * .26),
+      Offset(size.width, size.height * .26),
+      dashed,
+    );
+
+    final values = items
+        .map((e) => e.heightCm ?? e.weightKg ?? e.headCircumferenceCm ?? 0)
+        .where((v) => v > 0)
+        .toList();
+    if (values.isEmpty) return;
+    final min = values.reduce((a, b) => a < b ? a : b);
+    final max = values.reduce((a, b) => a > b ? a : b);
+    final span = (max - min).abs() < .1 ? 1 : max - min;
+    final points = <Offset>[];
+    for (var i = 0; i < values.length; i++) {
+      final x = values.length == 1
+          ? size.width / 2
+          : (size.width * i / (values.length - 1));
+      final normalized = (values[i] - min) / span;
+      final y = size.height * .78 - normalized * size.height * .55;
+      points.add(Offset(x, y));
+    }
+    final path = Path()..moveTo(points.first.dx, points.first.dy);
+    for (final point in points.skip(1)) {
+      path.lineTo(point.dx, point.dy);
+    }
+    final area = Path.from(path)
+      ..lineTo(points.last.dx, size.height * .80)
+      ..lineTo(points.first.dx, size.height * .80)
+      ..close();
+    canvas.drawPath(
+      area,
+      Paint()..color = AppColors.mint.withValues(alpha: .14),
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = AppColors.mint
+        ..strokeWidth = 2.5
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round,
+    );
+    for (final point in points) {
+      canvas.drawCircle(point, 4, Paint()..color = AppColors.mint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _GrowthChartPainter oldDelegate) =>
+      oldDelegate.items != items;
+}
+
+class _VaccinationSection extends StatelessWidget {
+  const _VaccinationSection({
+    required this.items,
+    required this.onAdd,
+    required this.onStatus,
+  });
+
   final List<Vaccination> items;
+  final VoidCallback onAdd;
   final Future<void> Function(Vaccination, String) onStatus;
+
   @override
-  Widget build(BuildContext context) => SoftCard(
-    padding: EdgeInsets.zero,
-    child: Column(
-      children: items
-          .map(
-            (v) => ListTile(
-              contentPadding: const EdgeInsetsDirectional.fromSTEB(
-                15,
-                8,
-                15,
-                8,
-              ),
-              leading: const IconBadge(
-                icon: '💉',
-                background: AppColors.yellowLight,
-                size: 36,
-              ),
-              title: Text(
-                v.name,
-                textAlign: TextAlign.start,
-                style: const TextStyle(fontWeight: FontWeight.w800),
-              ),
-              subtitle: Text(
-                '${v.doseLabel ?? ''} · ${ArabicFormatters.date(v.scheduledDate)} · ${v.status}',
-                textAlign: TextAlign.start,
-              ),
-              trailing: PopupMenuButton<String>(
-                onSelected: (s) => onStatus(v, s),
-                itemBuilder: (_) => const [
-                  PopupMenuItem(value: 'completed', child: Text('مكتمل')),
-                  PopupMenuItem(value: 'skipped', child: Text('متروك')),
-                  PopupMenuItem(value: 'scheduled', child: Text('مجدول')),
-                ],
-              ),
-            ),
+  Widget build(BuildContext context) {
+    final completed = items.where((v) => v.status == 'completed').toList();
+    final upcoming = items.where((v) => v.status == 'scheduled').toList();
+    return _SectionCard(
+      title: 'التطعيمات',
+      icon: Icons.shield_outlined,
+      actionLabel: 'إضافة +',
+      onAction: onAdd,
+      children: [
+        if (items.isEmpty)
+          Text(
+            'أضيفي مواعيد التطعيم حسب تعليمات الجهة الصحية أو الطبيب.',
+            textAlign: TextAlign.start,
+            style: TextStyle(color: numuwSecondaryTextColor(), height: 1.6),
           )
-          .toList(),
+        else ...[
+          _VaccinationMini(
+            label: 'آخر تطعيم',
+            vaccination: completed.isEmpty ? null : completed.first,
+            fallback: 'لم يتم تسجيل تطعيم مكتمل',
+          ),
+          const SizedBox(height: 10),
+          _VaccinationMini(
+            label: 'التطعيم القادم',
+            vaccination: upcoming.isEmpty ? null : upcoming.first,
+            fallback: 'لم يتم تحديد تطعيم قادم',
+            onStatus: onStatus,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _VaccinationMini extends StatelessWidget {
+  const _VaccinationMini({
+    required this.label,
+    required this.vaccination,
+    required this.fallback,
+    this.onStatus,
+  });
+
+  final String label;
+  final Vaccination? vaccination;
+  final String fallback;
+  final Future<void> Function(Vaccination, String)? onStatus;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsetsDirectional.all(12),
+    decoration: BoxDecoration(
+      color: AppColors.neutralSoft,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: numuwBorderColor()),
+    ),
+    child: Row(
+      children: [
+        const IconBadge(
+          icon: '💉',
+          background: AppColors.yellowLight,
+          size: 38,
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: numuwSecondaryTextColor(),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                vaccination == null
+                    ? fallback
+                    : '${vaccination!.name} · ${ArabicFormatters.date(vaccination!.scheduledDate)}',
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: numuwTextColor(),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                  height: 1.4,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (vaccination != null && onStatus != null)
+          PopupMenuButton<String>(
+            onSelected: (status) => onStatus!(vaccination!, status),
+            itemBuilder: (_) => const [
+              PopupMenuItem(value: 'completed', child: Text('مكتمل')),
+              PopupMenuItem(value: 'skipped', child: Text('مؤجل')),
+              PopupMenuItem(value: 'scheduled', child: Text('مجدول')),
+            ],
+          ),
+      ],
     ),
   );
 }
 
-class _TaskList extends StatelessWidget {
-  const _TaskList({required this.items, required this.onChanged});
+class _FamilyTasksSection extends StatelessWidget {
+  const _FamilyTasksSection({
+    required this.items,
+    required this.onAdd,
+    required this.onChanged,
+  });
+
   final List<FamilyTask> items;
+  final VoidCallback onAdd;
   final Future<void> Function(FamilyTask, bool) onChanged;
+
   @override
-  Widget build(BuildContext context) => SoftCard(
-    padding: EdgeInsets.zero,
-    child: Column(
-      children: items
-          .map(
-            (t) => CheckboxListTile(
-              contentPadding: const EdgeInsetsDirectional.fromSTEB(
-                15,
-                0,
-                15,
-                0,
-              ),
-              value: t.isCompleted,
-              onChanged: (v) => onChanged(t, v ?? false),
-              title: Text(t.title, textAlign: TextAlign.start),
-              subtitle: Text(
-                t.category ?? 'بدون تصنيف',
-                textAlign: TextAlign.start,
-              ),
+  Widget build(BuildContext context) => _SectionCard(
+    title: 'مهام العائلة',
+    icon: Icons.assignment_rounded,
+    actionLabel: 'إضافة +',
+    onAction: onAdd,
+    children: items.isEmpty
+        ? [
+            Text(
+              'لا توجد مهام عائلية بعد.',
+              textAlign: TextAlign.start,
+              style: TextStyle(color: numuwSecondaryTextColor()),
             ),
-          )
-          .toList(),
-    ),
+          ]
+        : items
+              .map(
+                (task) => CheckboxListTile(
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  value: task.isCompleted,
+                  onChanged: (value) => onChanged(task, value ?? false),
+                  title: Text(
+                    task.title,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      color: numuwTextColor(),
+                      fontSize: 14,
+                      decoration: task.isCompleted
+                          ? TextDecoration.lineThrough
+                          : null,
+                    ),
+                  ),
+                  subtitle: task.category == null
+                      ? null
+                      : Text(task.category!, textAlign: TextAlign.start),
+                ),
+              )
+              .toList(),
   );
 }
 
-class _QuestionList extends StatelessWidget {
-  const _QuestionList({required this.items, required this.onAnswered});
+class _DoctorQuestionsSection extends StatelessWidget {
+  const _DoctorQuestionsSection({
+    required this.items,
+    required this.onAdd,
+    required this.onAnswered,
+  });
+
   final List<DoctorQuestion> items;
+  final VoidCallback onAdd;
   final Future<void> Function(DoctorQuestion, bool) onAnswered;
+
   @override
-  Widget build(BuildContext context) => SoftCard(
-    padding: EdgeInsets.zero,
-    child: Column(
-      children: items
-          .map(
-            (q) => CheckboxListTile(
-              contentPadding: const EdgeInsetsDirectional.fromSTEB(
-                15,
-                0,
-                15,
-                0,
-              ),
-              value: q.isAnswered,
-              onChanged: (v) => onAnswered(q, v ?? false),
-              title: Text(q.question, textAlign: TextAlign.start),
-              subtitle: Text(
-                q.isAnswered ? 'تمت الإجابة' : 'بانتظار الطبيب',
-                textAlign: TextAlign.start,
-              ),
+  Widget build(BuildContext context) => _SectionCard(
+    title: 'أسئلة الطبيب',
+    icon: Icons.help_outline_rounded,
+    actionLabel: 'إضافة +',
+    onAction: onAdd,
+    children: items.isEmpty
+        ? [
+            Text(
+              'لا توجد أسئلة للطبيب بعد.',
+              textAlign: TextAlign.start,
+              style: TextStyle(color: numuwSecondaryTextColor()),
             ),
-          )
-          .toList(),
-    ),
+          ]
+        : items
+              .map(
+                (question) => Container(
+                  margin: const EdgeInsetsDirectional.only(bottom: 10),
+                  padding: const EdgeInsetsDirectional.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.blueLight,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: CheckboxListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    value: question.isAnswered,
+                    onChanged: (value) => onAnswered(question, value ?? false),
+                    title: Text(
+                      question.question,
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    subtitle: Text(
+                      question.isAnswered ? 'تمت الإجابة' : 'معلّق',
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
   );
 }
 
@@ -600,6 +992,77 @@ class _DialogField extends StatelessWidget {
       textDirection: keyboardType == null
           ? TextDirection.rtl
           : TextDirection.ltr,
+    ),
+  );
+}
+
+class _DialogDateField extends StatelessWidget {
+  const _DialogDateField(this.controller, this.label, {this.optional = false});
+
+  final TextEditingController controller;
+  final String label;
+  final bool optional;
+
+  Future<void> _pick(BuildContext context) async {
+    final current = DateTime.tryParse(controller.text.trim()) ?? DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: current,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+      locale: const Locale('ar'),
+    );
+    if (picked == null) return;
+    controller.text =
+        '${picked.year.toString().padLeft(4, '0')}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
+  }
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsetsDirectional.only(bottom: 10),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          optional ? '$label اختياري' : label,
+          textAlign: TextAlign.start,
+          style: TextStyle(
+            color: numuwTextColor(),
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 7),
+        TextField(
+          controller: controller,
+          readOnly: true,
+          onTap: () => _pick(context),
+          textDirection: TextDirection.ltr,
+          textAlign: TextAlign.start,
+          decoration: InputDecoration(
+            hintText: optional ? 'اختياري' : null,
+            suffixIcon: const Icon(Icons.calendar_month_outlined),
+            filled: true,
+            fillColor: numuwSurfaceColor(),
+            contentPadding: const EdgeInsetsDirectional.symmetric(
+              horizontal: 16,
+              vertical: 15,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: numuwBorderColor(), width: 1.5),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: numuwBorderColor(), width: 1.5),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: numuwAccentColor(), width: 1.8),
+            ),
+          ),
+        ),
+      ],
     ),
   );
 }

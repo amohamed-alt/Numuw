@@ -18,4 +18,27 @@ class DashboardSummary {
   final Vaccination? nextVaccination;
   final List<FamilyTask> incompleteTasks;
   final List<CareEvent> recentEvents;
+
+  DashboardSummary copyWith({
+    Duration? sleepToday,
+    CareEvent? latestFeeding,
+    bool clearLatestFeeding = false,
+    CareEvent? latestDiaper,
+    bool clearLatestDiaper = false,
+    Vaccination? nextVaccination,
+    bool clearNextVaccination = false,
+    List<FamilyTask>? incompleteTasks,
+    List<CareEvent>? recentEvents,
+  }) => DashboardSummary(
+    sleepToday: sleepToday ?? this.sleepToday,
+    latestFeeding: clearLatestFeeding
+        ? null
+        : latestFeeding ?? this.latestFeeding,
+    latestDiaper: clearLatestDiaper ? null : latestDiaper ?? this.latestDiaper,
+    nextVaccination: clearNextVaccination
+        ? null
+        : nextVaccination ?? this.nextVaccination,
+    incompleteTasks: incompleteTasks ?? this.incompleteTasks,
+    recentEvents: recentEvents ?? this.recentEvents,
+  );
 }

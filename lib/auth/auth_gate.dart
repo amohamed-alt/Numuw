@@ -6,9 +6,13 @@ import '../core/errors/app_error.dart';
 import '../models/child_profile.dart';
 import '../repositories/child_repository.dart';
 import '../screens/auth/sign_in_screen.dart';
+import '../screens/auth/sign_up_screen.dart';
 import '../screens/main_shell.dart';
 import '../screens/onboarding/child_onboarding_screen.dart';
+import '../screens/splash_screen.dart';
+import '../screens/welcome_screen.dart';
 import '../services/auth_service.dart';
+import '../state/app_preferences.dart';
 import '../state/child_session.dart';
 import '../widgets/app_widgets.dart';
 
@@ -29,22 +33,46 @@ class AuthGate extends StatefulWidget {
 }
 
 class _AuthGateState extends State<AuthGate> {
+  Future<void>? _bootFuture;
   Future<List<ChildProfile>>? _childrenFuture;
   String? _loadedUserId;
+  String _authScreen = 'auto';
+  String? _pendingEmail;
 
   AuthService get _auth => widget.authService ?? AuthService();
   ChildRepository get _children => widget.childRepository ?? ChildRepository();
 
   @override
-  Widget build(BuildContext context) {
-    if (widget.startupError != null) {
-      return _StateScreen(
-        title: 'إعدادات مطلوبة',
-        message: widget.startupError!,
-        icon: Icons.settings_outlined,
-      );
-    }
+  void initState() {
+    super.initState();
+    _bootFuture = _boot();
+  }
 
+  Future<void> _boot() async {
+    await Future<void>.delayed(const Duration(milliseconds: 1500));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<void>(
+      future: _bootFuture,
+      builder: (context, bootSnapshot) {
+        if (bootSnapshot.connectionState != ConnectionState.done) {
+          return const SplashScreen();
+        }
+        if (widget.startupError != null) {
+          return _StateScreen(
+            title: 'إعدادات مطلوبة',
+            message: widget.startupError!,
+            icon: Icons.settings_outlined,
+          );
+        }
+        return _authBuilder();
+      },
+    );
+  }
+
+  Widget _authBuilder() {
     return StreamBuilder<AuthState>(
       stream: _auth.authStateChanges,
       initialData: AuthState(
@@ -61,15 +89,10 @@ class _AuthGateState extends State<AuthGate> {
           );
         }
         final session = snapshot.data?.session ?? _auth.currentSession;
-        if (session == null) {
-          ChildSession.instance.clear();
-          _loadedUserId = null;
-          _childrenFuture = null;
-          return const SignInScreen();
-        }
+        if (session == null) return _signedOutFlow();
         if (session.user.emailConfirmedAt == null &&
             session.user.email != null) {
-          return _EmailConfirmationScreen(
+          return EmailConfirmationScreen(
             email: session.user.email!,
             onSignOut: _auth.signOut,
           );
@@ -97,15 +120,49 @@ class _AuthGateState extends State<AuthGate> {
             final loaded = childSnapshot.data ?? const <ChildProfile>[];
             ChildSession.instance.setChildren(loaded);
             if (loaded.isEmpty) {
-              return ChildOnboardingScreen(
-                onSaved: () async {
-                  await _reloadChildrenAsync();
-                },
-              );
+              return ChildOnboardingScreen(onSaved: _reloadChildrenAsync);
             }
             return const MainShell();
           },
         );
+      },
+    );
+  }
+
+  Widget _signedOutFlow() {
+    ChildSession.instance.clear();
+    _loadedUserId = null;
+    _childrenFuture = null;
+    if (_authScreen == 'confirm' && _pendingEmail != null) {
+      return EmailConfirmationScreen(
+        email: _pendingEmail!,
+        onSignOut: () async => setState(() => _authScreen = 'signin'),
+      );
+    }
+    if (_authScreen == 'signup') {
+      return SignUpScreen(
+        onBack: () => setState(() => _authScreen = 'welcome'),
+        onSignIn: () => setState(() => _authScreen = 'signin'),
+        onConfirmationRequired: (email) => setState(() {
+          _pendingEmail = email;
+          _authScreen = 'confirm';
+        }),
+      );
+    }
+    if (_authScreen == 'signin' || AppPreferences.instance.hasSeenWelcome) {
+      return SignInScreen(
+        onBack: () => setState(() => _authScreen = 'welcome'),
+        onSignUp: () => setState(() => _authScreen = 'signup'),
+      );
+    }
+    return WelcomeScreen(
+      onSignIn: () async {
+        await AppPreferences.instance.setHasSeenWelcome(true);
+        if (mounted) setState(() => _authScreen = 'signin');
+      },
+      onSignUp: () async {
+        await AppPreferences.instance.setHasSeenWelcome(true);
+        if (mounted) setState(() => _authScreen = 'signup');
       },
     );
   }
@@ -127,8 +184,9 @@ class _AuthGateState extends State<AuthGate> {
   }
 }
 
-class _EmailConfirmationScreen extends StatelessWidget {
-  const _EmailConfirmationScreen({
+class EmailConfirmationScreen extends StatelessWidget {
+  const EmailConfirmationScreen({
+    super.key,
     required this.email,
     required this.onSignOut,
   });
@@ -140,41 +198,45 @@ class _EmailConfirmationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: AppPage(
+        padding: const EdgeInsetsDirectional.fromSTEB(32, 32, 32, 32),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const AppHeader(
-              title: 'تأكيد البريد الإلكتروني',
-              subtitle: 'تبقت خطوة واحدة قبل البدء',
-              showNotification: false,
+            const IconBadge(
+              icon: '📧',
+              background: AppColors.mintLight,
+              size: 96,
             ),
-            const SizedBox(height: 28),
-            SoftCard(
-              padding: const EdgeInsetsDirectional.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const IconBadge(
-                    icon: '📧',
-                    background: AppColors.mintLight,
-                    size: 96,
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'أرسلنا رسالة تأكيد إلى $email. افتحي الرابط من بريدك ثم سجّلي الدخول من جديد.',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: AppColors.secondaryText,
-                      height: 1.7,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 22),
-                  PrimaryButton(
-                    label: 'العودة إلى تسجيل الدخول',
-                    onPressed: () => onSignOut(),
-                  ),
-                ],
+            const SizedBox(height: 24),
+            Text(
+              'تأكيد البريد الإلكتروني',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: numuwTextColor(),
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
               ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'أرسلنا رابط التأكيد إلى $email. تفضّلي بالتحقق منه ثم عودي للمتابعة.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: numuwSecondaryTextColor(),
+                fontSize: 15,
+                height: 1.7,
+              ),
+            ),
+            const SizedBox(height: 32),
+            PrimaryButton(
+              label: 'العودة إلى تسجيل الدخول',
+              onPressed: () => onSignOut(),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'لم يصلكِ البريد؟ يمكنك طلب رابط جديد من شاشة تسجيل الدخول.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: numuwSecondaryTextColor(), fontSize: 14),
             ),
           ],
         ),
@@ -214,12 +276,13 @@ class _StateScreen extends StatelessWidget {
                   if (loading)
                     const CircularProgressIndicator()
                   else
-                    Icon(icon, color: AppColors.mint, size: 46),
+                    Icon(icon, color: numuwAccentColor(), size: 46),
                   const SizedBox(height: 16),
                   Text(
                     message,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
+                      color: numuwTextColor(),
                       fontWeight: FontWeight.w800,
                       height: 1.6,
                     ),

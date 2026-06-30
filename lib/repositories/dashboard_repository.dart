@@ -22,16 +22,16 @@ class DashboardRepository {
     final start = DateTime(now.year, now.month, now.day);
     final end = start.add(const Duration(days: 1));
     final results = await Future.wait([
-      _careEvents.fetchBetween(childId, start, end),
+      _careEvents.fetchSleepOverlappingDay(childId, start, end),
       _careEvents.latestByType(childId, 'feeding'),
       _careEvents.latestByType(childId, 'diaper'),
       _vaccinations.nextScheduled(childId),
       _tasks.incomplete(childId),
       _careEvents.fetchRecent(childId, limit: 8),
     ]);
-    final todayEvents = results[0] as List<CareEvent>;
+    final sleepEvents = results[0] as List<CareEvent>;
     return DashboardSummary(
-      sleepToday: calculateSleepToday(todayEvents, start, end, now),
+      sleepToday: calculateSleepToday(sleepEvents, start, end, now),
       latestFeeding: results[1] as CareEvent?,
       latestDiaper: results[2] as CareEvent?,
       nextVaccination: results[3] as dynamic,

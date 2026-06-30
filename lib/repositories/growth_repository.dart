@@ -49,4 +49,32 @@ class GrowthRepository {
         .single();
     return GrowthMeasurement.fromMap(Map<String, dynamic>.from(row));
   }
+
+  Future<void> delete(String id) async =>
+      _client.from('growth_measurements').delete().eq('id', id);
+
+  Future<GrowthMeasurement> update({
+    required String id,
+    required DateTime measuredAt,
+    double? weightKg,
+    double? heightCm,
+    double? headCm,
+    String? source,
+    String? notes,
+  }) async {
+    final row = await _client
+        .from('growth_measurements')
+        .update({
+          'measured_at': measuredAt.toUtc().toIso8601String(),
+          'weight_kg': weightKg,
+          'height_cm': heightCm,
+          'head_circumference_cm': headCm,
+          'source': blankToNull(source),
+          'notes': blankToNull(notes),
+        })
+        .eq('id', id)
+        .select(columns)
+        .single();
+    return GrowthMeasurement.fromMap(Map<String, dynamic>.from(row));
+  }
 }
