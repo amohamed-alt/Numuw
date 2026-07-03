@@ -9,7 +9,6 @@ import '../screens/auth/sign_in_screen.dart';
 import '../screens/auth/sign_up_screen.dart';
 import '../screens/main_shell.dart';
 import '../screens/onboarding/child_onboarding_screen.dart';
-import '../screens/splash_screen.dart';
 import '../screens/welcome_screen.dart';
 import '../services/auth_service.dart';
 import '../state/app_preferences.dart';
@@ -33,7 +32,6 @@ class AuthGate extends StatefulWidget {
 }
 
 class _AuthGateState extends State<AuthGate> {
-  Future<void>? _bootFuture;
   Future<List<ChildProfile>>? _childrenFuture;
   String? _loadedUserId;
   String _authScreen = 'auto';
@@ -43,33 +41,16 @@ class _AuthGateState extends State<AuthGate> {
   ChildRepository get _children => widget.childRepository ?? ChildRepository();
 
   @override
-  void initState() {
-    super.initState();
-    _bootFuture = _boot();
-  }
-
-  Future<void> _boot() async {
-    await Future<void>.delayed(const Duration(milliseconds: 1500));
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<void>(
-      future: _bootFuture,
-      builder: (context, bootSnapshot) {
-        if (bootSnapshot.connectionState != ConnectionState.done) {
-          return const SplashScreen();
-        }
-        if (widget.startupError != null) {
-          return _StateScreen(
-            title: 'إعدادات مطلوبة',
-            message: widget.startupError!,
-            icon: Icons.settings_outlined,
-          );
-        }
-        return _authBuilder();
-      },
-    );
+    if (widget.startupError != null) {
+      return _StateScreen(
+        title: 'إعدادات مطلوبة',
+        message: widget.startupError!,
+        icon: Icons.settings_outlined,
+        onRetry: () => setState(() {}),
+      );
+    }
+    return _authBuilder();
   }
 
   Widget _authBuilder() {

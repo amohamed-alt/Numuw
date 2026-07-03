@@ -207,43 +207,49 @@ class AppIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(radius),
-      onTap: onPressed,
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: numuwSurfaceColor(),
-          borderRadius: BorderRadius.circular(radius),
-          border: Border.all(color: numuwBorderColor(), width: borderWidth),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x0F000000),
-              blurRadius: 8,
-              offset: Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Stack(
-          children: [
-            Center(
-              child: Icon(icon, color: numuwTextColor(), size: iconSize),
-            ),
-            if (badge)
-              PositionedDirectional(
-                top: 8,
-                end: 9,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: AppColors.peach,
-                    shape: BoxShape.circle,
+    final borderRadius = BorderRadius.circular(radius);
+    return Material(
+      color: Colors.transparent,
+      borderRadius: borderRadius,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        borderRadius: borderRadius,
+        onTap: onPressed,
+        child: Ink(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            color: numuwSurfaceColor(),
+            borderRadius: borderRadius,
+            border: Border.all(color: numuwBorderColor(), width: borderWidth),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x0F000000),
+                blurRadius: 8,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Stack(
+            children: [
+              Center(
+                child: Icon(icon, color: numuwTextColor(), size: iconSize),
+              ),
+              if (badge)
+                PositionedDirectional(
+                  top: 8,
+                  end: 9,
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: AppColors.peach,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -270,12 +276,13 @@ class SoftCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final card = Container(
+    final borderRadius = BorderRadius.circular(radius);
+    final card = Ink(
       width: double.infinity,
       padding: padding,
       decoration: BoxDecoration(
         color: color ?? numuwSurfaceColor(),
-        borderRadius: BorderRadius.circular(radius),
+        borderRadius: borderRadius,
         border: Border.all(color: borderColor ?? numuwBorderColor()),
         boxShadow: numuwNightMode()
             ? const []
@@ -289,11 +296,13 @@ class SoftCard extends StatelessWidget {
       ),
       child: child,
     );
-    if (onTap == null) return card;
-    return InkWell(
-      borderRadius: BorderRadius.circular(radius),
-      onTap: onTap,
-      child: card,
+    return Material(
+      color: Colors.transparent,
+      borderRadius: borderRadius,
+      clipBehavior: Clip.antiAlias,
+      child: onTap == null
+          ? card
+          : InkWell(borderRadius: borderRadius, onTap: onTap, child: card),
     );
   }
 }

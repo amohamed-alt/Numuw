@@ -76,6 +76,7 @@ class ArabicFormatters {
 
   static String eventType(String value) => switch (value) {
     'feeding' => 'رضاعة',
+    'pumping' => 'شفط',
     'sleep' => 'نوم',
     'diaper' => 'حفاضة',
     'food' => 'طعام',

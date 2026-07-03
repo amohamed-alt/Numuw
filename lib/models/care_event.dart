@@ -90,4 +90,48 @@ class CareEvent {
     'created_at': createdAt?.toUtc().toIso8601String(),
     'updated_at': updatedAt?.toUtc().toIso8601String(),
   };
+
+  bool get isPumping {
+    if (eventType == 'pumping') return true;
+    if (eventType != 'feeding') return false;
+    if ((amountMl ?? 0) <= 0) return false;
+    final methods = metadata?['feeding_methods'];
+    if (methods is List) {
+      return methods.any((item) => item.toString() == 'pumping');
+    }
+    return false;
+  }
+
+  double? get pumpedAmountMl {
+    if (!isPumping) return null;
+    final value = amountMl;
+    return value != null && value > 0 ? value : null;
+  }
+
+  double? get leftPumpedAmountMl =>
+      _metadataDouble('left_amount_ml') ?? _metadataDouble('left_pumped_ml');
+
+  double? get rightPumpedAmountMl =>
+      _metadataDouble('right_amount_ml') ?? _metadataDouble('right_pumped_ml');
+
+  bool get hasSplitPumpingQuantity =>
+      metadata?['quantity_mode'] == 'split' ||
+      leftPumpedAmountMl != null ||
+      rightPumpedAmountMl != null;
+
+  Duration? get duration {
+    final end = endedAt;
+    if (end == null) return null;
+    final value = end.difference(startedAt);
+    return value.isNegative ? null : value;
+  }
+
+  double? _metadataDouble(String key) {
+    final value = metadata?[key];
+    if (value == null) return null;
+    if (value is num) return value.toDouble();
+    if (value is String)
+      return double.tryParse(value.trim().replaceAll(',', '.'));
+    return null;
+  }
 }

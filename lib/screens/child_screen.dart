@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 import '../core/app_colors.dart';
 import '../core/errors/app_error.dart';
 import '../core/formatters/arabic_formatters.dart';
 import '../models/child_profile.dart';
+import '../models/child_guardian.dart';
 import '../models/doctor_question.dart';
 import '../models/family_task.dart';
 import '../models/growth_measurement.dart';
@@ -11,6 +13,7 @@ import '../models/vaccination.dart';
 import '../repositories/child_repository.dart';
 import '../repositories/doctor_question_repository.dart';
 import '../repositories/family_task_repository.dart';
+import '../repositories/family_sharing_repository.dart';
 import '../repositories/growth_repository.dart';
 import '../repositories/vaccination_repository.dart';
 import '../state/app_events.dart';
@@ -18,7 +21,9 @@ import '../state/child_session.dart';
 import '../widgets/app_widgets.dart';
 
 class ChildScreen extends StatefulWidget {
-  const ChildScreen({super.key});
+  const ChildScreen({super.key, this.initialSection});
+
+  final String? initialSection;
 
   @override
   State<ChildScreen> createState() => _ChildScreenState();
@@ -28,26 +33,76 @@ class _ChildScreenState extends State<ChildScreen> {
   final _growthRepo = GrowthRepository();
   final _vaccRepo = VaccinationRepository();
   final _taskRepo = FamilyTaskRepository();
+  final _familyRepo = FamilySharingRepository();
   final _questionRepo = DoctorQuestionRepository();
   Future<_ChildData>? _future;
+  int _requestId = 0;
+  final _vaccinationKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
     _load();
+    ChildSession.instance.addListener(_onChildChanged);
+    AppEvents.instance.addListener(_onExternalChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToInitial());
+  }
+
+  @override
+  void didUpdateWidget(covariant ChildScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialSection != widget.initialSection) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToInitial());
+    }
+  }
+
+  @override
+  void dispose() {
+    ChildSession.instance.removeListener(_onChildChanged);
+    AppEvents.instance.removeListener(_onExternalChanged);
+    super.dispose();
   }
 
   void _load() {
     final child = ChildSession.instance.selectedChild;
     if (child != null) {
-      _future = _ChildData.load(
-        child.id,
-        _growthRepo,
-        _vaccRepo,
-        _taskRepo,
-        _questionRepo,
-      );
+      final request = ++_requestId;
+      _future =
+          _ChildData.load(
+            child.id,
+            _growthRepo,
+            _vaccRepo,
+            _taskRepo,
+            _familyRepo,
+            _questionRepo,
+          ).then((data) {
+            if (request != _requestId ||
+                ChildSession.instance.selectedChild?.id != child.id) {
+              return const _ChildData([], [], [], [], []);
+            }
+            return data;
+          });
     }
+  }
+
+  void _onChildChanged() {
+    if (mounted) setState(_load);
+  }
+
+  void _onExternalChanged() {
+    if (mounted) setState(_load);
+  }
+
+  void _scrollToInitial() {
+    if (!mounted || widget.initialSection != 'vaccinations') return;
+    final context = _vaccinationKey.currentContext;
+    if (context == null) return;
+    Scrollable.ensureVisible(
+      context,
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeOutCubic,
+      alignment: .08,
+    );
   }
 
   Future<void> _refresh() async {
@@ -90,6 +145,7 @@ class _ChildScreenState extends State<ChildScreen> {
                       _GrowthSection(items: data.growth, onAdd: _addGrowth),
                       const SizedBox(height: 14),
                       _VaccinationSection(
+                        key: _vaccinationKey,
                         items: data.vaccinations,
                         onAdd: _addVaccination,
                         onStatus: (v, s) async {
@@ -101,6 +157,7 @@ class _ChildScreenState extends State<ChildScreen> {
                       const SizedBox(height: 14),
                       _FamilyTasksSection(
                         items: data.tasks,
+                        guardians: data.guardians,
                         onAdd: _addTask,
                         onChanged: (t, done) async {
                           await _taskRepo.setCompleted(t.id, done);
@@ -211,18 +268,27 @@ class _ChildScreenState extends State<ChildScreen> {
     final t = TextEditingController();
     final cat = TextEditingController();
     final due = TextEditingController();
+    final child = ChildSession.instance.selectedChild!;
+    final guardians = await _familyRepo.fetchGuardians(child.id);
+    String? assignedTo;
     if (await _showForm('إضافة مهمة', [
               _DialogField(t, 'عنوان المهمة'),
               _DialogField(cat, 'التصنيف'),
               _DialogDateField(due, 'تاريخ الاستحقاق', optional: true),
+              if (guardians.isNotEmpty)
+                _GuardianPicker(
+                  guardians: guardians,
+                  onChanged: (value) => assignedTo = value,
+                ),
             ]) ==
             true &&
         t.text.trim().isNotEmpty) {
       await _taskRepo.add(
-        childId: ChildSession.instance.selectedChild!.id,
+        childId: child.id,
         title: t.text,
         category: cat.text,
         dueAt: _date(due.text),
+        assignedTo: assignedTo,
       );
       AppEvents.instance.tasksChanged();
       await _refresh();
@@ -274,11 +340,18 @@ class _ChildScreenState extends State<ChildScreen> {
 }
 
 class _ChildData {
-  const _ChildData(this.growth, this.vaccinations, this.tasks, this.questions);
+  const _ChildData(
+    this.growth,
+    this.vaccinations,
+    this.tasks,
+    this.guardians,
+    this.questions,
+  );
 
   final List<GrowthMeasurement> growth;
   final List<Vaccination> vaccinations;
   final List<FamilyTask> tasks;
+  final List<ChildGuardian> guardians;
   final List<DoctorQuestion> questions;
 
   static Future<_ChildData> load(
@@ -286,19 +359,22 @@ class _ChildData {
     GrowthRepository g,
     VaccinationRepository v,
     FamilyTaskRepository t,
+    FamilySharingRepository f,
     DoctorQuestionRepository q,
   ) async {
     final r = await Future.wait([
       g.fetch(id),
       v.fetch(id),
       t.fetch(id),
+      f.fetchGuardians(id),
       q.fetch(id),
     ]);
     return _ChildData(
       r[0] as List<GrowthMeasurement>,
       r[1] as List<Vaccination>,
       r[2] as List<FamilyTask>,
-      r[3] as List<DoctorQuestion>,
+      r[3] as List<ChildGuardian>,
+      r[4] as List<DoctorQuestion>,
     );
   }
 }
@@ -597,7 +673,9 @@ class _GrowthSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final latest = items.isEmpty ? null : items.first;
+    final sorted = [...items]
+      ..sort((a, b) => a.measuredAt.compareTo(b.measuredAt));
+    final latest = sorted.isEmpty ? null : sorted.last;
     return _SectionCard(
       title: 'النمو',
       icon: Icons.trending_up_rounded,
@@ -606,16 +684,18 @@ class _GrowthSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            _SmallTab(label: 'الطول', active: true),
+            _GrowthLegend(label: 'الوزن', color: AppColors.mint),
             const SizedBox(width: 8),
-            _SmallTab(label: 'الوزن', active: false),
+            _GrowthLegend(label: 'الطول', color: AppColors.blue),
+            const SizedBox(width: 8),
+            _GrowthLegend(label: 'محيط الرأس', color: AppColors.purple),
           ],
         ),
         const SizedBox(height: 14),
         SizedBox(
-          height: 135,
+          height: 180,
           width: double.infinity,
-          child: items.isEmpty
+          child: sorted.isEmpty
               ? Center(
                   child: Text(
                     'لا توجد قياسات نمو بعد',
@@ -627,9 +707,7 @@ class _GrowthSection extends StatelessWidget {
                     ),
                   ),
                 )
-              : CustomPaint(
-                  painter: _GrowthChartPainter(items.take(5).toList()),
-                ),
+              : _GrowthLineChart(items: sorted),
         ),
         if (latest != null) ...[
           const SizedBox(height: 8),
@@ -643,16 +721,22 @@ class _GrowthSection extends StatelessWidget {
             ),
           ),
         ],
+        const SizedBox(height: 10),
+        InfoBanner(
+          message:
+              'منحنى النمو يساعدك على متابعة القياسات المسجلة فقط، ولا يمثل تقييمًا طبيًا أو تشخيصًا.',
+          icon: Icons.info_outline_rounded,
+        ),
       ],
     );
   }
 }
 
-class _SmallTab extends StatelessWidget {
-  const _SmallTab({required this.label, required this.active});
+class _GrowthLegend extends StatelessWidget {
+  const _GrowthLegend({required this.label, required this.color});
 
   final String label;
-  final bool active;
+  final Color color;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -660,97 +744,158 @@ class _SmallTab extends StatelessWidget {
     padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
     alignment: Alignment.center,
     decoration: BoxDecoration(
-      color: active ? AppColors.mintLight : Colors.transparent,
+      color: color.withValues(alpha: .12),
       borderRadius: BorderRadius.circular(20),
     ),
-    child: Text(
-      label,
-      style: TextStyle(
-        color: active ? AppColors.mint : numuwSecondaryTextColor(),
-        fontSize: 13,
-        fontWeight: active ? FontWeight.w800 : FontWeight.w600,
-      ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: TextStyle(
+            color: numuwTextColor(),
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ],
     ),
   );
 }
 
-class _GrowthChartPainter extends CustomPainter {
-  const _GrowthChartPainter(this.items);
+class _GrowthLineChart extends StatelessWidget {
+  const _GrowthLineChart({required this.items});
+
   final List<GrowthMeasurement> items;
 
   @override
-  void paint(Canvas canvas, Size size) {
-    final grid = Paint()
-      ..color = AppColors.border
-      ..strokeWidth = 1;
-    final dashed = Paint()
-      ..color = AppColors.border
-      ..strokeWidth = .7;
-    canvas.drawLine(
-      Offset(0, size.height * .80),
-      Offset(size.width, size.height * .80),
-      grid,
-    );
-    canvas.drawLine(
-      Offset(0, size.height * .52),
-      Offset(size.width, size.height * .52),
-      dashed,
-    );
-    canvas.drawLine(
-      Offset(0, size.height * .26),
-      Offset(size.width, size.height * .26),
-      dashed,
-    );
+  Widget build(BuildContext context) {
+    final lines = [
+      _lineData(
+        color: AppColors.mint,
+        values: [for (final item in items) item.weightKg],
+      ),
+      _lineData(
+        color: AppColors.blue,
+        values: [for (final item in items) item.heightCm],
+      ),
+      _lineData(
+        color: AppColors.purple,
+        values: [for (final item in items) item.headCircumferenceCm],
+      ),
+    ].where((line) => line.spots.isNotEmpty).toList();
+    final values = lines.expand((line) => line.spots.map((spot) => spot.y));
+    final minY = values.isEmpty ? 0.0 : values.reduce((a, b) => a < b ? a : b);
+    final maxY = values.isEmpty ? 1.0 : values.reduce((a, b) => a > b ? a : b);
+    final padding = ((maxY - minY).abs() < .1 ? 1.0 : (maxY - minY) * .12);
 
-    final values = items
-        .map((e) => e.heightCm ?? e.weightKg ?? e.headCircumferenceCm ?? 0)
-        .where((v) => v > 0)
-        .toList();
-    if (values.isEmpty) return;
-    final min = values.reduce((a, b) => a < b ? a : b);
-    final max = values.reduce((a, b) => a > b ? a : b);
-    final span = (max - min).abs() < .1 ? 1 : max - min;
-    final points = <Offset>[];
-    for (var i = 0; i < values.length; i++) {
-      final x = values.length == 1
-          ? size.width / 2
-          : (size.width * i / (values.length - 1));
-      final normalized = (values[i] - min) / span;
-      final y = size.height * .78 - normalized * size.height * .55;
-      points.add(Offset(x, y));
-    }
-    final path = Path()..moveTo(points.first.dx, points.first.dy);
-    for (final point in points.skip(1)) {
-      path.lineTo(point.dx, point.dy);
-    }
-    final area = Path.from(path)
-      ..lineTo(points.last.dx, size.height * .80)
-      ..lineTo(points.first.dx, size.height * .80)
-      ..close();
-    canvas.drawPath(
-      area,
-      Paint()..color = AppColors.mint.withValues(alpha: .14),
+    return LineChart(
+      LineChartData(
+        minX: 0,
+        maxX: (items.length - 1).toDouble().clamp(0, double.infinity),
+        minY: (minY - padding).clamp(0, double.infinity),
+        maxY: maxY + padding,
+        lineBarsData: lines,
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          getDrawingHorizontalLine: (_) =>
+              FlLine(color: numuwBorderColor(), strokeWidth: 1),
+        ),
+        borderData: FlBorderData(show: false),
+        titlesData: FlTitlesData(
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 34,
+              getTitlesWidget: (value, meta) => Text(
+                value.toStringAsFixed(0),
+                style: TextStyle(
+                  color: numuwSecondaryTextColor(),
+                  fontSize: 10,
+                ),
+              ),
+            ),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 24,
+              interval: 1,
+              getTitlesWidget: (value, meta) {
+                final index = value.round();
+                if (index < 0 || index >= items.length) {
+                  return const SizedBox.shrink();
+                }
+                return Text(
+                  '${items[index].measuredAt.day}/${items[index].measuredAt.month}',
+                  style: TextStyle(
+                    color: numuwSecondaryTextColor(),
+                    fontSize: 10,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+        lineTouchData: LineTouchData(
+          touchTooltipData: LineTouchTooltipData(
+            getTooltipItems: (spots) => spots
+                .map(
+                  (spot) => LineTooltipItem(
+                    spot.y.toStringAsFixed(1),
+                    const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ),
     );
-    canvas.drawPath(
-      path,
-      Paint()
-        ..color = AppColors.mint
-        ..strokeWidth = 2.5
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round,
-    );
-    for (final point in points) {
-      canvas.drawCircle(point, 4, Paint()..color = AppColors.mint);
-    }
   }
 
-  @override
-  bool shouldRepaint(covariant _GrowthChartPainter oldDelegate) =>
-      oldDelegate.items != items;
+  LineChartBarData _lineData({
+    required Color color,
+    required List<double?> values,
+  }) {
+    final spots = <FlSpot>[];
+    for (var i = 0; i < values.length; i++) {
+      final value = values[i];
+      if (value != null && value > 0) spots.add(FlSpot(i.toDouble(), value));
+    }
+    return LineChartBarData(
+      spots: spots,
+      isCurved: true,
+      color: color,
+      barWidth: 3,
+      isStrokeCapRound: true,
+      dotData: const FlDotData(show: true),
+      belowBarData: BarAreaData(
+        show: true,
+        color: color.withValues(alpha: .08),
+      ),
+    );
+  }
 }
 
 class _VaccinationSection extends StatelessWidget {
   const _VaccinationSection({
+    super.key,
     required this.items,
     required this.onAdd,
     required this.onStatus,
@@ -870,52 +1015,116 @@ class _VaccinationMini extends StatelessWidget {
 class _FamilyTasksSection extends StatelessWidget {
   const _FamilyTasksSection({
     required this.items,
+    required this.guardians,
     required this.onAdd,
     required this.onChanged,
   });
 
   final List<FamilyTask> items;
+  final List<ChildGuardian> guardians;
   final VoidCallback onAdd;
   final Future<void> Function(FamilyTask, bool) onChanged;
 
   @override
-  Widget build(BuildContext context) => _SectionCard(
-    title: 'مهام العائلة',
-    icon: Icons.assignment_rounded,
-    actionLabel: 'إضافة +',
-    onAction: onAdd,
-    children: items.isEmpty
-        ? [
-            Text(
-              'لا توجد مهام عائلية بعد.',
-              textAlign: TextAlign.start,
-              style: TextStyle(color: numuwSecondaryTextColor()),
-            ),
-          ]
-        : items
-              .map(
-                (task) => CheckboxListTile(
-                  dense: true,
-                  contentPadding: EdgeInsets.zero,
-                  value: task.isCompleted,
-                  onChanged: (value) => onChanged(task, value ?? false),
-                  title: Text(
-                    task.title,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      color: numuwTextColor(),
-                      fontSize: 14,
-                      decoration: task.isCompleted
-                          ? TextDecoration.lineThrough
-                          : null,
+  Widget build(BuildContext context) {
+    String? assigneeLabel(FamilyTask task) {
+      final assignedTo = task.assignedTo;
+      if (assignedTo == null) return null;
+      for (final guardian in guardians) {
+        if (guardian.userId == assignedTo) return guardian.label;
+      }
+      return null;
+    }
+
+    return _SectionCard(
+      title: 'مهام العائلة',
+      icon: Icons.assignment_rounded,
+      actionLabel: 'إضافة +',
+      onAction: onAdd,
+      children: items.isEmpty
+          ? [
+              Text(
+                'لا توجد مهام عائلية بعد.',
+                textAlign: TextAlign.start,
+                style: TextStyle(color: numuwSecondaryTextColor()),
+              ),
+            ]
+          : items
+                .map(
+                  (task) => CheckboxListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    value: task.isCompleted,
+                    onChanged: (value) => onChanged(task, value ?? false),
+                    title: Text(
+                      task.title,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        color: numuwTextColor(),
+                        fontSize: 14,
+                        decoration: task.isCompleted
+                            ? TextDecoration.lineThrough
+                            : null,
+                      ),
                     ),
+                    subtitle: task.category == null
+                        ? (assigneeLabel(task) == null
+                              ? null
+                              : Text(
+                                  'مسندة إلى: ${assigneeLabel(task)}',
+                                  textAlign: TextAlign.start,
+                                ))
+                        : Text(
+                            assigneeLabel(task) == null
+                                ? task.category!
+                                : '${task.category!} · مسندة إلى: ${assigneeLabel(task)}',
+                            textAlign: TextAlign.start,
+                          ),
                   ),
-                  subtitle: task.category == null
-                      ? null
-                      : Text(task.category!, textAlign: TextAlign.start),
-                ),
-              )
-              .toList(),
+                )
+                .toList(),
+    );
+  }
+}
+
+class _GuardianPicker extends StatefulWidget {
+  const _GuardianPicker({required this.guardians, required this.onChanged});
+
+  final List<ChildGuardian> guardians;
+  final ValueChanged<String?> onChanged;
+
+  @override
+  State<_GuardianPicker> createState() => _GuardianPickerState();
+}
+
+class _GuardianPickerState extends State<_GuardianPicker> {
+  String? _value;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsetsDirectional.only(bottom: 10),
+    child: DropdownButtonFormField<String?>(
+      initialValue: _value,
+      decoration: InputDecoration(
+        labelText: 'المسؤول عن المهمة',
+        filled: true,
+        fillColor: numuwSurfaceColor(),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+      ),
+      items: [
+        const DropdownMenuItem<String?>(value: null, child: Text('كل العيلة')),
+        ...widget.guardians.map(
+          (guardian) => DropdownMenuItem<String?>(
+            value: guardian.userId,
+            child: Text(guardian.label),
+          ),
+        ),
+      ],
+      onChanged: (value) {
+        setState(() => _value = value);
+        widget.onChanged(value);
+      },
+    ),
   );
 }
 

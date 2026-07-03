@@ -6,7 +6,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../core/app_colors.dart';
 import '../core/errors/app_error.dart';
 import '../services/auth_service.dart';
+import '../services/notification_service.dart';
 import '../services/report_service.dart';
+import 'family/family_screen.dart';
+import 'weekly_share_screen.dart';
 import '../state/app_preferences.dart';
 import '../state/child_session.dart';
 import '../widgets/app_widgets.dart';
@@ -30,11 +33,13 @@ class _MoreScreenState extends State<MoreScreen> {
         setState(() => _version = '${info.version}+${info.buildNumber}');
     });
     AppPreferences.instance.addListener(_prefsChanged);
+    ChildSession.instance.addListener(_prefsChanged);
   }
 
   @override
   void dispose() {
     AppPreferences.instance.removeListener(_prefsChanged);
+    ChildSession.instance.removeListener(_prefsChanged);
     super.dispose();
   }
 
@@ -93,6 +98,25 @@ class _MoreScreenState extends State<MoreScreen> {
     );
   }
 
+  Future<void> _setReminder({
+    required Future<void> Function(bool value) setter,
+    required bool value,
+  }) async {
+    final child = ChildSession.instance.selectedChild;
+    await setter(value);
+    if (child == null) {
+      setState(() => _message = 'اختاري طفلًا أولًا لتحديث التذكيرات.');
+      return;
+    }
+    try {
+      await NotificationService.instance.rescheduleForChild(child.id);
+      setState(() => _message = 'تم تحديث إعدادات التذكيرات.');
+    } catch (error, stackTrace) {
+      logError(error, stackTrace);
+      setState(() => _message = readableError(error));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final email =
@@ -142,12 +166,61 @@ class _MoreScreenState extends State<MoreScreen> {
                   ),
                 ),
                 SettingsRow(
-                  icon: Icons.notifications_outlined,
-                  title: 'التذكيرات والإشعارات',
+                  icon: Icons.ios_share_rounded,
+                  title: 'كارت الأسبوع القابل للمشاركة',
+                  color: AppColors.mint,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const WeeklyShareScreen(),
+                    ),
+                  ),
+                ),
+                SettingsRow(
+                  icon: Icons.notifications_active_outlined,
+                  title: 'تذكير الرضعة القادمة',
                   color: AppColors.yellow,
-                  onTap: () => _feature(
-                    'التذكيرات',
-                    'سيتم تفعيل تذكيرات متقدمة لاحقًا. حاليًا يمكنك متابعة المهام من ملف الطفل.',
+                  trailing: NumuwSwitch(
+                    value: AppPreferences.instance.feedingRemindersEnabled,
+                    onChanged: (value) => _setReminder(
+                      setter: AppPreferences.instance.setFeedingReminders,
+                      value: value,
+                    ),
+                  ),
+                  onTap: () => _setReminder(
+                    setter: AppPreferences.instance.setFeedingReminders,
+                    value: !AppPreferences.instance.feedingRemindersEnabled,
+                  ),
+                ),
+                SettingsRow(
+                  icon: Icons.medication_liquid_outlined,
+                  title: 'تذكير الدواء المسجل',
+                  color: AppColors.peach,
+                  trailing: NumuwSwitch(
+                    value: AppPreferences.instance.medicineRemindersEnabled,
+                    onChanged: (value) => _setReminder(
+                      setter: AppPreferences.instance.setMedicineReminders,
+                      value: value,
+                    ),
+                  ),
+                  onTap: () => _setReminder(
+                    setter: AppPreferences.instance.setMedicineReminders,
+                    value: !AppPreferences.instance.medicineRemindersEnabled,
+                  ),
+                ),
+                SettingsRow(
+                  icon: Icons.vaccines_outlined,
+                  title: 'تذكير التطعيم القادم',
+                  color: AppColors.blue,
+                  trailing: NumuwSwitch(
+                    value: AppPreferences.instance.vaccinationRemindersEnabled,
+                    onChanged: (value) => _setReminder(
+                      setter: AppPreferences.instance.setVaccinationReminders,
+                      value: value,
+                    ),
+                  ),
+                  onTap: () => _setReminder(
+                    setter: AppPreferences.instance.setVaccinationReminders,
+                    value: !AppPreferences.instance.vaccinationRemindersEnabled,
                   ),
                 ),
               ],
@@ -187,6 +260,16 @@ class _MoreScreenState extends State<MoreScreen> {
                   onTap: _switchChild,
                 ),
                 SettingsRow(
+                  icon: Icons.family_restroom_rounded,
+                  title: 'مشاركة العيلة',
+                  color: AppColors.mint,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const FamilyScreen(),
+                    ),
+                  ),
+                ),
+                SettingsRow(
                   icon: Icons.picture_as_pdf_outlined,
                   title: 'تقرير الطبيب PDF',
                   color: AppColors.purple,
@@ -198,7 +281,7 @@ class _MoreScreenState extends State<MoreScreen> {
                   color: AppColors.yellow,
                   onTap: () => _feature(
                     'الخصوصية',
-                    'تُستخدم بياناتك داخل حسابك فقط وفق صلاحيات الوصول الآمنة. لا نضع مفاتيح سرية داخل التطبيق.',
+                    'بيانات طفلك لا تظهر إلا لكِ ولمن تسمحين له من مشاركة العيلة. يمكنك إدارة أفراد العيلة وصلاحيات الوصول من شاشة مشاركة العيلة، ولا نضع مفاتيح سرية داخل التطبيق.',
                   ),
                 ),
                 SettingsRow(

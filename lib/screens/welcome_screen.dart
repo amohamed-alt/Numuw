@@ -50,11 +50,11 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ),
                       alignment: Alignment.center,
-                      child: const Text('👶', style: TextStyle(fontSize: 76)),
+                      child: const Text('ðŸ‘¶', style: TextStyle(fontSize: 76)),
                     ),
                     const SizedBox(height: 22),
                     Text(
-                      'نُمُوّ',
+                      'Ù†ÙÙ…ÙÙˆÙ‘',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: numuwTextColor(),
@@ -65,7 +65,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'سجّلي أحداث طفلكِ، تابعي نموّه\nواطمئني في كل لحظة 💚',
+                      'Ø³Ø¬Ù‘Ù„ÙŠ Ø£Ø­Ø¯Ø§Ø« Ø·ÙÙ„ÙƒÙØŒ ØªØ§Ø¨Ø¹ÙŠ Ù†Ù…ÙˆÙ‘Ù‡\nÙˆØ§Ø·Ù…Ø¦Ù†ÙŠ ÙÙŠ ÙƒÙ„ Ù„Ø­Ø¸Ø© ðŸ’š',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: numuwSecondaryTextColor(),
@@ -80,30 +80,37 @@ class WelcomeScreen extends StatelessWidget {
                 padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 40),
                 child: Column(
                   children: [
-                    PrimaryButton(label: 'تسجيل الدخول', onPressed: onSignIn),
+                    PrimaryButton(
+                      label: 'ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„',
+                      onPressed: onSignIn,
+                    ),
                     const SizedBox(height: 12),
                     SecondaryButton(
-                      label: 'إنشاء حساب جديد',
+                      label: 'Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨ Ø¬Ø¯ÙŠØ¯',
                       onPressed: onSignUp,
                     ),
                     const SizedBox(height: 24),
                     const _FeatureRow(
-                      icon: '🍼',
+                      icon: 'ðŸ¼',
                       color: AppColors.mintLight,
-                      text: 'تسجيل سريع للرضاعة والنوم والحفاضات',
+                      text:
+                          'ØªØ³Ø¬ÙŠÙ„ Ø³Ø±ÙŠØ¹ Ù„Ù„Ø±Ø¶Ø§Ø¹Ø© ÙˆØ§Ù„Ù†ÙˆÙ… ÙˆØ§Ù„Ø­ÙØ§Ø¶Ø§Øª',
                     ),
                     const SizedBox(height: 11),
                     const _FeatureRow(
-                      icon: '📊',
+                      icon: 'ðŸ“Š',
                       color: AppColors.purpleLight,
-                      text: 'متابعة النمو والتطعيمات',
+                      text: 'Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„Ù†Ù…Ùˆ ÙˆØ§Ù„ØªØ·Ø¹ÙŠÙ…Ø§Øª',
                     ),
                     const SizedBox(height: 11),
                     const _FeatureRow(
-                      icon: '💬',
+                      icon: 'ðŸ’¬',
                       color: AppColors.peachLight,
-                      text: 'مساعد آمن لتنظيم بيانات طفلكِ',
+                      text:
+                          'Ù…Ø³Ø§Ø¹Ø¯ Ø¢Ù…Ù† Ù„ØªÙ†Ø¸ÙŠÙ… Ø¨ÙŠØ§Ù†Ø§Øª Ø·ÙÙ„ÙƒÙ',
                     ),
+                    const SizedBox(height: 18),
+                    const _PrivacyTrustCard(),
                   ],
                 ),
               ),
@@ -113,6 +120,50 @@ class WelcomeScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class _PrivacyTrustCard extends StatelessWidget {
+  const _PrivacyTrustCard();
+
+  @override
+  Widget build(BuildContext context) => SoftCard(
+    color: numuwNightMode() ? AppColors.nightSurfaceSoft : AppColors.mintLight,
+    borderColor: numuwNightMode() ? AppColors.nightBorder : AppColors.mintSoft,
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Icon(Icons.privacy_tip_outlined, color: AppColors.mint),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'خصوصيتك واضحة من البداية',
+                style: TextStyle(
+                  color: numuwTextColor(),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w900,
+                  height: 1.35,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                'بيانات طفلك لا تظهر إلا لكِ ولمن تسمحين له من مشاركة العيلة، ويمكنك إدارة الصلاحيات من داخل التطبيق.',
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: numuwSecondaryTextColor(),
+                  fontSize: 13,
+                  height: 1.55,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class _FeatureRow extends StatelessWidget {

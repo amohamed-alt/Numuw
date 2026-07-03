@@ -16,7 +16,6 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   final _email = TextEditingController();
   final _password = TextEditingController();
@@ -39,7 +38,8 @@ class _SignInScreenState extends State<SignInScreen> {
       _message = null;
     });
     try {
-      await _auth.signIn(email: _email.text, password: _password.text);
+      final auth = AuthService();
+      await auth.signIn(email: _email.text, password: _password.text);
     } catch (error, stackTrace) {
       logError(error, stackTrace);
       if (mounted) setState(() => _error = readableError(error));
@@ -61,7 +61,8 @@ class _SignInScreenState extends State<SignInScreen> {
       _message = null;
     });
     try {
-      await _auth.resetPassword(_email.text);
+      final auth = AuthService();
+      await auth.resetPassword(_email.text);
       if (mounted)
         setState(
           () => _message = 'تم إرسال رابط استعادة كلمة المرور إلى بريدك.',

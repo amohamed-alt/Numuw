@@ -1,0 +1,25 @@
+# Numuw Foundation Fixes
+
+| Issue | Root cause | Affected files | Implemented fix | Test coverage | Verification status |
+| --- | --- | --- | --- | --- | --- |
+| Slow startup | SharedPreferences and timer restoration were awaited before `runApp`; AuthGate added a 1.5s artificial delay. | `lib/main.dart`, `lib/auth/auth_gate.dart` | Removed artificial delay; app starts immediately after safe Supabase config/init; preferences and timers load asynchronously after `runApp`. | Setup-error widget test confirms immediate UI. | `flutter analyze` clean; tests passing. |
+| All tabs loading together | `MainShell` used eager `IndexedStack` with all tab widgets constructed at startup. | `lib/screens/main_shell.dart` | Replaced with cached lazy tab creation using `Offstage` and `TickerMode`; only Home is created initially. | Lazy tab widget test. | Passing. |
+| Selected child not propagating | Screens read `ChildSession.selectedChild` directly without listeners; requests could complete after child switch. | `lib/state/child_session.dart`, `lib/screens/home_screen.dart`, `lib/screens/quick_log_screen.dart`, `lib/screens/child_screen.dart`, `lib/screens/more_screen.dart` | Added listeners and request tokens; app state invalidates dashboard on selected-child changes. | Selected-child notifier test. | Passing. |
+| Duplicate dashboard refreshes and stale responses | Dashboard loads were started from screen futures and event listeners independently. | `lib/state/numuw_app_state.dart`, `lib/screens/home_screen.dart` | Added central app state with in-flight dedupe, request IDs, stale response protection, and previous-data retention. | Covered indirectly by analyze/tests; manual runtime verification required for Supabase counts. | Implemented. |
+| Sleep totals inaccurate for edge cases | Sleep calculation needed explicit local-day overlap and invalid-session handling. | `lib/repositories/dashboard_repository.dart` | Uses `started_at`/`ended_at`, clips to local day, counts active sessions until now, ignores negative durations. | Multiple sleep tests including midnight, active, invalid, UTC/local boundary. | Passing. |
+| Active timers losing state or clearing before failed save | Timer state was not child-scoped and stop cleared local state before Supabase confirmation. | `lib/state/log_timer_state.dart`, `lib/screens/quick_log_screen.dart` | Timers are child-scoped, persisted locally, and cleared only by `finish...` after successful save. | Failed-save preservation test. | Passing. |
+| Care-event metadata null risk | Multiple flows could pass nullable metadata. | `lib/repositories/care_event_repository.dart`, `lib/state/numuw_app_state.dart`, `lib/screens/quick_log_screen.dart` | Repository and app-state write flow force `<String, dynamic>{}` when metadata is absent. | Metadata non-null test. | Passing. |
+| Multiple feeding methods compatibility | New rows use `feeding_methods`; old rows use `feeding_method`. | `lib/models/care_event.dart`, `lib/screens/home_screen.dart`, `lib/screens/quick_log_screen.dart` | Preserved metadata list and old scalar field. | Multiple-method and backward compatibility tests. | Passing. |
+| Task malformed titles on Home | Validation allowed punctuation-only titles and Home could show more than intended. | `lib/repositories/family_task_repository.dart` | Central `isValidTaskTitle`; pending Home tasks limited to three. | Task validation test. | Passing. |
+| Vaccination card left user searching | Home only switched tab. | `lib/screens/main_shell.dart`, `lib/screens/home_screen.dart`, `lib/screens/child_screen.dart` | Added `openChildSection('vaccinations')` and scroll-to-section key. | Analyze verified; manual UI verification required. | Implemented. |
+| Technical errors leaked to UI | `PostgrestException` messages/codes were shown to users. | `lib/core/errors/app_error.dart` | User-facing Arabic generic messages; detailed logs only in debug mode. | Analyze verified. | Implemented. |
+| Network operations could hang | Repository calls had no timeout wrapper. | `lib/repositories/*_repository.dart`, `lib/repositories/repo_utils.dart` | Added repository timeout helper and applied to core Supabase operations. | Analyze/tests. | Passing. |
+| Supabase touched too early | Repositories accessed `Supabase.instance` in constructors. | `lib/repositories/*_repository.dart` | Changed repositories to lazy Supabase getter so constructors do not trigger Supabase. | Tests can instantiate screens without Supabase init. | Passing. |
+| Ink/ListTile warnings | Shared tappable cards used `InkWell` without Material/Ink parent. | `lib/widgets/app_widgets.dart` | Wrapped `AppIconButton` and `SoftCard` tappables in `Material`/`Ink` preserving radius and shadows. | Analyze. | Passing. |
+
+## Verification Notes
+
+- Backup commit created before edits: `50029ae`.
+- `flutter analyze`: clean.
+- `flutter test`: all tests passing after foundation fixes.
+- Android and Chrome runtime verification are tracked in the final report after command execution.

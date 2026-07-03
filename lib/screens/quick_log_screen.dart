@@ -10,7 +10,9 @@ import '../repositories/care_event_repository.dart';
 import '../state/app_events.dart';
 import '../state/child_session.dart';
 import '../state/log_timer_state.dart';
+import '../state/numuw_app_state.dart';
 import '../widgets/app_widgets.dart';
+import 'pumping_screen.dart';
 
 class QuickLogScreen extends StatefulWidget {
   const QuickLogScreen({super.key});
@@ -39,11 +41,15 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
   DateTime _eventStartedAt = DateTime.now();
   Timer? _tick;
   Future<List<CareEvent>>? _recent;
+  int _recentRequest = 0;
 
   @override
   void initState() {
     super.initState();
     _reload();
+    ChildSession.instance.addListener(_onChildChanged);
+    AppEvents.instance.addListener(_onExternalChanged);
+    LogTimerState.instance.addListener(_onTimerChanged);
     _temp.addListener(_onTemperatureChanged);
     _tick = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted &&
@@ -57,6 +63,9 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
   @override
   void dispose() {
     _tick?.cancel();
+    ChildSession.instance.removeListener(_onChildChanged);
+    AppEvents.instance.removeListener(_onExternalChanged);
+    LogTimerState.instance.removeListener(_onTimerChanged);
     _temp.removeListener(_onTemperatureChanged);
     _notes.dispose();
     _amount.dispose();
@@ -68,7 +77,34 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
 
   void _reload() {
     final child = ChildSession.instance.selectedChild;
-    if (child != null) _recent = _repo.fetchRecent(child.id, limit: 12);
+    if (child != null) {
+      final request = ++_recentRequest;
+      _recent = _repo.fetchRecent(child.id, limit: 12).then((events) {
+        if (request != _recentRequest ||
+            ChildSession.instance.selectedChild?.id != child.id) {
+          return const <CareEvent>[];
+        }
+        return events;
+      });
+    }
+  }
+
+  void _onChildChanged() {
+    if (!mounted) return;
+    setState(() {
+      _mode = 'log';
+      _error = null;
+      _success = null;
+      _reload();
+    });
+  }
+
+  void _onExternalChanged() {
+    if (mounted) setState(_reload);
+  }
+
+  void _onTimerChanged() {
+    if (mounted) setState(() {});
   }
 
   void _onTemperatureChanged() {
@@ -104,8 +140,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
       _success = null;
     });
     try {
-      await _repo.insert(
-        childId: child.id,
+      await NumuwAppState.instance.saveCareEvent(
         eventType: type,
         startedAt: startedAt ?? _eventStartedAt,
         endedAt: endedAt,
@@ -124,8 +159,11 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
         notes: _notesFor(type),
         metadata: _metadataFor(type),
       );
+      if (type == 'sleep') await LogTimerState.instance.finishSleep(child.id);
+      if (type == 'feeding') {
+        await LogTimerState.instance.finishFeeding(child.id);
+      }
       _clear(type);
-      AppEvents.instance.careEventsChanged();
       setState(() {
         _success = '✓ تم حفظ التسجيل';
         _reload();
@@ -224,25 +262,32 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
   }
 
   Future<void> _feedingToggle() async {
-    if (!LogTimerState.instance.feedingActive) {
-      await LogTimerState.instance.startFeeding();
+    final child = ChildSession.instance.selectedChild;
+    if (child == null) return;
+    final activeStart = LogTimerState.instance.pendingFeedingStart(child.id);
+    if (activeStart == null) {
+      await LogTimerState.instance.startFeeding(child.id);
       setState(() {});
       return;
     }
-    final start = await LogTimerState.instance.stopFeeding();
-    if (start == null) return;
-    await _saveEvent('feeding', startedAt: start, endedAt: DateTime.now());
+    await _saveEvent(
+      'feeding',
+      startedAt: activeStart,
+      endedAt: DateTime.now(),
+    );
   }
 
   Future<void> _sleepToggle() async {
-    if (!LogTimerState.instance.sleepActive) {
-      await LogTimerState.instance.startSleep();
+    final child = ChildSession.instance.selectedChild;
+    if (child == null) return;
+    final activeStart = LogTimerState.instance.pendingSleepStart(child.id);
+    if (activeStart == null) {
+      await LogTimerState.instance.startSleep(child.id);
+      NumuwAppState.instance.refreshDashboard(force: true);
       setState(() {});
       return;
     }
-    final start = await LogTimerState.instance.stopSleep();
-    if (start == null) return;
-    await _saveEvent('sleep', startedAt: start, endedAt: DateTime.now());
+    await _saveEvent('sleep', startedAt: activeStart, endedAt: DateTime.now());
   }
 
   Future<void> _pickEventDateTime() async {
@@ -289,6 +334,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
         AppPage(
           child: switch (_mode) {
             'feeding' => _feedingScreen(child.name),
+            'pumping' => PumpingLogPane(onBack: _back, onChanged: _reload),
             'sleep' => _sleepScreen(),
             'diaper' => _diaperScreen(),
             'food' => _genericScreen('food'),
@@ -327,6 +373,15 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
               background: AppColors.mintLight,
               border: AppColors.mint,
               onTap: () => _open('feeding'),
+            ),
+          ),
+          Center(
+            child: QuickLogTypeButton(
+              label: 'شفط',
+              icon: '🍼',
+              background: AppColors.mintSoft,
+              border: AppColors.mintDark,
+              onTap: () => _open('pumping'),
             ),
           ),
           Center(
@@ -480,8 +535,12 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
   }
 
   Widget _sleepScreen() {
-    final active = LogTimerState.instance.sleepActive;
-    final duration = _durationSince(LogTimerState.instance.sleepStart);
+    final child = ChildSession.instance.selectedChild;
+    final start = child == null
+        ? null
+        : LogTimerState.instance.sleepStartForChild(child.id);
+    final active = start != null;
+    final duration = _durationSince(start);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -490,7 +549,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
         const SizedBox(height: 12),
         SoftCard(
           child: Text(
-            'وقت البدء: ${ArabicFormatters.time(LogTimerState.instance.sleepStart)}',
+            'وقت البدء: ${ArabicFormatters.time(start)}',
             textAlign: TextAlign.start,
             style: const TextStyle(fontWeight: FontWeight.w800),
           ),
@@ -669,7 +728,6 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
             _feedingChip('breast', 'طبيعية'),
             _feedingChip('bottle', 'زجاجة'),
             _feedingChip('formula', 'صناعية'),
-            _feedingChip('pumping', 'شفط'),
             _feedingChip('mixed', 'مختلطة'),
           ],
         ),
@@ -1008,11 +1066,18 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
           children: [
             for (var i = 0; i < events.length; i++) ...[
               ActivityListItem(
-                icon: _eventIcon(events[i].eventType),
-                background: _eventBg(events[i].eventType),
-                title: ArabicFormatters.eventType(events[i].eventType),
-                subtitle:
-                    '${ArabicFormatters.time(events[i].startedAt)}${events[i].notes == null ? '' : ' · ${events[i].notes}'}',
+                icon: events[i].isPumping
+                    ? _eventIcon('pumping')
+                    : _eventIcon(events[i].eventType),
+                background: events[i].isPumping
+                    ? _eventBg('pumping')
+                    : _eventBg(events[i].eventType),
+                title: events[i].isPumping
+                    ? ArabicFormatters.eventType('pumping')
+                    : ArabicFormatters.eventType(events[i].eventType),
+                subtitle: events[i].isPumping
+                    ? pumpingSubtitle(events[i])
+                    : '${ArabicFormatters.time(events[i].startedAt)}${events[i].notes == null ? '' : ' · ${events[i].notes}'}',
               ),
               if (i != events.length - 1)
                 Divider(height: 1, color: numuwBorderColor()),
@@ -1091,6 +1156,7 @@ _EventSpec _spec(String type) => switch (type) {
 
 String _iconForMode(String mode) => switch (mode) {
   'feeding' => '🍼',
+  'pumping' => '🍼',
   'sleep' => '🌙',
   'diaper' => '🧷',
   'food' => '🥣',
@@ -1101,6 +1167,7 @@ String _iconForMode(String mode) => switch (mode) {
 
 String _eventIcon(String type) => switch (type) {
   'feeding' => '🍼',
+  'pumping' => '🍼',
   'sleep' => '🌙',
   'diaper' => '🧷',
   'food' => '🥣',
@@ -1111,6 +1178,7 @@ String _eventIcon(String type) => switch (type) {
 
 Color _eventBg(String type) => switch (type) {
   'feeding' => AppColors.mintLight,
+  'pumping' => AppColors.mintSoft,
   'sleep' => AppColors.mintLight,
   'diaper' => AppColors.purpleLight,
   'food' => AppColors.yellowLight,

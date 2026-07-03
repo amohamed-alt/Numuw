@@ -18,6 +18,20 @@ class ReportService {
     final font = pw.Font.ttf(fontData);
     final growth = await GrowthRepository().fetch(child.id);
     final events = await CareEventRepository().fetchRecent(child.id, limit: 80);
+    final pumping = events
+        .where((event) => event.isPumping && (event.pumpedAmountMl ?? 0) > 0)
+        .toList();
+    final pumpingTotal = pumping.fold<double>(
+      0,
+      (sum, event) => sum + (event.pumpedAmountMl ?? 0),
+    );
+    final pumpingDaily = <DateTime, double>{};
+    for (final event in pumping) {
+      final local = event.startedAt.toLocal();
+      final day = DateTime(local.year, local.month, local.day);
+      pumpingDaily[day] =
+          (pumpingDaily[day] ?? 0) + (event.pumpedAmountMl ?? 0);
+    }
     final vaccinations = await VaccinationRepository().fetch(child.id);
     final questions = await DoctorQuestionRepository().fetch(child.id);
     final doc = pw.Document();
@@ -41,7 +55,17 @@ class ReportService {
                 ),
               ),
           _h('ملخص التسجيلات'),
-          _p('رضاعة: ${events.where((e) => e.eventType == 'feeding').length}'),
+          _p(
+            'رضاعة: ${events.where((e) => e.eventType == 'feeding' && !e.isPumping).length}',
+          ),
+          _p(
+            'شفط: ${pumping.length} جلسة، إجمالي ${pumpingTotal.round()} مل، متوسط ${pumping.isEmpty ? 0 : (pumpingTotal / pumping.length).round()} مل للجلسة',
+          ),
+          ...pumpingDaily.entries.map(
+            (entry) => _p(
+              'شفط ${ArabicFormatters.date(entry.key)}: ${entry.value.round()} مل',
+            ),
+          ),
           _p('نوم: ${events.where((e) => e.eventType == 'sleep').length}'),
           _p('حفاضات: ${events.where((e) => e.eventType == 'diaper').length}'),
           _p(

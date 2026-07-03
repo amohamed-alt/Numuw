@@ -1,17 +1,19 @@
+// ignore_for_file: prefer_initializing_formals
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/doctor_question.dart';
 import 'repo_utils.dart';
 
 class DoctorQuestionRepository {
-  DoctorQuestionRepository({SupabaseClient? client})
-    : _client = client ?? Supabase.instance.client;
-  final SupabaseClient _client;
+  DoctorQuestionRepository({SupabaseClient? client}) : _client = client;
+  final SupabaseClient? _client;
+  SupabaseClient get _supabase => _client ?? Supabase.instance.client;
   static const columns =
       'id,child_id,created_by,question,answered_at,created_at';
 
   Future<List<DoctorQuestion>> fetch(String childId) async {
-    final rows = await _client
+    final rows = await _supabase
         .from('doctor_questions')
         .select(columns)
         .eq('child_id', childId)
@@ -28,7 +30,7 @@ class DoctorQuestionRepository {
     required String childId,
     required String question,
   }) async {
-    final row = await _client
+    final row = await _supabase
         .from('doctor_questions')
         .insert({
           'child_id': childId,
@@ -41,7 +43,7 @@ class DoctorQuestionRepository {
   }
 
   Future<void> setAnswered(String id, bool answered) async {
-    await _client
+    await _supabase
         .from('doctor_questions')
         .update({
           'answered_at': answered
@@ -52,5 +54,5 @@ class DoctorQuestionRepository {
   }
 
   Future<void> delete(String id) async =>
-      _client.from('doctor_questions').delete().eq('id', id);
+      _supabase.from('doctor_questions').delete().eq('id', id);
 }

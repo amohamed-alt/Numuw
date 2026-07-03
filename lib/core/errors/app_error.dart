@@ -16,6 +16,16 @@ class MissingChildException extends AppException {
   const MissingChildException() : super('اختاري طفلًا أولًا للمتابعة.');
 }
 
+class RequestTimeoutException extends AppException {
+  const RequestTimeoutException()
+    : super('استغرق الطلب وقتًا طويلًا. تحققي من اتصالك وحاولي مرة أخرى.');
+}
+
+class OfflineCareEventQueuedException extends AppException {
+  const OfflineCareEventQueuedException()
+    : super('تم حفظ التسجيل مؤقتًا، وسيتم رفعه تلقائيًا عند عودة الاتصال.');
+}
+
 String readableError(Object error) {
   if (error is AppException) return error.userMessage;
   if (error is AuthException) return _authError(error.message);
@@ -23,6 +33,9 @@ String readableError(Object error) {
     return 'خطأ قاعدة البيانات (${error.code ?? 'بدون كود'}): ${error.message}';
   }
   final message = error.toString().toLowerCase();
+  if (message.contains('timeout') || message.contains('timed out')) {
+    return const RequestTimeoutException().userMessage;
+  }
   if (message.contains('socket') ||
       message.contains('network') ||
       message.contains('failed host lookup')) {
@@ -49,6 +62,7 @@ String _authError(String message) {
 }
 
 void logError(Object error, StackTrace stackTrace) {
+  if (!kDebugMode) return;
   debugPrint('Error type: ${error.runtimeType}');
   if (error is AuthException) {
     debugPrint('Auth message: ${error.message}');

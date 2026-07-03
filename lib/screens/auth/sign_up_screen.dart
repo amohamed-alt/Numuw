@@ -22,8 +22,6 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _auth = AuthService();
-  final _profile = ProfileRepository();
   final _formKey = GlobalKey<FormState>();
   final _name = TextEditingController();
   final _email = TextEditingController();
@@ -46,13 +44,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _error = null;
     });
     try {
-      final response = await _auth.signUp(
+      final auth = AuthService();
+      final response = await auth.signUp(
         email: _email.text,
         password: _password.text,
       );
       if (response.session != null) {
         try {
-          await _profile.upsertCurrentProfile(fullName: _name.text);
+          await ProfileRepository().upsertCurrentProfile(fullName: _name.text);
         } catch (error, stackTrace) {
           logError(error, stackTrace);
         }

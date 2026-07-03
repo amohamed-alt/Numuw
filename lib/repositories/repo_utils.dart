@@ -2,6 +2,15 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/errors/app_error.dart';
 
+const repositoryTimeout = Duration(seconds: 12);
+
+Future<T> withRepositoryTimeout<T>(Future<T> future) => future.timeout(
+  repositoryTimeout,
+  onTimeout: () {
+    throw const RequestTimeoutException();
+  },
+);
+
 String currentUserId() {
   final session = Supabase.instance.client.auth.currentSession;
   final userId = session?.user.id;

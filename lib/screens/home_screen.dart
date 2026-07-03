@@ -8,12 +8,14 @@ import '../models/child_profile.dart';
 import '../models/dashboard_summary.dart';
 import '../models/family_task.dart';
 import '../repositories/care_event_repository.dart';
-import '../repositories/dashboard_repository.dart';
 import '../repositories/family_task_repository.dart';
 import '../state/app_events.dart';
 import '../state/child_session.dart';
+import '../state/log_timer_state.dart';
+import '../state/numuw_app_state.dart';
 import '../widgets/app_widgets.dart';
 import 'main_shell.dart';
+import 'pumping_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,21 +25,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _repo = DashboardRepository();
   final _taskRepo = FamilyTaskRepository();
   final _careRepo = CareEventRepository();
-  Future<DashboardSummary>? _future;
+  Future<DashboardSummary?>? _future;
 
   @override
   void initState() {
     super.initState();
     _load();
     AppEvents.instance.addListener(_onCareEventsChanged);
+    ChildSession.instance.addListener(_onChildChanged);
+    NumuwAppState.instance.addListener(_onAppStateChanged);
+    LogTimerState.instance.addListener(_onAppStateChanged);
   }
 
   @override
   void dispose() {
     AppEvents.instance.removeListener(_onCareEventsChanged);
+    ChildSession.instance.removeListener(_onChildChanged);
+    NumuwAppState.instance.removeListener(_onAppStateChanged);
+    LogTimerState.instance.removeListener(_onAppStateChanged);
     super.dispose();
   }
 
@@ -45,9 +52,19 @@ class _HomeScreenState extends State<HomeScreen> {
     if (mounted) setState(_load);
   }
 
+  void _onChildChanged() {
+    if (mounted) setState(_load);
+  }
+
+  void _onAppStateChanged() {
+    if (mounted) setState(() {});
+  }
+
   void _load() {
     final child = ChildSession.instance.selectedChild;
-    if (child != null) _future = _repo.load(child.id);
+    if (child != null) {
+      _future = NumuwAppState.instance.refreshDashboard(force: true);
+    }
   }
 
   Future<void> _refresh() async {
@@ -56,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showProfileTab() {
-    MainShellScope.maybeOf(context)?.selectTab(2);
+    MainShellScope.maybeOf(context)?.openChildSection('vaccinations');
   }
 
   Future<void> _completeTask(DashboardSummary summary, FamilyTask task) async {
@@ -96,6 +113,29 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _deleteEvent(DashboardSummary summary, CareEvent event) async {
+    if (event.isPumping) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => Directionality(
+          textDirection: TextDirection.rtl,
+          child: AlertDialog(
+            title: const Text('حذف جلسة الشفط؟'),
+            content: const Text('لن تتمكني من استعادة هذا التسجيل.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('إلغاء'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('حذف'),
+              ),
+            ],
+          ),
+        ),
+      );
+      if (confirmed != true) return;
+    }
     final updatedEvents = summary.recentEvents
         .where((item) => item.id != event.id)
         .toList();
@@ -103,8 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _future = Future.value(summary.copyWith(recentEvents: updatedEvents));
     });
     try {
-      await _careRepo.delete(event.id);
-      AppEvents.instance.careEventsChanged();
+      await NumuwAppState.instance.deleteCareEvent(event);
       if (mounted) Navigator.pop(context);
       await _refresh();
     } catch (error, stackTrace) {
@@ -119,6 +158,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _editEvent(DashboardSummary summary, CareEvent event) async {
+    if (event.isPumping) {
+      await _editPumpingEvent(summary, event);
+      return;
+    }
     final notes = TextEditingController(text: event.notes ?? '');
     final amount = TextEditingController(
       text: event.amountMl == null ? '' : event.amountMl!.round().toString(),
@@ -316,6 +359,168 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _editPumpingEvent(
+    DashboardSummary summary,
+    CareEvent event,
+  ) async {
+    final notes = TextEditingController(text: event.notes ?? '');
+    final total = TextEditingController(
+      text: event.pumpedAmountMl == null
+          ? ''
+          : event.pumpedAmountMl!.round().toString(),
+    );
+    final left = TextEditingController(
+      text: event.leftPumpedAmountMl == null
+          ? ''
+          : event.leftPumpedAmountMl!.round().toString(),
+    );
+    final right = TextEditingController(
+      text: event.rightPumpedAmountMl == null
+          ? ''
+          : event.rightPumpedAmountMl!.round().toString(),
+    );
+    var side = event.side ?? 'both';
+    var split = event.hasSplitPumpingQuantity;
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (context) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: StatefulBuilder(
+          builder: (context, setDialogState) {
+            void recalculate() {
+              final sum =
+                  (_parseAmount(left.text) ?? 0) +
+                  (_parseAmount(right.text) ?? 0);
+              total.text = sum <= 0 ? '' : sum.round().toString();
+              setDialogState(() {});
+            }
+
+            return AlertDialog(
+              title: const Text('تعديل جلسة الشفط'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _DialogDropdown(
+                      label: 'الجهة',
+                      value: side,
+                      items: const {
+                        'left': 'اليسار',
+                        'right': 'اليمين',
+                        'both': 'الجانبان',
+                      },
+                      onChanged: (value) => setDialogState(() => side = value),
+                    ),
+                    _DialogTextField(
+                      controller: total,
+                      label: 'إجمالي الكمية مل',
+                      keyboardType: TextInputType.number,
+                    ),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: const Text('تقسيم الكمية بين الجانبين'),
+                      value: split,
+                      onChanged: (value) => setDialogState(() => split = value),
+                    ),
+                    if (split) ...[
+                      _DialogTextField(
+                        controller: left,
+                        label: 'كمية اليسار',
+                        keyboardType: TextInputType.number,
+                      ),
+                      _DialogTextField(
+                        controller: right,
+                        label: 'كمية اليمين',
+                        keyboardType: TextInputType.number,
+                      ),
+                      TextButton(
+                        onPressed: recalculate,
+                        child: const Text('تحديث الإجمالي'),
+                      ),
+                    ],
+                    _DialogTextField(
+                      controller: notes,
+                      label: 'الملاحظات',
+                      minLines: 3,
+                      maxLines: 5,
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('إلغاء'),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: const Text('حفظ'),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+    if (saved != true) {
+      for (final controller in [notes, total, left, right]) {
+        controller.dispose();
+      }
+      return;
+    }
+    try {
+      final metadata = Map<String, dynamic>.from(
+        event.metadata ?? <String, dynamic>{},
+      );
+      final leftAmount = _parseAmount(left.text);
+      final rightAmount = _parseAmount(right.text);
+      final totalAmount = split
+          ? ((leftAmount ?? 0) + (rightAmount ?? 0))
+          : _parseAmount(total.text);
+      if (totalAmount == null || totalAmount <= 0) {
+        throw const FormatException('invalid pumping amount');
+      }
+      metadata['quantity_mode'] = split ? 'split' : 'total';
+      if (split && leftAmount != null) metadata['left_amount_ml'] = leftAmount;
+      if (split && rightAmount != null) {
+        metadata['right_amount_ml'] = rightAmount;
+      }
+      if (!split) {
+        metadata.remove('left_amount_ml');
+        metadata.remove('right_amount_ml');
+      }
+      final updated = await NumuwAppState.instance.updateCareEventFields(
+        event: event,
+        values: {
+          'side': side,
+          'amount_ml': totalAmount,
+          'notes': notes.text.trim().isEmpty ? null : notes.text.trim(),
+          'metadata': metadata,
+        },
+      );
+      final updatedEvents = summary.recentEvents
+          .map((item) => item.id == updated.id ? updated : item)
+          .toList();
+      setState(() {
+        _future = Future.value(summary.copyWith(recentEvents: updatedEvents));
+      });
+      if (mounted) Navigator.pop(context);
+    } catch (error, stackTrace) {
+      logError(error, stackTrace);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('تعذر تعديل جلسة الشفط. حاولي مرة أخرى.'),
+          ),
+        );
+      }
+    } finally {
+      for (final controller in [notes, total, left, right]) {
+        controller.dispose();
+      }
+    }
+  }
+
   void _showEventDetails(DashboardSummary summary, CareEvent event) {
     showModalBottomSheet<void>(
       context: context,
@@ -405,8 +610,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 18),
-              FutureBuilder<DashboardSummary>(
-                future: _future ?? _repo.load(child.id),
+              FutureBuilder<DashboardSummary?>(
+                future:
+                    _future ??
+                    NumuwAppState.instance.refreshDashboard(force: false),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
                     return const SoftCard(
@@ -419,7 +626,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: Icons.error_outline_rounded,
                     );
                   }
-                  final summary = snapshot.data!;
+                  final summary =
+                      NumuwAppState.instance.dashboard ?? snapshot.data!;
                   if (numuwNightMode()) {
                     return _NightHome(childName: child.name, summary: summary);
                   }
@@ -545,9 +753,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _eventTile(DashboardSummary summary, CareEvent event) => InkWell(
     onTap: () => _showEventDetails(summary, event),
     child: ActivityListItem(
-      icon: _eventIcon(event.eventType),
-      background: _eventBg(event.eventType),
-      title: ArabicFormatters.eventType(event.eventType),
+      icon: _eventIcon(event.isPumping ? 'pumping' : event.eventType),
+      background: _eventBg(event.isPumping ? 'pumping' : event.eventType),
+      title: ArabicFormatters.eventType(
+        event.isPumping ? 'pumping' : event.eventType,
+      ),
       subtitle: _eventSubtitle(event),
     ),
   );
@@ -613,7 +823,24 @@ List<_EventDetail> _eventDetails(CareEvent event) {
       ),
     );
   }
-  if (event.eventType == 'feeding') {
+  if (event.isPumping) {
+    details.add(_EventDetail('الجهة', _sideLabel(event.side)));
+    if (event.pumpedAmountMl != null) {
+      details.add(
+        _EventDetail('إجمالي الكمية', '${event.pumpedAmountMl!.round()} مل'),
+      );
+    }
+    if (event.leftPumpedAmountMl != null) {
+      details.add(
+        _EventDetail('كمية اليسار', '${event.leftPumpedAmountMl!.round()} مل'),
+      );
+    }
+    if (event.rightPumpedAmountMl != null) {
+      details.add(
+        _EventDetail('كمية اليمين', '${event.rightPumpedAmountMl!.round()} مل'),
+      );
+    }
+  } else if (event.eventType == 'feeding') {
     details.add(_EventDetail('الجهة', _sideLabel(event.side)));
     details.add(_EventDetail('الطريقة', _feedingMethodLabel(event)));
     if (event.amountMl != null) {
@@ -779,11 +1006,29 @@ class _DialogSwitch extends StatelessWidget {
 }
 
 String _eventSubtitle(CareEvent event) {
+  if (event.isPumping) return pumpingSubtitle(event);
   final time = ArabicFormatters.time(event.startedAt);
   final notes = event.notes?.trim();
   if (notes == null || notes.isEmpty) return time;
   return '$time · $notes';
 }
+
+double? _parseAmount(String value) => double.tryParse(
+  value
+      .trim()
+      .replaceAll('٫', '.')
+      .replaceAll(',', '.')
+      .replaceAll('٠', '0')
+      .replaceAll('١', '1')
+      .replaceAll('٢', '2')
+      .replaceAll('٣', '3')
+      .replaceAll('٤', '4')
+      .replaceAll('٥', '5')
+      .replaceAll('٦', '6')
+      .replaceAll('٧', '7')
+      .replaceAll('٨', '8')
+      .replaceAll('٩', '9'),
+);
 
 class _MetricCard extends StatelessWidget {
   const _MetricCard({
@@ -1591,6 +1836,7 @@ class _TasksCard extends StatelessWidget {
 
 String _eventIcon(String type) => switch (type) {
   'feeding' => '🍼',
+  'pumping' => '🍼',
   'sleep' => '🌙',
   'diaper' => '🧷',
   'food' => '🥣',
@@ -1601,6 +1847,7 @@ String _eventIcon(String type) => switch (type) {
 
 Color _eventBg(String type) => switch (type) {
   'feeding' => AppColors.mintLight,
+  'pumping' => AppColors.mintSoft,
   'sleep' => AppColors.mintLight,
   'diaper' => AppColors.purpleLight,
   'food' => AppColors.yellowLight,
