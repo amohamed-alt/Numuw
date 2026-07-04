@@ -19,6 +19,13 @@ class NumuwApp extends StatelessWidget {
       animation: AppPreferences.instance,
       builder: (context, _) {
         final night = AppPreferences.instance.nightMode;
+        final appBackground = night
+            ? NumuwColorTokens.darkBackground
+            : NumuwColorTokens.lightBackground;
+        final desktopBackground = night
+            ? NumuwColorTokens.darkWebBackground
+            : NumuwColorTokens.lightWebBackground;
+
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'نُمُوّ',
@@ -30,25 +37,48 @@ class NumuwApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
           ],
           theme: buildNumuwTheme(night: night),
-          builder: (context, child) => Directionality(
-            textDirection: TextDirection.rtl,
-            child: ColoredBox(
-              color: night
-                  ? NumuwColorTokens.darkWebBackground
-                  : NumuwColorTokens.lightWebBackground,
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 600),
-                  child: ColoredBox(
-                    color: night
-                        ? NumuwColorTokens.darkBackground
-                        : NumuwColorTokens.lightBackground,
-                    child: child ?? const SizedBox.shrink(),
-                  ),
-                ),
+          themeAnimationDuration: const Duration(milliseconds: 240),
+          themeAnimationCurve: Curves.easeOutCubic,
+          builder: (context, child) {
+            final app = Directionality(
+              textDirection: TextDirection.rtl,
+              child: ColoredBox(
+                color: appBackground,
+                child: child ?? const SizedBox.shrink(),
               ),
-            ),
-          ),
+            );
+
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints.maxWidth < 700) {
+                  return app;
+                }
+
+                return ColoredBox(
+                  color: desktopBackground,
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 430),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: appBackground,
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x24000000),
+                              blurRadius: 36,
+                              offset: Offset(0, 12),
+                            ),
+                          ],
+                        ),
+                        child: app,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
           home: designPreview
               ? const DesignPreviewGallery()
               : AuthGate(startupError: startupError),
