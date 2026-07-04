@@ -4,6 +4,7 @@ import '../../core/app_colors.dart';
 import '../../core/errors/app_error.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/app_widgets.dart';
+import '../../widgets/numuw_components.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key, this.onBack, this.onSignUp});
@@ -85,7 +86,7 @@ class _SignInScreenState extends State<SignInScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              NumuwHeader(
+              NumuwAppBar(
                 title: 'مرحباً بعودتكِ 👋',
                 subtitle: 'سجّلي الدخول للمتابعة',
                 leading: AppIconButton(
@@ -98,7 +99,9 @@ class _SignInScreenState extends State<SignInScreen> {
                   borderWidth: 1.5,
                 ),
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 14),
+              const NumuwPlantProgress(progress: .24, label: 'جاهزة للعودة'),
+              const SizedBox(height: 22),
               NumuwTextField(
                 controller: _email,
                 label: 'البريد الإلكتروني',

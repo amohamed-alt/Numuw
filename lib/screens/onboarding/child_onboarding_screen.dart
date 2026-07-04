@@ -4,6 +4,7 @@ import '../../core/app_colors.dart';
 import '../../core/errors/app_error.dart';
 import '../../repositories/child_repository.dart';
 import '../../widgets/app_widgets.dart';
+import '../../widgets/numuw_components.dart';
 
 class ChildOnboardingScreen extends StatefulWidget {
   const ChildOnboardingScreen({super.key, required this.onSaved});
@@ -108,7 +109,7 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(
-        'هل ما زالت الأم حامل\nأم الطفل وُلد؟',
+        'Ù‡Ù„ Ù…Ø§ Ø²Ø§Ù„Øª Ø§Ù„Ø£Ù… Ø­Ø§Ù…Ù„\nØ£Ù… Ø§Ù„Ø·ÙÙ„ ÙˆÙÙ„Ø¯ØŸ',
         textAlign: TextAlign.start,
         style: TextStyle(
           color: numuwTextColor(),
@@ -119,27 +120,27 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
       ),
       const SizedBox(height: 6),
       Text(
-        'اختاري الخيار المناسب لكِ',
+        'Ø§Ø®ØªØ§Ø±ÙŠ Ø§Ù„Ø®ÙŠØ§Ø± Ø§Ù„Ù…Ù†Ø§Ø³Ø¨ Ù„ÙƒÙ',
         style: TextStyle(color: numuwSecondaryTextColor(), fontSize: 14),
       ),
       const SizedBox(height: 28),
       _StageCard(
         selected: _stage == 'born',
-        icon: '👶',
-        title: 'الطفل وُلد',
-        subtitle: 'سجّلي أحداث يومية من الآن',
+        icon: 'ðŸ‘¶',
+        title: 'Ø§Ù„Ø·ÙÙ„ ÙˆÙÙ„Ø¯',
+        subtitle: 'Ø³Ø¬Ù‘Ù„ÙŠ Ø£Ø­Ø¯Ø§Ø« ÙŠÙˆÙ…ÙŠØ© Ù…Ù† Ø§Ù„Ø¢Ù†',
         onTap: () => setState(() => _stage = 'born'),
       ),
       const SizedBox(height: 14),
       _StageCard(
         selected: _stage == 'pregnancy',
-        icon: '🤰',
-        title: 'الأم حامل',
-        subtitle: 'تابعي موعد الولادة والاستعدادات',
+        icon: 'ðŸ¤°',
+        title: 'Ø§Ù„Ø£Ù… Ø­Ø§Ù…Ù„',
+        subtitle: 'ØªØ§Ø¨Ø¹ÙŠ Ù…ÙˆØ¹Ø¯ Ø§Ù„ÙˆÙ„Ø§Ø¯Ø© ÙˆØ§Ù„Ø§Ø³ØªØ¹Ø¯Ø§Ø¯Ø§Øª',
         onTap: () => setState(() => _stage = 'pregnancy'),
       ),
       const SizedBox(height: 28),
-      PrimaryButton(label: 'التالي ←', onPressed: _next),
+      NumuwPrimaryButton(label: 'Ø§Ù„ØªØ§Ù„ÙŠ â†', onPressed: _next),
     ],
   );
 
@@ -148,7 +149,7 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(
-        'أخبريني عن طفلكِ 💛',
+        'Ø£Ø®Ø¨Ø±ÙŠÙ†ÙŠ Ø¹Ù† Ø·ÙÙ„ÙƒÙ ðŸ’›',
         style: TextStyle(
           color: numuwTextColor(),
           fontSize: 24,
@@ -158,14 +159,15 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
       const SizedBox(height: 24),
       NumuwTextField(
         controller: _name,
-        label: 'اسم الطفل',
-        validator: (v) => (v ?? '').trim().isEmpty ? 'اسم الطفل مطلوب.' : null,
+        label: 'Ø§Ø³Ù… Ø§Ù„Ø·ÙÙ„',
+        validator: (v) =>
+            (v ?? '').trim().isEmpty ? 'Ø§Ø³Ù… Ø§Ù„Ø·ÙÙ„ Ù…Ø·Ù„ÙˆØ¨.' : null,
       ),
       const SizedBox(height: 14),
       if (_stage == 'born')
         NumuwTextField(
           controller: _birthDate,
-          label: 'تاريخ الميلاد',
+          label: 'ØªØ§Ø±ÙŠØ® Ø§Ù„Ù…ÙŠÙ„Ø§Ø¯',
           hint: 'YYYY-MM-DD',
           keyboardType: TextInputType.datetime,
           textDirection: TextDirection.ltr,
@@ -174,21 +176,21 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
       else
         NumuwTextField(
           controller: _dueDate,
-          label: 'موعد الولادة المتوقع',
+          label: 'Ù…ÙˆØ¹Ø¯ Ø§Ù„ÙˆÙ„Ø§Ø¯Ø© Ø§Ù„Ù…ØªÙˆÙ‚Ø¹',
           hint: 'YYYY-MM-DD',
           keyboardType: TextInputType.datetime,
           textDirection: TextDirection.ltr,
           validator: _dueDateValidator,
         ),
       const SizedBox(height: 18),
-      _Label('الجنس'),
+      _Label('Ø§Ù„Ø¬Ù†Ø³'),
       const SizedBox(height: 8),
       Row(
         children: [
           Expanded(
             child: ChoicePill(
-              label: 'بنت',
-              icon: '👧',
+              label: 'Ø¨Ù†Øª',
+              icon: 'ðŸ‘§',
               selected: _gender == 'female',
               onTap: () => setState(() => _gender = 'female'),
             ),
@@ -196,8 +198,8 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
           const SizedBox(width: 12),
           Expanded(
             child: ChoicePill(
-              label: 'ولد',
-              icon: '👦',
+              label: 'ÙˆÙ„Ø¯',
+              icon: 'ðŸ‘¦',
               selected: _gender == 'male',
               onTap: () => setState(() => _gender = 'male'),
             ),
@@ -206,27 +208,27 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
       ),
       const SizedBox(height: 8),
       ChoicePill(
-        label: 'غير محدد',
+        label: 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯',
         selected: _gender == 'unspecified',
         onTap: () => setState(() => _gender = 'unspecified'),
       ),
       const SizedBox(height: 18),
-      _Label('نوع الرضاعة'),
+      _Label('Ù†ÙˆØ¹ Ø§Ù„Ø±Ø¶Ø§Ø¹Ø©'),
       const SizedBox(height: 8),
       SegmentedSelector(
         value: _feeding,
         items: const {
-          'breast': 'طبيعية',
-          'formula': 'صناعية',
-          'mixed': 'مختلطة',
-          'not_set': 'غير محدد',
+          'breast': 'Ø·Ø¨ÙŠØ¹ÙŠØ©',
+          'formula': 'ØµÙ†Ø§Ø¹ÙŠØ©',
+          'mixed': 'Ù…Ø®ØªÙ„Ø·Ø©',
+          'not_set': 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯',
         },
         onChanged: (value) => setState(() => _feeding = value),
       ),
       const SizedBox(height: 24),
-      PrimaryButton(label: 'التالي ←', onPressed: _next),
+      NumuwPrimaryButton(label: 'Ø§Ù„ØªØ§Ù„ÙŠ â†', onPressed: _next),
       const SizedBox(height: 10),
-      SecondaryButton(label: 'رجوع', onPressed: _back),
+      NumuwSecondaryButton(label: 'Ø±Ø¬ÙˆØ¹', onPressed: _back),
     ],
   );
 
@@ -235,7 +237,7 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(
-        'تفاصيل إضافية',
+        'ØªÙØ§ØµÙŠÙ„ Ø¥Ø¶Ø§ÙÙŠØ©',
         style: TextStyle(
           color: numuwTextColor(),
           fontSize: 24,
@@ -244,16 +246,16 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
       ),
       const SizedBox(height: 6),
       Text(
-        'يمكنكِ تخطيها وإضافتها لاحقاً',
+        'ÙŠÙ…ÙƒÙ†ÙƒÙ ØªØ®Ø·ÙŠÙ‡Ø§ ÙˆØ¥Ø¶Ø§ÙØªÙ‡Ø§ Ù„Ø§Ø­Ù‚Ø§Ù‹',
         style: TextStyle(color: numuwSecondaryTextColor(), fontSize: 14),
       ),
       const SizedBox(height: 24),
-      _Label('فصيلة الدم'),
+      _Label('ÙØµÙŠÙ„Ø© Ø§Ù„Ø¯Ù…'),
       const SizedBox(height: 8),
       SegmentedSelector(
         value: _bloodType.text.isEmpty ? 'none' : _bloodType.text,
         items: const {
-          'none': 'غير محدد',
+          'none': 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯',
           'A+': 'A+',
           'A-': 'A-',
           'B+': 'B+',
@@ -269,7 +271,7 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
       const SizedBox(height: 16),
       NumuwNumberField(
         controller: _weight,
-        label: 'وزن الولادة اختياري',
+        label: 'ÙˆØ²Ù† Ø§Ù„ÙˆÙ„Ø§Ø¯Ø© Ø§Ø®ØªÙŠØ§Ø±ÙŠ',
         hint: '3.2',
         validator: _weightValidator,
       ),
@@ -288,10 +290,10 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
         ),
         child: Column(
           children: [
-            const Text('📸', style: TextStyle(fontSize: 30)),
+            const Text('ðŸ“¸', style: TextStyle(fontSize: 30)),
             const SizedBox(height: 8),
             Text(
-              'صورة طفلكِ',
+              'ØµÙˆØ±Ø© Ø·ÙÙ„ÙƒÙ',
               style: TextStyle(
                 color: numuwTextColor(),
                 fontSize: 15,
@@ -300,21 +302,25 @@ class _ChildOnboardingScreenState extends State<ChildOnboardingScreen> {
             ),
             const SizedBox(height: 3),
             Text(
-              'اختياري',
+              'Ø§Ø®ØªÙŠØ§Ø±ÙŠ',
               style: TextStyle(color: numuwSecondaryTextColor(), fontSize: 13),
             ),
           ],
         ),
       ),
       const SizedBox(height: 24),
-      PrimaryButton(label: 'لنبدأ! 🎉', loading: _loading, onPressed: _save),
+      NumuwPrimaryButton(
+        label: 'Ù„Ù†Ø¨Ø¯Ø£! ðŸŽ‰',
+        loading: _loading,
+        onPressed: _save,
+      ),
       const SizedBox(height: 10),
-      SecondaryButton(
-        label: 'تخطي التفاصيل الاختيارية',
+      NumuwSecondaryButton(
+        label: 'ØªØ®Ø·ÙŠ Ø§Ù„ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ø§Ø®ØªÙŠØ§Ø±ÙŠØ©',
         onPressed: _loading ? null : _save,
       ),
       const SizedBox(height: 10),
-      TextButton(onPressed: _back, child: const Text('رجوع')),
+      TextButton(onPressed: _back, child: const Text('Ø±Ø¬ÙˆØ¹')),
     ],
   );
 }
@@ -324,35 +330,36 @@ class _Progress extends StatelessWidget {
   final int step;
 
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: List.generate(
-          3,
-          (index) => Expanded(
-            child: Container(
-              height: 4,
-              margin: EdgeInsetsDirectional.only(end: index == 2 ? 0 : 6),
-              decoration: BoxDecoration(
-                color: index <= step ? numuwAccentColor() : numuwBorderColor(),
-                borderRadius: BorderRadius.circular(2),
+  Widget build(BuildContext context) {
+    final progress = (step + 1) / 3;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        NumuwPlantProgress(
+          progress: progress,
+          label: 'Ø§Ù„Ø®Ø·ÙˆØ© ${step + 1} Ù…Ù† 3',
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: List.generate(
+            3,
+            (index) => Expanded(
+              child: Container(
+                height: 5,
+                margin: EdgeInsetsDirectional.only(end: index == 2 ? 0 : 6),
+                decoration: BoxDecoration(
+                  color: index <= step
+                      ? numuwAccentColor()
+                      : numuwBorderColor(),
+                  borderRadius: BorderRadius.circular(999),
+                ),
               ),
             ),
           ),
         ),
-      ),
-      const SizedBox(height: 16),
-      Text(
-        'الخطوة ${step + 1} من 3',
-        style: TextStyle(
-          color: numuwSecondaryTextColor(),
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 }
 
 class _StageCard extends StatelessWidget {
@@ -444,21 +451,23 @@ class _Label extends StatelessWidget {
 
 String? _birthDateValidator(String? value) {
   final date = _parseDate(value);
-  if (date == null) return 'اكتبي تاريخ الميلاد بصيغة YYYY-MM-DD.';
+  if (date == null)
+    return 'Ø§ÙƒØªØ¨ÙŠ ØªØ§Ø±ÙŠØ® Ø§Ù„Ù…ÙŠÙ„Ø§Ø¯ Ø¨ØµÙŠØºØ© YYYY-MM-DD.';
   if (date.isAfter(DateTime.now()))
-    return 'تاريخ الميلاد لا يمكن أن يكون في المستقبل.';
+    return 'ØªØ§Ø±ÙŠØ® Ø§Ù„Ù…ÙŠÙ„Ø§Ø¯ Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø£Ù† ÙŠÙƒÙˆÙ† ÙÙŠ Ø§Ù„Ù…Ø³ØªÙ‚Ø¨Ù„.';
   return null;
 }
 
 String? _dueDateValidator(String? value) => _parseDate(value) == null
-    ? 'موعد الولادة المتوقع مطلوب بصيغة YYYY-MM-DD.'
+    ? 'Ù…ÙˆØ¹Ø¯ Ø§Ù„ÙˆÙ„Ø§Ø¯Ø© Ø§Ù„Ù…ØªÙˆÙ‚Ø¹ Ù…Ø·Ù„ÙˆØ¨ Ø¨ØµÙŠØºØ© YYYY-MM-DD.'
     : null;
 
 String? _weightValidator(String? value) {
   final text = value?.trim() ?? '';
   if (text.isEmpty) return null;
   final n = _parseDouble(text);
-  if (n == null || n <= 0) return 'اكتبي وزنًا صحيحًا بالكيلوجرام.';
+  if (n == null || n <= 0)
+    return 'Ø§ÙƒØªØ¨ÙŠ ÙˆØ²Ù†Ù‹Ø§ ØµØ­ÙŠØ­Ù‹Ø§ Ø¨Ø§Ù„ÙƒÙŠÙ„ÙˆØ¬Ø±Ø§Ù….';
   return null;
 }
 

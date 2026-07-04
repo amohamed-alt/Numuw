@@ -163,11 +163,14 @@ class AppHeader extends StatelessWidget {
   final Widget? trailing;
 
   @override
-  Widget build(BuildContext context) => NumuwHeader(
-    title: title,
-    subtitle: subtitle,
-    trailing:
-        trailing ?? (showNotification ? const NotificationButton() : null),
+  Widget build(BuildContext context) => SoftCard(
+    padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 16),
+    child: NumuwHeader(
+      title: title,
+      subtitle: subtitle,
+      trailing:
+          trailing ?? (showNotification ? const NotificationButton() : null),
+    ),
   );
 }
 
@@ -283,14 +286,17 @@ class SoftCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: color ?? numuwSurfaceColor(),
         borderRadius: borderRadius,
-        border: Border.all(color: borderColor ?? numuwBorderColor()),
+        border: Border.all(
+          color: borderColor ?? numuwBorderColor(),
+          width: 1.2,
+        ),
         boxShadow: numuwNightMode()
             ? const []
             : const [
                 BoxShadow(
-                  color: Color(0x0F000000),
-                  blurRadius: 10,
-                  offset: Offset(0, 2),
+                  color: Color(0x12000000),
+                  blurRadius: 18,
+                  offset: Offset(0, 8),
                 ),
               ],
       ),
@@ -323,58 +329,35 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final enabled = onPressed != null && !loading;
     return SizedBox(
       width: double.infinity,
-      height: 56,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: onPressed == null || color != null || numuwNightMode()
-              ? null
-              : AppColors.primaryGradient,
-          color: onPressed == null
-              ? AppColors.border
-              : color ?? (numuwNightMode() ? AppColors.nightGold : null),
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: onPressed == null
-              ? null
-              : const [
-                  BoxShadow(
-                    color: Color(0x6659B8A5),
-                    blurRadius: 24,
-                    offset: Offset(0, 8),
-                  ),
-                ],
-        ),
-        child: FilledButton(
-          style: FilledButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            disabledBackgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
-            ),
+      height: 54,
+      child: FilledButton(
+        onPressed: loading ? null : onPressed,
+        style: FilledButton.styleFrom(
+          backgroundColor: color ?? AppColors.mint,
+          disabledBackgroundColor: numuwNightMode()
+              ? AppColors.nightSurfaceSoft
+              : AppColors.border,
+          foregroundColor: Colors.white,
+          shadowColor: Colors.transparent,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          onPressed: loading ? null : onPressed,
-          child: loading
-              ? SizedBox(
-                  width: 22,
-                  height: 22,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.4,
-                    color: numuwNightMode() && color == null
-                        ? AppColors.nightBackground
-                        : Colors.white,
-                  ),
-                )
-              : Text(
-                  label,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
         ),
+        child: loading
+            ? SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.3,
+                  color: enabled ? Colors.white : numuwAccentColor(),
+                ),
+              )
+            : Text(label),
       ),
     );
   }
@@ -393,26 +376,36 @@ class SectionTitle extends StatelessWidget {
   final Widget? action;
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, color: AppColors.mint, size: 17),
-        const SizedBox(width: 7),
-        Expanded(
-          child: Text(
-            title,
-            textAlign: TextAlign.start,
-            style: const TextStyle(
-              color: AppColors.text,
-              fontSize: 15,
-              fontWeight: FontWeight.w800,
-            ),
+  Widget build(BuildContext context) => Row(
+    children: [
+      Container(
+        width: 32,
+        height: 32,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: numuwNightMode()
+              ? AppColors.nightGold.withValues(alpha: .14)
+              : AppColors.mintLight,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(icon, color: AppColors.mintDark, size: 18),
+      ),
+      const SizedBox(width: 10),
+      Expanded(
+        child: Text(
+          title,
+          textAlign: TextAlign.start,
+          style: TextStyle(
+            color: numuwTextColor(),
+            fontSize: 16.5,
+            fontWeight: FontWeight.w900,
+            height: 1.2,
           ),
         ),
-        if (action != null) action!,
-      ],
-    );
-  }
+      ),
+      if (action != null) action!,
+    ],
+  );
 }
 
 class EmptyState extends StatelessWidget {
@@ -428,21 +421,29 @@ class EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SoftCard(
-      color: AppColors.mintLight,
-      borderColor: AppColors.mintLight,
-      child: Row(
+      color: numuwNightMode()
+          ? AppColors.nightSurfaceSoft
+          : AppColors.neutralSoft,
+      borderColor: numuwBorderColor(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: AppColors.mint),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              message,
-              textAlign: TextAlign.start,
-              style: const TextStyle(
-                color: AppColors.mintDark,
-                fontWeight: FontWeight.w800,
-                height: 1.5,
-              ),
+          IconBadge(
+            icon: '🌱',
+            background: numuwNightMode()
+                ? AppColors.nightGold.withValues(alpha: .14)
+                : AppColors.mintLight,
+            size: 44,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            message,
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              color: numuwTextColor(),
+              fontWeight: FontWeight.w800,
+              height: 1.55,
+              fontSize: 14,
             ),
           ),
         ],
@@ -502,7 +503,7 @@ class AppTextField extends StatelessWidget {
           maxLines: obscureText ? 1 : maxLines,
           textDirection: textDirection ?? TextDirection.rtl,
           textAlign: TextAlign.start,
-          style: TextStyle(color: numuwTextColor(), fontSize: 15, height: 1.35),
+          style: TextStyle(color: numuwTextColor(), fontSize: 15, height: 1.45),
           decoration: InputDecoration(
             hintText: hint,
             prefixIcon: icon == null ? null : Icon(icon, color: AppColors.mint),
@@ -515,15 +516,15 @@ class AppTextField extends StatelessWidget {
             errorMaxLines: 2,
             errorStyle: const TextStyle(height: 1.35),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(16),
               borderSide: const BorderSide(color: AppColors.border, width: 1.5),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide(color: numuwBorderColor(), width: 1.5),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide(color: numuwAccentColor(), width: 1.8),
             ),
           ),
@@ -550,20 +551,24 @@ class ChoicePill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(20),
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 160),
         padding: const EdgeInsetsDirectional.symmetric(
-          horizontal: 14,
-          vertical: 12,
+          horizontal: 15,
+          vertical: 13,
         ),
         decoration: BoxDecoration(
-          color: selected ? AppColors.mintLight : AppColors.surface,
-          borderRadius: BorderRadius.circular(14),
+          color: selected
+              ? (numuwNightMode()
+                    ? AppColors.nightGold.withValues(alpha: .14)
+                    : AppColors.mintLight)
+              : AppColors.surface,
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: selected ? AppColors.mint : AppColors.border,
-            width: selected ? 2 : 1.5,
+            color: selected ? AppColors.mintDark : AppColors.border,
+            width: selected ? 2 : 1.4,
           ),
         ),
         child: Text(
@@ -598,10 +603,11 @@ class InfoBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsetsDirectional.all(12),
+      padding: const EdgeInsetsDirectional.all(15),
       decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(16),
+        color: background.withValues(alpha: .92),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withValues(alpha: .18)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -612,7 +618,12 @@ class InfoBanner extends StatelessWidget {
             child: Text(
               message,
               textAlign: TextAlign.start,
-              style: TextStyle(color: color, fontWeight: FontWeight.w800),
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.w800,
+                fontSize: 13.5,
+                height: 1.45,
+              ),
             ),
           ),
         ],
@@ -643,7 +654,7 @@ class IconBadge extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: background,
-        borderRadius: BorderRadius.circular(size * .31),
+        borderRadius: BorderRadius.circular(size * .34),
         border: borderColor == null ? null : Border.all(color: borderColor!),
       ),
       child: Text(icon, style: TextStyle(fontSize: size * .46)),
@@ -664,15 +675,15 @@ class SecondaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SizedBox(
     width: double.infinity,
-    height: 56,
+    height: 54,
     child: OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         backgroundColor: numuwSurfaceColor(),
         foregroundColor: numuwTextColor(),
-        side: BorderSide(color: numuwBorderColor(), width: 2),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        textStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+        side: BorderSide(color: numuwBorderColor(), width: 1.4),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
       ),
       child: Text(label),
     ),
@@ -835,39 +846,44 @@ class QuickLogTypeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    width: 74,
+    width: 78,
     child: InkWell(
-      borderRadius: BorderRadius.circular(22),
+      borderRadius: BorderRadius.circular(24),
       onTap: onTap,
       child: Column(
         children: [
           Container(
-            width: 66,
-            height: 66,
+            width: 68,
+            height: 68,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: background,
-              borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: border, width: 2),
-              boxShadow: [
-                BoxShadow(
-                  color: border.withValues(alpha: .20),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              color: selected ? AppColors.mintLight : background,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: selected ? AppColors.mintDark : border,
+                width: selected ? 2.2 : 1.6,
+              ),
+              boxShadow: numuwNightMode()
+                  ? const []
+                  : [
+                      BoxShadow(
+                        color: border.withValues(alpha: .15),
+                        blurRadius: 14,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
             ),
-            child: Text(icon, style: const TextStyle(fontSize: 30)),
+            child: Text(icon, style: const TextStyle(fontSize: 28)),
           ),
-          const SizedBox(height: 7),
+          const SizedBox(height: 8),
           Text(
             label,
             maxLines: 1,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: numuwTextColor(),
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
+              fontSize: 12.5,
+              fontWeight: FontWeight.w800,
             ),
           ),
         ],
@@ -897,15 +913,15 @@ class TimerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SoftCard(
     radius: 24,
-    padding: const EdgeInsetsDirectional.fromSTEB(18, 26, 18, 18),
+    padding: const EdgeInsetsDirectional.fromSTEB(18, 20, 18, 18),
     child: Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 8,
-              height: 8,
+              width: 9,
+              height: 9,
               decoration: BoxDecoration(
                 color: active ? color : AppColors.mutedText,
                 shape: BoxShape.circle,
@@ -922,21 +938,21 @@ class TimerCard extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         Directionality(
           textDirection: TextDirection.ltr,
           child: Text(
             time,
             style: TextStyle(
               color: color,
-              fontSize: 54,
+              fontSize: 50,
               fontWeight: FontWeight.w900,
               letterSpacing: -2,
               height: 1.1,
             ),
           ),
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: 16),
         PrimaryButton(
           label: buttonLabel,
           color: active ? AppColors.danger : color,
@@ -979,9 +995,9 @@ class _LoadingDotsState extends State<LoadingDots>
           CurvedAnimation(parent: _controller, curve: Interval(index / 3, 1)),
         ),
         child: Container(
-          width: 8,
-          height: 8,
-          margin: const EdgeInsetsDirectional.symmetric(horizontal: 3.5),
+          width: 9,
+          height: 9,
+          margin: const EdgeInsetsDirectional.symmetric(horizontal: 4),
           decoration: BoxDecoration(
             color: widget.color ?? numuwAccentColor(),
             shape: BoxShape.circle,
@@ -1020,8 +1036,21 @@ class LoadingSkeleton extends StatelessWidget {
   final double height;
 
   @override
-  Widget build(BuildContext context) =>
-      SoftCard(child: SizedBox(height: height));
+  Widget build(BuildContext context) => SoftCard(
+    child: SizedBox(
+      height: height,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('🌱', style: TextStyle(fontSize: 28)),
+            const SizedBox(height: 10),
+            LoadingDots(color: numuwAccentColor()),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 class ActivityListItem extends StatelessWidget {
@@ -1279,19 +1308,19 @@ class SettingsRow extends StatelessWidget {
     child: Padding(
       padding: const EdgeInsetsDirectional.symmetric(
         horizontal: 16,
-        vertical: 15,
+        vertical: 16,
       ),
       child: Row(
         children: [
           Container(
-            width: 36,
-            height: 36,
+            width: 38,
+            height: 38,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: color.withValues(alpha: .12),
-              borderRadius: BorderRadius.circular(11),
+              color: color.withValues(alpha: .14),
+              borderRadius: BorderRadius.circular(13),
             ),
-            child: Icon(icon, color: color, size: 20),
+            child: Icon(icon, color: AppColors.mintDark, size: 20),
           ),
           const SizedBox(width: 13),
           Expanded(
@@ -1300,8 +1329,8 @@ class SettingsRow extends StatelessWidget {
               textAlign: TextAlign.start,
               style: TextStyle(
                 color: numuwTextColor(),
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
                 height: 1.35,
               ),
             ),
@@ -1333,7 +1362,7 @@ class NumuwSwitch extends StatelessWidget {
       width: 48,
       height: 28,
       decoration: BoxDecoration(
-        color: value ? AppColors.nightGold : AppColors.border,
+        color: value ? AppColors.mint : AppColors.border,
         borderRadius: BorderRadius.circular(14),
       ),
       child: AnimatedAlign(
@@ -1364,21 +1393,21 @@ class SuccessToast extends StatelessWidget {
   @override
   Widget build(BuildContext context) => PositionedDirectional(
     bottom: 96,
-    start: 28,
-    end: 28,
+    start: 18,
+    end: 18,
     child: Material(
       color: Colors.transparent,
       child: Container(
         padding: const EdgeInsetsDirectional.symmetric(
           horizontal: 18,
-          vertical: 12,
+          vertical: 13,
         ),
         decoration: BoxDecoration(
-          color: AppColors.text,
-          borderRadius: BorderRadius.circular(16),
+          color: numuwNightMode() ? AppColors.nightSurface : AppColors.mintDark,
+          borderRadius: BorderRadius.circular(18),
           boxShadow: const [
             BoxShadow(
-              color: Color(0x33000000),
+              color: Color(0x24000000),
               blurRadius: 24,
               offset: Offset(0, 8),
             ),
@@ -1454,6 +1483,7 @@ class ChildHeroCard extends StatelessWidget {
     ),
     child: InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(24),
       child: Row(
         children: [
           IconBadge(
@@ -1540,7 +1570,7 @@ class SummaryCard extends StatelessWidget {
   Widget build(BuildContext context) => SoftCard(
     padding: const EdgeInsetsDirectional.all(16),
     child: SizedBox(
-      height: 88,
+      height: 92,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1556,7 +1586,7 @@ class SummaryCard extends StatelessWidget {
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         color: color,
-                        fontSize: 11,
+                        fontSize: 11.5,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -1583,7 +1613,7 @@ class SummaryCard extends StatelessWidget {
             textAlign: TextAlign.start,
             style: TextStyle(
               color: numuwTextColor(),
-              fontSize: value.length > 18 ? 14 : 20,
+              fontSize: value.length > 18 ? 14 : 19,
               fontWeight: FontWeight.w900,
               height: 1.25,
             ),

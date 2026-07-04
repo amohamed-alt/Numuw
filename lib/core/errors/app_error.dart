@@ -21,6 +21,49 @@ class RequestTimeoutException extends AppException {
     : super('استغرق الطلب وقتًا طويلًا. تحققي من اتصالك وحاولي مرة أخرى.');
 }
 
+class NoInternetException extends AppException {
+  const NoInternetException()
+    : super(
+        'لا يوجد اتصال بالإنترنت. احتفظنا بالنص ويمكنكِ المحاولة مرة أخرى.',
+      );
+}
+
+class InvalidSessionException extends AppException {
+  const InvalidSessionException()
+    : super('انتهت الجلسة. سجّلي الدخول مرة أخرى.');
+}
+
+class UnauthorizedChildException extends AppException {
+  const UnauthorizedChildException()
+    : super('ليس لديكِ صلاحية للوصول إلى بيانات هذا الطفل.');
+}
+
+class RateLimitException extends AppException {
+  const RateLimitException([String? message])
+    : super(message ?? 'حاولي مرة أخرى بعد دقيقة.');
+}
+
+class InvalidAiResponseException extends AppException {
+  const InvalidAiResponseException([String? message])
+    : super(message ?? 'لم أتمكن من فهم الرد الآن. حاولي مرة أخرى.');
+}
+
+class AiUnavailableException extends AppException {
+  const AiUnavailableException() : super('تعذر الحصول على رد من المساعد الآن.');
+}
+
+class EmergencyDetectedException extends AppException {
+  const EmergencyDetectedException()
+    : super(
+        'هذه حالة طارئة. اتصلي بالطوارئ أو بالطبيب فورًا. لا تنتظري ردًا من المساعد.',
+      );
+}
+
+class LocalValidationException extends AppException {
+  const LocalValidationException([String? message])
+    : super(message ?? 'لم أتمكن من فهم تسجيل كامل. يمكنكِ تعديله يدويًا.');
+}
+
 class OfflineCareEventQueuedException extends AppException {
   const OfflineCareEventQueuedException()
     : super('تم حفظ التسجيل مؤقتًا، وسيتم رفعه تلقائيًا عند عودة الاتصال.');
@@ -30,7 +73,7 @@ String readableError(Object error) {
   if (error is AppException) return error.userMessage;
   if (error is AuthException) return _authError(error.message);
   if (error is PostgrestException) {
-    return 'خطأ قاعدة البيانات (${error.code ?? 'بدون كود'}): ${error.message}';
+    return 'تعذر تنفيذ الطلب الآن. حاولي مرة أخرى.';
   }
   final message = error.toString().toLowerCase();
   if (message.contains('timeout') || message.contains('timed out')) {

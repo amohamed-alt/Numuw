@@ -13,6 +13,7 @@ import 'weekly_share_screen.dart';
 import '../state/app_preferences.dart';
 import '../state/child_session.dart';
 import '../widgets/app_widgets.dart';
+import '../widgets/numuw_components.dart';
 
 class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
@@ -128,12 +129,36 @@ class _MoreScreenState extends State<MoreScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const AppHeader(
-              title: 'المزيد ⚙️',
+            NumuwAppBar(
+              title: 'المزيد',
               subtitle: 'الإعدادات والخدمات الإضافية',
-              showNotification: false,
+              trailing: const NumuwStatusBadge(
+                label: 'إعدادات',
+                color: AppColors.mint,
+              ),
             ),
-            const SizedBox(height: 22),
+            const SizedBox(height: 14),
+            NumuwPlantProgress(
+              progress: child == null ? .24 : .56,
+              label: child == null ? 'اختاري طفلاً' : 'التجربة مكتملة جزئياً',
+            ),
+            const SizedBox(height: 14),
+            if (child != null) ...[
+              NumuwBabyHeader(name: child.name, subtitle: 'الحساب: $email'),
+              const SizedBox(height: 16),
+            ] else ...[
+              NumuwCard(
+                child: Text(
+                  'الحساب: $email',
+                  style: TextStyle(
+                    color: numuwSecondaryTextColor(),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
             const _GroupLabel('أدوات المتابعة'),
             const SizedBox(height: 9),
             SettingsGroup(
@@ -348,7 +373,7 @@ class _FeatureInfoScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          NumuwHeader(
+          NumuwAppBar(
             title: title,
             subtitle: 'معلومات آمنة داخل التطبيق',
             leading: AppIconButton(
@@ -361,8 +386,8 @@ class _FeatureInfoScreen extends StatelessWidget {
               borderWidth: 1.5,
             ),
           ),
-          const SizedBox(height: 22),
-          SoftCard(
+          const SizedBox(height: 14),
+          NumuwCard(
             child: Text(
               message,
               textAlign: TextAlign.start,

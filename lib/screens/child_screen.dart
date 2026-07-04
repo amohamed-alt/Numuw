@@ -19,6 +19,7 @@ import '../repositories/vaccination_repository.dart';
 import '../state/app_events.dart';
 import '../state/child_session.dart';
 import '../widgets/app_widgets.dart';
+import '../widgets/numuw_components.dart';
 
 class ChildScreen extends StatefulWidget {
   const ChildScreen({super.key, this.initialSection});
@@ -115,7 +116,12 @@ class _ChildScreenState extends State<ChildScreen> {
     final child = ChildSession.instance.selectedChild;
     if (child == null) {
       return const Scaffold(
-        body: AppPage(child: EmptyState(message: 'لا يوجد طفل محدد.')),
+        body: AppPage(
+          child: EmptyState(
+            message:
+                'Ã™â€žÃ˜Â§ Ã™Å Ã™Ë†Ã˜Â¬Ã˜Â¯ Ã˜Â·Ã™ÂÃ™â€ž Ã™â€¦Ã˜Â­Ã˜Â¯Ã˜Â¯.',
+          ),
+        ),
       );
     }
     return Scaffold(
@@ -124,7 +130,45 @@ class _ChildScreenState extends State<ChildScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _ProfileHeader(child: child, onEdit: () => _editChild(child)),
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(18, 18, 18, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  NumuwAppBar(
+                    title: 'Ã˜Â·Ã™ÂÃ™â€žÃ™Å ',
+                    subtitle:
+                        'Ã™â€ Ã™â€¦Ã™Ë† Ã˜Â§Ã™â€žÃ˜Â·Ã™ÂÃ™â€žÃ˜Å’ Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â·Ã˜Â¹Ã™Å Ã™â€¦Ã˜Â§Ã˜ÂªÃ˜Å’ Ã™Ë†Ã˜Â§Ã™â€žÃ™â€¦Ã™â€¡Ã˜Â§Ã™â€¦ Ã™ÂÃ™Å  Ã™â€¦Ã™Æ’Ã˜Â§Ã™â€  Ã™Ë†Ã˜Â§Ã˜Â­Ã˜Â¯',
+                    trailing: NumuwStatusBadge(
+                      label: '${dataLabel(child)} Ã˜Â¬Ã˜Â§Ã™â€¡Ã˜Â²',
+                      color: AppColors.mint,
+                    ),
+                    leading: AppIconButton(
+                      icon: Icons.edit_outlined,
+                      onPressed: () => _editChild(child),
+                      badge: false,
+                      size: 42,
+                      radius: 13,
+                      iconSize: 20,
+                      borderWidth: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  NumuwPlantProgress(
+                    progress: _profileProgress(child),
+                    label: _profileProgressLabel(child),
+                  ),
+                  const SizedBox(height: 14),
+                  NumuwBabyHeader(
+                    name: child.name,
+                    subtitle: child.isBorn
+                        ? 'Ã™â€¦Ã™â€ Ã˜Â° ${ArabicFormatters.age(child)}'
+                        : 'Ã˜Â§Ã™â€žÃ™â€¦Ã™Ë†Ã˜Â¹Ã˜Â¯ ${ArabicFormatters.date(child.dueDate)}',
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(18, 0, 18, 24),
               child: FutureBuilder<_ChildData>(
@@ -185,17 +229,45 @@ class _ChildScreenState extends State<ChildScreen> {
     );
   }
 
+  double _profileProgress(ChildProfile child) {
+    var score = 0;
+    if (child.name.trim().isNotEmpty) score++;
+    if (child.bloodType?.trim().isNotEmpty == true) score++;
+    if (child.birthWeightKg != null) score++;
+    if (child.feedingType.trim().isNotEmpty) score++;
+    return score / 4.0;
+  }
+
+  String _profileProgressLabel(ChildProfile child) {
+    final progress = _profileProgress(child);
+    if (progress == 0)
+      return 'Ã˜Â§Ã™â€žÃ˜Â¨Ã˜Â°Ã˜Â±Ã˜Â© Ã˜Â§Ã™â€žÃ˜Â£Ã™Ë†Ã™â€žÃ™â€°';
+    if (progress < .75)
+      return 'Ã˜Â§Ã™â€žÃ˜Â¨Ã˜Â±Ã™Ë†Ã™ÂÃ˜Â§Ã™Å Ã™â€ž Ã™Å Ã™â€ Ã™â€¦Ã™Ë†';
+    return 'Ã˜Â§Ã™â€žÃ˜Â¨Ã™Å Ã˜Â§Ã™â€ Ã˜Â§Ã˜Âª Ã™â€¦Ã™Æ’Ã˜ÂªÃ™â€¦Ã™â€žÃ˜Â©';
+  }
+
+  String dataLabel(ChildProfile child) =>
+      child.isBorn ? 'Ã™â€¦Ã™Ë†Ã™â€žÃ™Ë†Ã˜Â¯' : 'Ã˜Â­Ã™â€¦Ã™â€ž';
+
   Future<void> _editChild(ChildProfile child) async {
     final name = TextEditingController(text: child.name);
     final blood = TextEditingController(text: child.bloodType ?? '');
     final weight = TextEditingController(
       text: child.birthWeightKg?.toString() ?? '',
     );
-    final saved = await _showForm('تعديل بيانات الطفل', [
-      _DialogField(name, 'الاسم'),
-      _DialogField(blood, 'فصيلة الدم'),
-      _DialogField(weight, 'وزن الولادة', TextInputType.number),
-    ]);
+    final saved = await _showForm(
+      'Ã˜ÂªÃ˜Â¹Ã˜Â¯Ã™Å Ã™â€ž Ã˜Â¨Ã™Å Ã˜Â§Ã™â€ Ã˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ˜Â·Ã™ÂÃ™â€ž',
+      [
+        _DialogField(name, 'Ã˜Â§Ã™â€žÃ˜Â§Ã˜Â³Ã™â€¦'),
+        _DialogField(blood, 'Ã™ÂÃ˜ÂµÃ™Å Ã™â€žÃ˜Â© Ã˜Â§Ã™â€žÃ˜Â¯Ã™â€¦'),
+        _DialogField(
+          weight,
+          'Ã™Ë†Ã˜Â²Ã™â€  Ã˜Â§Ã™â€žÃ™Ë†Ã™â€žÃ˜Â§Ã˜Â¯Ã˜Â©',
+          TextInputType.number,
+        ),
+      ],
+    );
     if (saved != true) return;
     final updated = await ChildRepository().updateChild(
       child.copyWith(
@@ -216,14 +288,32 @@ class _ChildScreenState extends State<ChildScreen> {
     final source = TextEditingController();
     final notes = TextEditingController();
     final measuredAt = TextEditingController(text: _dateOnly(DateTime.now()));
-    if (await _showForm('إضافة قياس نمو', [
-          _DialogField(w, 'الوزن كجم', TextInputType.number),
-          _DialogField(h, 'الطول سم', TextInputType.number),
-          _DialogField(head, 'محيط الرأس سم', TextInputType.number),
-          _DialogDateField(measuredAt, 'تاريخ القياس'),
-          _DialogField(source, 'المصدر'),
-          _DialogField(notes, 'ملاحظات'),
-        ]) ==
+    if (await _showForm(
+          'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã™â€šÃ™Å Ã˜Â§Ã˜Â³ Ã™â€ Ã™â€¦Ã™Ë†',
+          [
+            _DialogField(
+              w,
+              'Ã˜Â§Ã™â€žÃ™Ë†Ã˜Â²Ã™â€  Ã™Æ’Ã˜Â¬Ã™â€¦',
+              TextInputType.number,
+            ),
+            _DialogField(
+              h,
+              'Ã˜Â§Ã™â€žÃ˜Â·Ã™Ë†Ã™â€ž Ã˜Â³Ã™â€¦',
+              TextInputType.number,
+            ),
+            _DialogField(
+              head,
+              'Ã™â€¦Ã˜Â­Ã™Å Ã˜Â· Ã˜Â§Ã™â€žÃ˜Â±Ã˜Â£Ã˜Â³ Ã˜Â³Ã™â€¦',
+              TextInputType.number,
+            ),
+            _DialogDateField(
+              measuredAt,
+              'Ã˜ÂªÃ˜Â§Ã˜Â±Ã™Å Ã˜Â® Ã˜Â§Ã™â€žÃ™â€šÃ™Å Ã˜Â§Ã˜Â³',
+            ),
+            _DialogField(source, 'Ã˜Â§Ã™â€žÃ™â€¦Ã˜ÂµÃ˜Â¯Ã˜Â±'),
+            _DialogField(notes, 'Ã™â€¦Ã™â€žÃ˜Â§Ã˜Â­Ã˜Â¸Ã˜Â§Ã˜Âª'),
+          ],
+        ) ==
         true) {
       final c = ChildSession.instance.selectedChild!;
       await _growthRepo.add(
@@ -244,11 +334,17 @@ class _ChildScreenState extends State<ChildScreen> {
     final dose = TextEditingController();
     final provider = TextEditingController();
     final date = TextEditingController(text: _dateOnly(DateTime.now()));
-    if (await _showForm('إضافة تطعيم', [
-              _DialogField(n, 'اسم التطعيم'),
-              _DialogField(dose, 'الجرعة'),
-              _DialogDateField(date, 'التاريخ المتوقع'),
-              _DialogField(provider, 'الجهة/الطبيب'),
+    if (await _showForm('Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã˜ÂªÃ˜Â·Ã˜Â¹Ã™Å Ã™â€¦', [
+              _DialogField(n, 'Ã˜Â§Ã˜Â³Ã™â€¦ Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â·Ã˜Â¹Ã™Å Ã™â€¦'),
+              _DialogField(dose, 'Ã˜Â§Ã™â€žÃ˜Â¬Ã˜Â±Ã˜Â¹Ã˜Â©'),
+              _DialogDateField(
+                date,
+                'Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â§Ã˜Â±Ã™Å Ã˜Â® Ã˜Â§Ã™â€žÃ™â€¦Ã˜ÂªÃ™Ë†Ã™â€šÃ˜Â¹',
+              ),
+              _DialogField(
+                provider,
+                'Ã˜Â§Ã™â€žÃ˜Â¬Ã™â€¡Ã˜Â©/Ã˜Â§Ã™â€žÃ˜Â·Ã˜Â¨Ã™Å Ã˜Â¨',
+              ),
             ]) ==
             true &&
         n.text.trim().isNotEmpty) {
@@ -271,10 +367,17 @@ class _ChildScreenState extends State<ChildScreen> {
     final child = ChildSession.instance.selectedChild!;
     final guardians = await _familyRepo.fetchGuardians(child.id);
     String? assignedTo;
-    if (await _showForm('إضافة مهمة', [
-              _DialogField(t, 'عنوان المهمة'),
-              _DialogField(cat, 'التصنيف'),
-              _DialogDateField(due, 'تاريخ الاستحقاق', optional: true),
+    if (await _showForm('Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã™â€¦Ã™â€¡Ã™â€¦Ã˜Â©', [
+              _DialogField(
+                t,
+                'Ã˜Â¹Ã™â€ Ã™Ë†Ã˜Â§Ã™â€  Ã˜Â§Ã™â€žÃ™â€¦Ã™â€¡Ã™â€¦Ã˜Â©',
+              ),
+              _DialogField(cat, 'Ã˜Â§Ã™â€žÃ˜ÂªÃ˜ÂµÃ™â€ Ã™Å Ã™Â'),
+              _DialogDateField(
+                due,
+                'Ã˜ÂªÃ˜Â§Ã˜Â±Ã™Å Ã˜Â® Ã˜Â§Ã™â€žÃ˜Â§Ã˜Â³Ã˜ÂªÃ˜Â­Ã™â€šÃ˜Â§Ã™â€š',
+                optional: true,
+              ),
               if (guardians.isNotEmpty)
                 _GuardianPicker(
                   guardians: guardians,
@@ -297,7 +400,10 @@ class _ChildScreenState extends State<ChildScreen> {
 
   Future<void> _addQuestion() async {
     final q = TextEditingController();
-    if (await _showForm('إضافة سؤال للطبيب', [_DialogField(q, 'السؤال')]) ==
+    if (await _showForm(
+              'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã˜Â³Ã˜Â¤Ã˜Â§Ã™â€ž Ã™â€žÃ™â€žÃ˜Â·Ã˜Â¨Ã™Å Ã˜Â¨',
+              [_DialogField(q, 'Ã˜Â§Ã™â€žÃ˜Â³Ã˜Â¤Ã˜Â§Ã™â€ž')],
+            ) ==
             true &&
         q.text.trim().isNotEmpty) {
       await _questionRepo.add(
@@ -327,11 +433,11 @@ class _ChildScreenState extends State<ChildScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('إلغاء'),
+                child: const Text('Ã˜Â¥Ã™â€žÃ˜ÂºÃ˜Â§Ã˜Â¡'),
               ),
               FilledButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: const Text('حفظ'),
+                child: const Text('Ã˜Â­Ã™ÂÃ˜Â¸'),
               ),
             ],
           ),
@@ -379,229 +485,6 @@ class _ChildData {
   }
 }
 
-class _ProfileHeader extends StatelessWidget {
-  const _ProfileHeader({required this.child, required this.onEdit});
-
-  final ChildProfile child;
-  final VoidCallback onEdit;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: const EdgeInsetsDirectional.fromSTEB(18, 18, 18, 24),
-    decoration: const BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [AppColors.mintLight, AppColors.background],
-      ),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                '${child.name} ?',
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  color: numuwTextColor(),
-                  fontSize: 17,
-                  fontWeight: FontWeight.w800,
-                  height: 1.35,
-                ),
-              ),
-            ),
-            AppIconButton(
-              icon: Icons.edit_outlined,
-              onPressed: onEdit,
-              badge: false,
-              size: 38,
-              radius: 12,
-              iconSize: 17,
-              borderWidth: 1.5,
-            ),
-          ],
-        ),
-        const SizedBox(height: 18),
-        Row(
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                IconBadge(
-                  icon: '👶',
-                  background: numuwSurfaceColor(),
-                  size: 80,
-                  borderColor: AppColors.mint.withValues(alpha: .30),
-                ),
-                PositionedDirectional(
-                  end: -2,
-                  bottom: -2,
-                  child: Container(
-                    width: 28,
-                    height: 28,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: AppColors.mint,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.surface, width: 2),
-                    ),
-                    child: const Text('📷', style: TextStyle(fontSize: 12)),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    child.name,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      color: numuwTextColor(),
-                      fontSize: 24,
-                      fontWeight: FontWeight.w900,
-                      height: 1.25,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    ArabicFormatters.age(child),
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
-                      color: AppColors.mint,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_month_outlined,
-                        size: 13,
-                        color: numuwSecondaryTextColor(),
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          child.isBorn
-                              ? 'منذ ${ArabicFormatters.date(child.birthDate)}'
-                              : 'الموعد ${ArabicFormatters.date(child.dueDate)}',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: numuwSecondaryTextColor(),
-                            fontSize: 12,
-                            height: 1.35,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        SoftCard(
-          padding: const EdgeInsetsDirectional.symmetric(
-            horizontal: 16,
-            vertical: 14,
-          ),
-          radius: 16,
-          child: Row(
-            children: [
-              Expanded(
-                child: _ProfileStat(
-                  label: 'الرضاعة',
-                  value:
-                      '${ArabicFormatters.feedingType(child.feedingType)} 🌱',
-                  color: AppColors.mint,
-                ),
-              ),
-              _VerticalDivider(),
-              Expanded(
-                child: _ProfileStat(
-                  label: 'فصيلة الدم',
-                  value: child.bloodType?.isNotEmpty == true
-                      ? '${child.bloodType} 🩸'
-                      : 'غير محدد',
-                  color: AppColors.peach,
-                ),
-              ),
-              _VerticalDivider(),
-              Expanded(
-                child: _ProfileStat(
-                  label: 'وزن الولادة',
-                  value: child.birthWeightKg == null
-                      ? 'غير محدد'
-                      : '${child.birthWeightKg} كجم',
-                  color: AppColors.purple,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class _ProfileStat extends StatelessWidget {
-  const _ProfileStat({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  final String label;
-  final String value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) => Column(
-    children: [
-      Text(
-        label,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: numuwSecondaryTextColor(),
-          fontSize: 11,
-          height: 1.3,
-        ),
-      ),
-      const SizedBox(height: 3),
-      Text(
-        value,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: color,
-          fontSize: 13,
-          fontWeight: FontWeight.w800,
-          height: 1.3,
-        ),
-      ),
-    ],
-  );
-}
-
-class _VerticalDivider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => Container(
-    width: 1,
-    height: 34,
-    margin: const EdgeInsetsDirectional.symmetric(horizontal: 8),
-    color: numuwBorderColor(),
-  );
-}
-
 class _SectionCard extends StatelessWidget {
   const _SectionCard({
     required this.title,
@@ -624,39 +507,27 @@ class _SectionCard extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Icon(icon, color: AppColors.mint, size: 16),
-            const SizedBox(width: 7),
-            Expanded(
-              child: Text(
-                title,
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  color: numuwTextColor(),
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            if (actionLabel != null)
-              TextButton(
-                onPressed: onAction,
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  minimumSize: const Size(0, 30),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                child: Text(
-                  actionLabel!,
-                  style: const TextStyle(
-                    color: AppColors.mint,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
+        NumuwSectionHeader(
+          title: title,
+          icon: icon,
+          action: actionLabel == null
+              ? null
+              : TextButton(
+                  onPressed: onAction,
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: const Size(0, 30),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: Text(
+                    actionLabel!,
+                    style: const TextStyle(
+                      color: AppColors.mint,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-              ),
-          ],
         ),
         const SizedBox(height: 14),
         ...children,
@@ -677,18 +548,34 @@ class _GrowthSection extends StatelessWidget {
       ..sort((a, b) => a.measuredAt.compareTo(b.measuredAt));
     final latest = sorted.isEmpty ? null : sorted.last;
     return _SectionCard(
-      title: 'النمو',
+      title: 'Ã˜Â§Ã™â€žÃ™â€ Ã™â€¦Ã™Ë†',
       icon: Icons.trending_up_rounded,
-      actionLabel: 'إضافة قياس +',
+      actionLabel: 'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© Ã™â€šÃ™Å Ã˜Â§Ã˜Â³ +',
       onAction: onAdd,
       children: [
+        NumuwStatusBadge(
+          label: sorted.isEmpty
+              ? 'Ã˜Â¨Ã˜Â¯Ã˜Â§Ã™Å Ã˜Â© Ã˜Â§Ã™â€žÃ™â€¦Ã˜ÂªÃ˜Â§Ã˜Â¨Ã˜Â¹Ã˜Â©'
+              : 'Ã™â€šÃ™Å Ã˜Â§Ã˜Â³Ã˜Â§Ã˜Âª Ã™â€¦Ã˜Â­Ã™ÂÃ™Ë†Ã˜Â¸Ã˜Â©',
+          color: AppColors.mint,
+        ),
+        const SizedBox(height: 12),
         Row(
           children: [
-            _GrowthLegend(label: 'الوزن', color: AppColors.mint),
+            _GrowthLegend(
+              label: 'Ã˜Â§Ã™â€žÃ™Ë†Ã˜Â²Ã™â€ ',
+              color: AppColors.mint,
+            ),
             const SizedBox(width: 8),
-            _GrowthLegend(label: 'الطول', color: AppColors.blue),
+            _GrowthLegend(
+              label: 'Ã˜Â§Ã™â€žÃ˜Â·Ã™Ë†Ã™â€ž',
+              color: AppColors.blue,
+            ),
             const SizedBox(width: 8),
-            _GrowthLegend(label: 'محيط الرأس', color: AppColors.purple),
+            _GrowthLegend(
+              label: 'Ã™â€¦Ã˜Â­Ã™Å Ã˜Â· Ã˜Â§Ã™â€žÃ˜Â±Ã˜Â£Ã˜Â³',
+              color: AppColors.purple,
+            ),
           ],
         ),
         const SizedBox(height: 14),
@@ -698,7 +585,7 @@ class _GrowthSection extends StatelessWidget {
           child: sorted.isEmpty
               ? Center(
                   child: Text(
-                    'لا توجد قياسات نمو بعد',
+                    'Ã™â€žÃ˜Â§ Ã˜ÂªÃ™Ë†Ã˜Â¬Ã˜Â¯ Ã™â€šÃ™Å Ã˜Â§Ã˜Â³Ã˜Â§Ã˜Âª Ã™â€ Ã™â€¦Ã™Ë† Ã˜Â¨Ã˜Â¹Ã˜Â¯',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: numuwSecondaryTextColor(),
@@ -712,7 +599,7 @@ class _GrowthSection extends StatelessWidget {
         if (latest != null) ...[
           const SizedBox(height: 8),
           Text(
-            'آخر قياس: وزن ${latest.weightKg ?? '-'} كجم · طول ${latest.heightCm ?? '-'} سم · رأس ${latest.headCircumferenceCm ?? '-'} سم',
+            'Ã˜Â¢Ã˜Â®Ã˜Â± Ã™â€šÃ™Å Ã˜Â§Ã˜Â³: Ã™Ë†Ã˜Â²Ã™â€  ${latest.weightKg ?? '-'} Ã™Æ’Ã˜Â¬Ã™â€¦ Ã‚Â· Ã˜Â·Ã™Ë†Ã™â€ž ${latest.heightCm ?? '-'} Ã˜Â³Ã™â€¦ Ã‚Â· Ã˜Â±Ã˜Â£Ã˜Â³ ${latest.headCircumferenceCm ?? '-'} Ã˜Â³Ã™â€¦',
             textAlign: TextAlign.start,
             style: TextStyle(
               color: numuwSecondaryTextColor(),
@@ -724,7 +611,7 @@ class _GrowthSection extends StatelessWidget {
         const SizedBox(height: 10),
         InfoBanner(
           message:
-              'منحنى النمو يساعدك على متابعة القياسات المسجلة فقط، ولا يمثل تقييمًا طبيًا أو تشخيصًا.',
+              'Ã™â€¦Ã™â€ Ã˜Â­Ã™â€ Ã™â€° Ã˜Â§Ã™â€žÃ™â€ Ã™â€¦Ã™Ë† Ã™Å Ã˜Â³Ã˜Â§Ã˜Â¹Ã˜Â¯Ã™Æ’ Ã˜Â¹Ã™â€žÃ™â€° Ã™â€¦Ã˜ÂªÃ˜Â§Ã˜Â¨Ã˜Â¹Ã˜Â© Ã˜Â§Ã™â€žÃ™â€šÃ™Å Ã˜Â§Ã˜Â³Ã˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â³Ã˜Â¬Ã™â€žÃ˜Â© Ã™ÂÃ™â€šÃ˜Â·Ã˜Å’ Ã™Ë†Ã™â€žÃ˜Â§ Ã™Å Ã™â€¦Ã˜Â«Ã™â€ž Ã˜ÂªÃ™â€šÃ™Å Ã™Å Ã™â€¦Ã™â€¹Ã˜Â§ Ã˜Â·Ã˜Â¨Ã™Å Ã™â€¹Ã˜Â§ Ã˜Â£Ã™Ë† Ã˜ÂªÃ˜Â´Ã˜Â®Ã™Å Ã˜ÂµÃ™â€¹Ã˜Â§.',
           icon: Icons.info_outline_rounded,
         ),
       ],
@@ -910,28 +797,37 @@ class _VaccinationSection extends StatelessWidget {
     final completed = items.where((v) => v.status == 'completed').toList();
     final upcoming = items.where((v) => v.status == 'scheduled').toList();
     return _SectionCard(
-      title: 'التطعيمات',
+      title: 'Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â·Ã˜Â¹Ã™Å Ã™â€¦Ã˜Â§Ã˜Âª',
       icon: Icons.shield_outlined,
-      actionLabel: 'إضافة +',
+      actionLabel: 'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© +',
       onAction: onAdd,
       children: [
+        NumuwStatusBadge(
+          label: items.isEmpty
+              ? 'Ã™â€žÃ™â€¦ Ã™Å Ã˜Â¨Ã˜Â¯Ã˜Â£ Ã˜Â§Ã™â€žÃ˜Â¬Ã˜Â¯Ã™Ë†Ã™â€ž'
+              : 'Ã˜Â§Ã™â€žÃ˜Â¬Ã˜Â¯Ã™Ë†Ã™â€ž Ã™â€¦Ã˜ÂªÃ˜Â§Ã˜Â¨Ã˜Â¹',
+          color: AppColors.blue,
+        ),
+        const SizedBox(height: 12),
         if (items.isEmpty)
           Text(
-            'أضيفي مواعيد التطعيم حسب تعليمات الجهة الصحية أو الطبيب.',
+            'Ã˜Â£Ã˜Â¶Ã™Å Ã™ÂÃ™Å  Ã™â€¦Ã™Ë†Ã˜Â§Ã˜Â¹Ã™Å Ã˜Â¯ Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â·Ã˜Â¹Ã™Å Ã™â€¦ Ã˜Â­Ã˜Â³Ã˜Â¨ Ã˜ÂªÃ˜Â¹Ã™â€žÃ™Å Ã™â€¦Ã˜Â§Ã˜Âª Ã˜Â§Ã™â€žÃ˜Â¬Ã™â€¡Ã˜Â© Ã˜Â§Ã™â€žÃ˜ÂµÃ˜Â­Ã™Å Ã˜Â© Ã˜Â£Ã™Ë† Ã˜Â§Ã™â€žÃ˜Â·Ã˜Â¨Ã™Å Ã˜Â¨.',
             textAlign: TextAlign.start,
             style: TextStyle(color: numuwSecondaryTextColor(), height: 1.6),
           )
         else ...[
           _VaccinationMini(
-            label: 'آخر تطعيم',
+            label: 'Ã˜Â¢Ã˜Â®Ã˜Â± Ã˜ÂªÃ˜Â·Ã˜Â¹Ã™Å Ã™â€¦',
             vaccination: completed.isEmpty ? null : completed.first,
-            fallback: 'لم يتم تسجيل تطعيم مكتمل',
+            fallback:
+                'Ã™â€žÃ™â€¦ Ã™Å Ã˜ÂªÃ™â€¦ Ã˜ÂªÃ˜Â³Ã˜Â¬Ã™Å Ã™â€ž Ã˜ÂªÃ˜Â·Ã˜Â¹Ã™Å Ã™â€¦ Ã™â€¦Ã™Æ’Ã˜ÂªÃ™â€¦Ã™â€ž',
           ),
           const SizedBox(height: 10),
           _VaccinationMini(
-            label: 'التطعيم القادم',
+            label: 'Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â·Ã˜Â¹Ã™Å Ã™â€¦ Ã˜Â§Ã™â€žÃ™â€šÃ˜Â§Ã˜Â¯Ã™â€¦',
             vaccination: upcoming.isEmpty ? null : upcoming.first,
-            fallback: 'لم يتم تحديد تطعيم قادم',
+            fallback:
+                'Ã™â€žÃ™â€¦ Ã™Å Ã˜ÂªÃ™â€¦ Ã˜ÂªÃ˜Â­Ã˜Â¯Ã™Å Ã˜Â¯ Ã˜ÂªÃ˜Â·Ã˜Â¹Ã™Å Ã™â€¦ Ã™â€šÃ˜Â§Ã˜Â¯Ã™â€¦',
             onStatus: onStatus,
           ),
         ],
@@ -964,7 +860,7 @@ class _VaccinationMini extends StatelessWidget {
     child: Row(
       children: [
         const IconBadge(
-          icon: '💉',
+          icon: 'Ã°Å¸â€™â€°',
           background: AppColors.yellowLight,
           size: 38,
         ),
@@ -986,7 +882,7 @@ class _VaccinationMini extends StatelessWidget {
               Text(
                 vaccination == null
                     ? fallback
-                    : '${vaccination!.name} · ${ArabicFormatters.date(vaccination!.scheduledDate)}',
+                    : '${vaccination!.name} Ã‚Â· ${ArabicFormatters.date(vaccination!.scheduledDate)}',
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   color: numuwTextColor(),
@@ -1002,9 +898,18 @@ class _VaccinationMini extends StatelessWidget {
           PopupMenuButton<String>(
             onSelected: (status) => onStatus!(vaccination!, status),
             itemBuilder: (_) => const [
-              PopupMenuItem(value: 'completed', child: Text('مكتمل')),
-              PopupMenuItem(value: 'skipped', child: Text('مؤجل')),
-              PopupMenuItem(value: 'scheduled', child: Text('مجدول')),
+              PopupMenuItem(
+                value: 'completed',
+                child: Text('Ã™â€¦Ã™Æ’Ã˜ÂªÃ™â€¦Ã™â€ž'),
+              ),
+              PopupMenuItem(
+                value: 'skipped',
+                child: Text('Ã™â€¦Ã˜Â¤Ã˜Â¬Ã™â€ž'),
+              ),
+              PopupMenuItem(
+                value: 'scheduled',
+                child: Text('Ã™â€¦Ã˜Â¬Ã˜Â¯Ã™Ë†Ã™â€ž'),
+              ),
             ],
           ),
       ],
@@ -1037,14 +942,19 @@ class _FamilyTasksSection extends StatelessWidget {
     }
 
     return _SectionCard(
-      title: 'مهام العائلة',
+      title: 'Ã™â€¦Ã™â€¡Ã˜Â§Ã™â€¦ Ã˜Â§Ã™â€žÃ˜Â¹Ã˜Â§Ã˜Â¦Ã™â€žÃ˜Â©',
       icon: Icons.assignment_rounded,
-      actionLabel: 'إضافة +',
+      actionLabel: 'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© +',
       onAction: onAdd,
       children: items.isEmpty
           ? [
+              const NumuwStatusBadge(
+                label: 'Ã™â€žÃ˜Â§ Ã˜ÂªÃ™Ë†Ã˜Â¬Ã˜Â¯ Ã™â€¦Ã™â€¡Ã˜Â§Ã™â€¦',
+                color: AppColors.purple,
+              ),
+              const SizedBox(height: 10),
               Text(
-                'لا توجد مهام عائلية بعد.',
+                'Ã™â€žÃ˜Â§ Ã˜ÂªÃ™Ë†Ã˜Â¬Ã˜Â¯ Ã™â€¦Ã™â€¡Ã˜Â§Ã™â€¦ Ã˜Â¹Ã˜Â§Ã˜Â¦Ã™â€žÃ™Å Ã˜Â© Ã˜Â¨Ã˜Â¹Ã˜Â¯.',
                 textAlign: TextAlign.start,
                 style: TextStyle(color: numuwSecondaryTextColor()),
               ),
@@ -1071,13 +981,13 @@ class _FamilyTasksSection extends StatelessWidget {
                         ? (assigneeLabel(task) == null
                               ? null
                               : Text(
-                                  'مسندة إلى: ${assigneeLabel(task)}',
+                                  'Ã™â€¦Ã˜Â³Ã™â€ Ã˜Â¯Ã˜Â© Ã˜Â¥Ã™â€žÃ™â€°: ${assigneeLabel(task)}',
                                   textAlign: TextAlign.start,
                                 ))
                         : Text(
                             assigneeLabel(task) == null
                                 ? task.category!
-                                : '${task.category!} · مسندة إلى: ${assigneeLabel(task)}',
+                                : '${task.category!} Ã‚Â· Ã™â€¦Ã˜Â³Ã™â€ Ã˜Â¯Ã˜Â© Ã˜Â¥Ã™â€žÃ™â€°: ${assigneeLabel(task)}',
                             textAlign: TextAlign.start,
                           ),
                   ),
@@ -1106,13 +1016,17 @@ class _GuardianPickerState extends State<_GuardianPicker> {
     child: DropdownButtonFormField<String?>(
       initialValue: _value,
       decoration: InputDecoration(
-        labelText: 'المسؤول عن المهمة',
+        labelText:
+            'Ã˜Â§Ã™â€žÃ™â€¦Ã˜Â³Ã˜Â¤Ã™Ë†Ã™â€ž Ã˜Â¹Ã™â€  Ã˜Â§Ã™â€žÃ™â€¦Ã™â€¡Ã™â€¦Ã˜Â©',
         filled: true,
         fillColor: numuwSurfaceColor(),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
       ),
       items: [
-        const DropdownMenuItem<String?>(value: null, child: Text('كل العيلة')),
+        const DropdownMenuItem<String?>(
+          value: null,
+          child: Text('Ã™Æ’Ã™â€ž Ã˜Â§Ã™â€žÃ˜Â¹Ã™Å Ã™â€žÃ˜Â©'),
+        ),
         ...widget.guardians.map(
           (guardian) => DropdownMenuItem<String?>(
             value: guardian.userId,
@@ -1141,14 +1055,19 @@ class _DoctorQuestionsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _SectionCard(
-    title: 'أسئلة الطبيب',
+    title: 'Ã˜Â£Ã˜Â³Ã˜Â¦Ã™â€žÃ˜Â© Ã˜Â§Ã™â€žÃ˜Â·Ã˜Â¨Ã™Å Ã˜Â¨',
     icon: Icons.help_outline_rounded,
-    actionLabel: 'إضافة +',
+    actionLabel: 'Ã˜Â¥Ã˜Â¶Ã˜Â§Ã™ÂÃ˜Â© +',
     onAction: onAdd,
     children: items.isEmpty
         ? [
+            const NumuwStatusBadge(
+              label: 'Ã˜Â£Ã˜Â³Ã˜Â¦Ã™â€žÃ˜Â© Ã˜Â¬Ã˜Â¯Ã™Å Ã˜Â¯Ã˜Â©',
+              color: AppColors.blue,
+            ),
+            const SizedBox(height: 10),
             Text(
-              'لا توجد أسئلة للطبيب بعد.',
+              'Ã™â€žÃ˜Â§ Ã˜ÂªÃ™Ë†Ã˜Â¬Ã˜Â¯ Ã˜Â£Ã˜Â³Ã˜Â¦Ã™â€žÃ˜Â© Ã™â€žÃ™â€žÃ˜Â·Ã˜Â¨Ã™Å Ã˜Â¨ Ã˜Â¨Ã˜Â¹Ã˜Â¯.',
               textAlign: TextAlign.start,
               style: TextStyle(color: numuwSecondaryTextColor()),
             ),
@@ -1176,7 +1095,9 @@ class _DoctorQuestionsSection extends StatelessWidget {
                       ),
                     ),
                     subtitle: Text(
-                      question.isAnswered ? 'تمت الإجابة' : 'معلّق',
+                      question.isAnswered
+                          ? 'Ã˜ÂªÃ™â€¦Ã˜Âª Ã˜Â§Ã™â€žÃ˜Â¥Ã˜Â¬Ã˜Â§Ã˜Â¨Ã˜Â©'
+                          : 'Ã™â€¦Ã˜Â¹Ã™â€žÃ™â€˜Ã™â€š',
                       textAlign: TextAlign.start,
                     ),
                   ),
@@ -1233,7 +1154,7 @@ class _DialogDateField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          optional ? '$label اختياري' : label,
+          optional ? '$label Ã˜Â§Ã˜Â®Ã˜ÂªÃ™Å Ã˜Â§Ã˜Â±Ã™Å ' : label,
           textAlign: TextAlign.start,
           style: TextStyle(
             color: numuwTextColor(),
@@ -1249,7 +1170,7 @@ class _DialogDateField extends StatelessWidget {
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.start,
           decoration: InputDecoration(
-            hintText: optional ? 'اختياري' : null,
+            hintText: optional ? 'Ã˜Â§Ã˜Â®Ã˜ÂªÃ™Å Ã˜Â§Ã˜Â±Ã™Å ' : null,
             suffixIcon: const Icon(Icons.calendar_month_outlined),
             filled: true,
             fillColor: numuwSurfaceColor(),

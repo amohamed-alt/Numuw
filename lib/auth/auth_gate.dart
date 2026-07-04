@@ -36,6 +36,7 @@ class _AuthGateState extends State<AuthGate> {
   String? _loadedUserId;
   String _authScreen = 'auto';
   String? _pendingEmail;
+  String? _lastAppliedChildrenSignature;
 
   AuthService get _auth => widget.authService ?? AuthService();
   ChildRepository get _children => widget.childRepository ?? ChildRepository();
@@ -99,7 +100,7 @@ class _AuthGateState extends State<AuthGate> {
               );
             }
             final loaded = childSnapshot.data ?? const <ChildProfile>[];
-            ChildSession.instance.setChildren(loaded);
+            _applyLoadedChildren(loaded);
             if (loaded.isEmpty) {
               return ChildOnboardingScreen(onSaved: _reloadChildrenAsync);
             }
@@ -162,6 +163,17 @@ class _AuthGateState extends State<AuthGate> {
     ChildSession.instance.setChildren(loaded);
     if (!mounted) return;
     setState(() => _childrenFuture = Future.value(loaded));
+  }
+
+  void _applyLoadedChildren(List<ChildProfile> loaded) {
+    final signature = loaded.map((child) => child.id).join('|');
+    if (_lastAppliedChildrenSignature == signature) return;
+    _lastAppliedChildrenSignature = signature;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (_lastAppliedChildrenSignature != signature) return;
+      ChildSession.instance.setChildren(loaded);
+    });
   }
 }
 

@@ -4,7 +4,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import '../auth/auth_gate.dart';
 import '../screens/design_preview/design_preview_gallery.dart';
 import '../state/app_preferences.dart';
-import 'app_colors.dart';
+import 'theme/numuw_colors.dart';
+import 'theme/numuw_theme.dart';
 
 class NumuwApp extends StatelessWidget {
   const NumuwApp({super.key, this.startupError});
@@ -20,7 +21,7 @@ class NumuwApp extends StatelessWidget {
         final night = AppPreferences.instance.nightMode;
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'نُمُوّ',
+          title: 'Ù†ÙÙ…ÙÙˆÙ‘',
           locale: const Locale('ar'),
           supportedLocales: const [Locale('ar'), Locale('en')],
           localizationsDelegates: const [
@@ -28,22 +29,20 @@ class NumuwApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
           ],
-          theme: _theme(night),
+          theme: buildNumuwTheme(night: night),
           builder: (context, child) => Directionality(
             textDirection: TextDirection.rtl,
             child: ColoredBox(
               color: night
-                  ? AppColors.nightBackground
-                  : AppColors.webBackground,
+                  ? NumuwColorTokens.darkWebBackground
+                  : NumuwColorTokens.lightWebBackground,
               child: Center(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: NumuwSpacing.maxMobileWidth,
-                  ),
+                  constraints: const BoxConstraints(maxWidth: 600),
                   child: ColoredBox(
                     color: night
-                        ? AppColors.nightBackground
-                        : AppColors.background,
+                        ? NumuwColorTokens.darkBackground
+                        : NumuwColorTokens.lightBackground,
                     child: child ?? const SizedBox.shrink(),
                   ),
                 ),
@@ -55,49 +54,6 @@ class NumuwApp extends StatelessWidget {
               : AuthGate(startupError: startupError),
         );
       },
-    );
-  }
-
-  ThemeData _theme(bool night) {
-    final background = night ? AppColors.nightBackground : AppColors.background;
-    final surface = night ? AppColors.nightSurface : AppColors.surface;
-    final text = night ? AppColors.nightText : AppColors.text;
-    final secondary = night
-        ? AppColors.nightSecondaryText
-        : AppColors.secondaryText;
-    final accent = night ? AppColors.nightGold : AppColors.mint;
-    return ThemeData(
-      useMaterial3: true,
-      brightness: night ? Brightness.dark : Brightness.light,
-      scaffoldBackgroundColor: background,
-      fontFamily: 'Cairo',
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: accent,
-        brightness: night ? Brightness.dark : Brightness.light,
-        surface: surface,
-      ),
-      textTheme: Typography.material2021().black.apply(
-        fontFamily: 'Cairo',
-        bodyColor: text,
-        displayColor: text,
-      ),
-      filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(
-          backgroundColor: accent,
-          foregroundColor: night ? AppColors.nightBackground : Colors.white,
-          textStyle: const TextStyle(fontWeight: FontWeight.w800),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(NumuwRadius.button),
-          ),
-        ),
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(foregroundColor: accent),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        labelStyle: TextStyle(color: secondary),
-        hintStyle: TextStyle(color: secondary),
-      ),
     );
   }
 }

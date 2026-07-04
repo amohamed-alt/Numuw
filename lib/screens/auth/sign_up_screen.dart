@@ -4,6 +4,7 @@ import '../../core/errors/app_error.dart';
 import '../../repositories/profile_repository.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/app_widgets.dart';
+import '../../widgets/numuw_components.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({
@@ -78,7 +79,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              NumuwHeader(
+              NumuwAppBar(
                 title: 'إنشاء حساب ✨',
                 subtitle: 'ابدئي رحلتكِ مع نُمُوّ',
                 leading: AppIconButton(
@@ -91,7 +92,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   borderWidth: 1.5,
                 ),
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 14),
+              const NumuwPlantProgress(progress: .18, label: 'البداية الجديدة'),
+              const SizedBox(height: 22),
               NumuwTextField(
                 controller: _name,
                 label: 'اسمكِ',

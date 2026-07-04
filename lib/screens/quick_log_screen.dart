@@ -12,6 +12,7 @@ import '../state/child_session.dart';
 import '../state/log_timer_state.dart';
 import '../state/numuw_app_state.dart';
 import '../widgets/app_widgets.dart';
+import '../widgets/numuw_components.dart';
 import 'pumping_screen.dart';
 
 class QuickLogScreen extends StatefulWidget {
@@ -352,96 +353,109 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
   Widget _mainScreen(String childName) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      AppHeader(
+      NumuwAppBar(
         title: 'تسجيل سريع ✏️',
         subtitle: 'سجّلي أحداث $childName اليومية',
-        showNotification: false,
+        trailing: const NumuwStatusBadge(label: 'جاهزة', color: AppColors.mint),
       ),
-      const SizedBox(height: 22),
-      GridView.count(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 4,
-        mainAxisSpacing: 13,
-        crossAxisSpacing: 13,
-        childAspectRatio: .78,
-        children: [
-          Center(
-            child: QuickLogTypeButton(
-              label: 'رضاعة',
-              icon: '🍼',
-              background: AppColors.mintLight,
-              border: AppColors.mint,
-              onTap: () => _open('feeding'),
-            ),
-          ),
-          Center(
-            child: QuickLogTypeButton(
-              label: 'شفط',
-              icon: '🍼',
-              background: AppColors.mintSoft,
-              border: AppColors.mintDark,
-              onTap: () => _open('pumping'),
-            ),
-          ),
-          Center(
-            child: QuickLogTypeButton(
-              label: 'نوم',
-              icon: '🌙',
-              background: AppColors.mintLight,
-              border: AppColors.mint,
-              onTap: () => _open('sleep'),
-            ),
-          ),
-          Center(
-            child: QuickLogTypeButton(
-              label: 'حفاضة',
-              icon: '🧷',
-              background: AppColors.purpleLight,
-              border: AppColors.purple,
-              onTap: () => _open('diaper'),
-            ),
-          ),
-          Center(
-            child: QuickLogTypeButton(
-              label: 'طعام',
-              icon: '🥣',
-              background: AppColors.yellowLight,
-              border: AppColors.yellow,
-              onTap: () => _open('food'),
-            ),
-          ),
-          Center(
-            child: QuickLogTypeButton(
-              label: 'دواء',
-              icon: '💊',
-              background: AppColors.blueLight,
-              border: AppColors.blue,
-              onTap: () => _open('medicine'),
-            ),
-          ),
-          Center(
-            child: QuickLogTypeButton(
-              label: 'حرارة',
-              icon: '🌡️',
-              background: AppColors.peachLight,
-              border: AppColors.danger,
-              onTap: () => _open('temperature'),
-            ),
-          ),
-          Center(
-            child: QuickLogTypeButton(
-              label: 'ملاحظة',
-              icon: '📝',
-              background: AppColors.neutralSoft,
-              border: AppColors.mutedText,
-              onTap: () => _open('note'),
-            ),
-          ),
-        ],
+      const SizedBox(height: 16),
+      NumuwPlantProgress(
+        progress: _mode == 'log' ? .28 : .52,
+        label: _mode == 'log' ? 'البذرة الأولى' : 'ينمو السجل',
       ),
-      const SizedBox(height: 24),
-      const SectionTitle(
+      const SizedBox(height: 16),
+      NumuwCard(
+        padding: const EdgeInsetsDirectional.all(14),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final crossAxisCount = constraints.maxWidth >= 360 ? 4 : 2;
+            return GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: crossAxisCount,
+              mainAxisSpacing: 13,
+              crossAxisSpacing: 13,
+              childAspectRatio: .78,
+              children: [
+                Center(
+                  child: QuickLogTypeButton(
+                    label: 'رضاعة',
+                    icon: '🍼',
+                    background: AppColors.mintLight,
+                    border: AppColors.mint,
+                    onTap: () => _open('feeding'),
+                  ),
+                ),
+                Center(
+                  child: QuickLogTypeButton(
+                    label: 'شفط',
+                    icon: '🍼',
+                    background: AppColors.mintSoft,
+                    border: AppColors.mintDark,
+                    onTap: () => _open('pumping'),
+                  ),
+                ),
+                Center(
+                  child: QuickLogTypeButton(
+                    label: 'نوم',
+                    icon: '🌙',
+                    background: AppColors.mintLight,
+                    border: AppColors.mint,
+                    onTap: () => _open('sleep'),
+                  ),
+                ),
+                Center(
+                  child: QuickLogTypeButton(
+                    label: 'حفاضة',
+                    icon: '🧷',
+                    background: AppColors.purpleLight,
+                    border: AppColors.purple,
+                    onTap: () => _open('diaper'),
+                  ),
+                ),
+                Center(
+                  child: QuickLogTypeButton(
+                    label: 'طعام',
+                    icon: '🥣',
+                    background: AppColors.yellowLight,
+                    border: AppColors.yellow,
+                    onTap: () => _open('food'),
+                  ),
+                ),
+                Center(
+                  child: QuickLogTypeButton(
+                    label: 'دواء',
+                    icon: '💊',
+                    background: AppColors.blueLight,
+                    border: AppColors.blue,
+                    onTap: () => _open('medicine'),
+                  ),
+                ),
+                Center(
+                  child: QuickLogTypeButton(
+                    label: 'حرارة',
+                    icon: '🌡️',
+                    background: AppColors.peachLight,
+                    border: AppColors.danger,
+                    onTap: () => _open('temperature'),
+                  ),
+                ),
+                Center(
+                  child: QuickLogTypeButton(
+                    label: 'ملاحظة',
+                    icon: '📝',
+                    background: AppColors.neutralSoft,
+                    border: AppColors.mutedText,
+                    onTap: () => _open('note'),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+      const SizedBox(height: 20),
+      const NumuwSectionHeader(
         title: 'سجل اليوم',
         icon: Icons.calendar_month_outlined,
       ),
@@ -450,43 +464,26 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     ],
   );
 
-  Widget _screenHeader(String title) => Padding(
-    padding: const EdgeInsetsDirectional.only(bottom: 16),
-    child: Row(
-      children: [
-        AppIconButton(
-          icon: Icons.arrow_forward_rounded,
-          onPressed: _back,
-          badge: false,
-          size: 42,
-          radius: 13,
-          iconSize: 20,
-          borderWidth: 1.5,
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            '$title ${_iconForMode(_mode)}',
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              color: numuwTextColor(),
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              height: 1.35,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-
   Widget _feedingScreen(String childName) {
     final active = LogTimerState.instance.feedingActive;
     final duration = _durationSince(LogTimerState.instance.feedingStart);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _screenHeader('رضاعة'),
+        NumuwAppBar(
+          title: 'رضاعة',
+          subtitle: 'جهّزي الرضعة وسجّلي التفاصيل بسرعة بيد واحدة',
+          trailing: NumuwStatusBadge(
+            label: active ? 'مستمرة' : 'جاهزة',
+            color: active ? AppColors.peach : AppColors.mint,
+          ),
+        ),
+        const SizedBox(height: 14),
+        NumuwPlantProgress(
+          progress: active ? .66 : .38,
+          label: active ? 'الرضعة جارية' : 'أول رضعة اليوم',
+        ),
+        const SizedBox(height: 14),
         TimerCard(
           time: _timerText(duration),
           status: active ? 'جارية الآن' : 'جاهزة للبدء',
@@ -544,10 +541,23 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _screenHeader('نوم'),
+        NumuwAppBar(
+          title: 'نوم',
+          subtitle: 'ابدئي أو أوقفي النوم مع أقل عدد من الخطوات',
+          trailing: NumuwStatusBadge(
+            label: active ? 'نائم الآن' : 'جاهز',
+            color: active ? AppColors.purple : AppColors.mint,
+          ),
+        ),
+        const SizedBox(height: 14),
+        NumuwPlantProgress(
+          progress: active ? .72 : .3,
+          label: active ? 'النوم مستمر' : 'راحة جديدة',
+        ),
+        const SizedBox(height: 14),
         _sleepTimerCard(active, duration),
         const SizedBox(height: 12),
-        SoftCard(
+        NumuwCard(
           child: Text(
             'وقت البدء: ${ArabicFormatters.time(start)}',
             textAlign: TextAlign.start,
@@ -564,7 +574,24 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
   Widget _diaperScreen() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      _screenHeader('حفاضة'),
+      NumuwAppBar(
+        title: 'حفاضة',
+        subtitle: 'اختيار سريع يركّز على النظافة والوضوح',
+        trailing: const NumuwStatusBadge(
+          label: 'سريع',
+          color: AppColors.purple,
+        ),
+      ),
+      const SizedBox(height: 14),
+      NumuwPlantProgress(
+        progress: .42,
+        label: _diaperType == 'wet'
+            ? 'رطوبة فقط'
+            : _diaperType == 'dirty'
+            ? 'تغيير ضروري'
+            : 'تغيير كامل',
+      ),
+      const SizedBox(height: 14),
       _eventTimeCard(),
       const SizedBox(height: 12),
       _diaperCard(
@@ -611,7 +638,27 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _screenHeader(spec.title),
+        NumuwAppBar(
+          title: spec.title,
+          subtitle: 'سجّلي التفاصيل بدون ازدحام بصري',
+          trailing: NumuwStatusBadge(label: spec.title, color: spec.color),
+        ),
+        const SizedBox(height: 14),
+        NumuwPlantProgress(
+          progress: switch (type) {
+            'food' => .5,
+            'medicine' => .46,
+            _ => .4,
+          },
+          label: switch (type) {
+            'food' => 'الوجبة تتسجّل',
+            'medicine' => 'توثيق مسؤول',
+            _ => 'ملاحظة محفوظة',
+          },
+        ),
+        const SizedBox(height: 12),
+        _genericIntroCard(type),
+        const SizedBox(height: 14),
         _eventTimeCard(),
         const SizedBox(height: 12),
         if (type == 'food') ...[
@@ -646,10 +693,163 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
     );
   }
 
+  Widget _genericIntroCard(String type) {
+    final spec = _spec(type);
+    final icon = switch (type) {
+      'food' => '🥣',
+      'medicine' => '💊',
+      _ => '📝',
+    };
+    final title = switch (type) {
+      'food' => 'تسجيل الوجبة',
+      'medicine' => 'تنبيه دوائي',
+      _ => 'ملاحظة سريعة',
+    };
+    final subtitle = switch (type) {
+      'food' =>
+        'اكتبي الاسم والكمية أو الوصف ثم أضيفي أي تفاعل لاحظتيه بعد الوجبة.',
+      'medicine' =>
+        'التوثيق هنا فقط. لا تغيّري الجرعة أو التوقيت إلا حسب تعليمات الطبيب.',
+      _ => 'اكتبي أي تفصيل مهم في سطرين واضحين ثم احفظيها فورًا.',
+    };
+    final tags = switch (type) {
+      'food' => const ['اسم الوجبة', 'الكمية', 'التفاعل'],
+      'medicine' => const ['الاسم', 'الجرعة', 'الوقت'],
+      _ => const ['سريع', 'واضح', 'قابل للرجوع'],
+    };
+    return NumuwCard(
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 15, 16, 15),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: _eventBg(type),
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Center(
+              child: Text(icon, style: const TextStyle(fontSize: 26)),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    color: numuwTextColor(),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  subtitle,
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    color: numuwSecondaryTextColor(),
+                    fontSize: 12.8,
+                    height: 1.45,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    for (final tag in tags)
+                      NumuwStatusBadge(label: tag, color: spec.color),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _temperatureScreen() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      _screenHeader('حرارة'),
+      NumuwAppBar(
+        title: 'حرارة',
+        subtitle: 'ادخلي القراءة بوضوح مع تذكير مسؤول',
+        trailing: const NumuwStatusBadge(
+          label: 'تنبيه صحي',
+          color: AppColors.danger,
+        ),
+      ),
+      const SizedBox(height: 14),
+      NumuwPlantProgress(progress: .32, label: 'قراءة دقيقة'),
+      const SizedBox(height: 14),
+      NumuwCard(
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 15, 16, 15),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: AppColors.peachLight,
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: const Center(
+                child: Text('🌡️', style: TextStyle(fontSize: 26)),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'قراءة الحرارة',
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      color: numuwTextColor(),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    'اكتبي القراءة فقط كما هي، ثم أضيفي أي ملاحظة مرتبطة بالحالة العامة.',
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      color: numuwSecondaryTextColor(),
+                      fontSize: 12.8,
+                      height: 1.45,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: const [
+                      NumuwStatusBadge(
+                        label: 'قياس مباشر',
+                        color: AppColors.danger,
+                      ),
+                      NumuwStatusBadge(
+                        label: 'بدون تشخيص',
+                        color: AppColors.peach,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 12),
       _eventTimeCard(),
       const SizedBox(height: 12),
       SoftCard(
@@ -1152,17 +1352,6 @@ _EventSpec _spec(String type) => switch (type) {
   'food' => const _EventSpec('طعام', 'حفظ الطعام', AppColors.yellow),
   'medicine' => const _EventSpec('دواء', 'حفظ الدواء', AppColors.blue),
   _ => const _EventSpec('ملاحظة', 'حفظ الملاحظة', AppColors.text),
-};
-
-String _iconForMode(String mode) => switch (mode) {
-  'feeding' => '🍼',
-  'pumping' => '🍼',
-  'sleep' => '🌙',
-  'diaper' => '🧷',
-  'food' => '🥣',
-  'medicine' => '💊',
-  'temperature' => '🌡️',
-  _ => '📝',
 };
 
 String _eventIcon(String type) => switch (type) {

@@ -7,6 +7,7 @@ import '../repositories/doctor_question_repository.dart';
 import '../services/report_service.dart';
 import '../state/child_session.dart';
 import '../widgets/app_widgets.dart';
+import '../widgets/numuw_components.dart';
 
 class AssistantScreen extends StatefulWidget {
   const AssistantScreen({super.key});
@@ -102,10 +103,18 @@ class _AssistantScreenState extends State<AssistantScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const AppHeader(
-              title: 'اسألي المساعد 💬',
+            NumuwAppBar(
+              title: 'اسألي',
               subtitle: 'رتّبي بياناتك وأسئلتك للطبيب بأمان',
-              showNotification: false,
+              trailing: const NumuwStatusBadge(
+                label: 'AI',
+                color: AppColors.mint,
+              ),
+            ),
+            const SizedBox(height: 14),
+            NumuwPlantProgress(
+              progress: _messages.isEmpty ? .28 : .62,
+              label: _messages.isEmpty ? 'جاهزة للمساعدة' : 'المحادثة تتقدم',
             ),
             const SizedBox(height: 16),
             WarningBanner(message: _assistant.safetyNotice()),
@@ -146,8 +155,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
               wide: true,
             ),
             const SizedBox(height: 16),
-            SoftCard(
-              radius: 24,
+            NumuwCard(
               padding: const EdgeInsetsDirectional.all(14),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(minHeight: 230),
@@ -207,9 +215,8 @@ class _AssistantActionCard extends StatelessWidget {
   final bool wide;
 
   @override
-  Widget build(BuildContext context) => SoftCard(
+  Widget build(BuildContext context) => NumuwCard(
     onTap: onTap,
-    radius: 20,
     padding: EdgeInsetsDirectional.fromSTEB(14, wide ? 13 : 15, 14, 14),
     child: Row(
       children: [
@@ -297,8 +304,7 @@ class _Composer extends StatelessWidget {
   final VoidCallback onSend;
 
   @override
-  Widget build(BuildContext context) => SoftCard(
-    radius: 22,
+  Widget build(BuildContext context) => NumuwCard(
     padding: const EdgeInsetsDirectional.fromSTEB(14, 12, 14, 12),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.end,

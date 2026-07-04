@@ -61,6 +61,15 @@ class ArabicFormatters {
     return months == 0 ? '$years سنوات' : '$years سنوات و$months أشهر';
   }
 
+  static int ageInDays(ChildProfile child, [DateTime? now]) {
+    final current = now ?? DateTime.now();
+    final birth = child.birthDate;
+    if (birth == null) return 0;
+    final start = DateTime(birth.year, birth.month, birth.day);
+    final end = DateTime(current.year, current.month, current.day);
+    return end.difference(start).inDays;
+  }
+
   static String gender(String value) => switch (value) {
     'male' => 'ذكر',
     'female' => 'أنثى',

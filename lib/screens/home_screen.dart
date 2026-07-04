@@ -14,6 +14,7 @@ import '../state/child_session.dart';
 import '../state/log_timer_state.dart';
 import '../state/numuw_app_state.dart';
 import '../widgets/app_widgets.dart';
+import '../widgets/numuw_components.dart';
 import 'main_shell.dart';
 import 'pumping_screen.dart';
 
@@ -631,15 +632,42 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (numuwNightMode()) {
                     return _NightHome(childName: child.name, summary: summary);
                   }
+                  final dailyProgress =
+                      [
+                        summary.latestFeeding != null,
+                        summary.latestDiaper != null,
+                        summary.sleepToday.inMinutes > 0,
+                        summary.nextVaccination != null,
+                        summary.incompleteTasks.isEmpty,
+                      ].where((value) => value).length /
+                      5.0;
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      NumuwAppBar(
+                        title: 'مرحباً ماما 💚',
+                        subtitle: 'أنتِ تقومين بعمل رائع اليوم 🧡',
+                        trailing: AppIconButton(
+                          icon: Icons.refresh_rounded,
+                          onPressed: _refresh,
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      NumuwPlantProgress(
+                        progress: dailyProgress == 0 ? .22 : dailyProgress,
+                        label: dailyProgress == 0
+                            ? 'البذرة الأولى'
+                            : dailyProgress < .6
+                            ? 'السجل ينمو'
+                            : 'يوم متوازن',
+                      ),
+                      const SizedBox(height: 16),
                       ChildHeroCard(
                         name: child.name,
                         age: ArabicFormatters.age(child),
                       ),
                       const SizedBox(height: 18),
-                      const SectionTitle(
+                      const NumuwSectionHeader(
                         title: 'ملخص اليوم',
                         icon: Icons.calendar_month_outlined,
                       ),
@@ -710,7 +738,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         onComplete: (task) => _completeTask(summary, task),
                       ),
                       const SizedBox(height: 18),
-                      const SectionTitle(
+                      const NumuwSectionHeader(
                         title: 'النشاط الأخير',
                         icon: Icons.history_rounded,
                       ),
@@ -1753,7 +1781,7 @@ class _TasksCard extends StatelessWidget {
           Row(
             children: [
               const Expanded(
-                child: SectionTitle(
+                child: NumuwSectionHeader(
                   title: 'مهام لم تكتمل',
                   icon: Icons.assignment_rounded,
                 ),

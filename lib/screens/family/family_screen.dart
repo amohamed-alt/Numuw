@@ -6,6 +6,7 @@ import '../../models/child_guardian.dart';
 import '../../repositories/family_sharing_repository.dart';
 import '../../state/child_session.dart';
 import '../../widgets/app_widgets.dart';
+import '../../widgets/numuw_components.dart';
 
 class FamilyScreen extends StatefulWidget {
   const FamilyScreen({super.key});
@@ -55,7 +56,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
       );
       _email.clear();
       setState(() {
-        _message = 'كود الدعوة: ${invite.inviteCode}';
+        _message = 'ÙƒÙˆØ¯ Ø§Ù„Ø¯Ø¹ÙˆØ©: ${invite.inviteCode}';
         _load();
       });
     } catch (error, stackTrace) {
@@ -77,7 +78,8 @@ class _FamilyScreenState extends State<FamilyScreen> {
       _code.clear();
       await ChildSession.instance.refresh();
       setState(() {
-        _message = 'تم قبول الدعوة وتحديث الأطفال المتاحين.';
+        _message =
+            'ØªÙ… Ù‚Ø¨ÙˆÙ„ Ø§Ù„Ø¯Ø¹ÙˆØ© ÙˆØªØ­Ø¯ÙŠØ« Ø§Ù„Ø£Ø·ÙØ§Ù„ Ø§Ù„Ù…ØªØ§Ø­ÙŠÙ†.';
         _load();
       });
     } catch (error, stackTrace) {
@@ -96,9 +98,10 @@ class _FamilyScreenState extends State<FamilyScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            NumuwHeader(
-              title: 'مشاركة العيلة',
-              subtitle: 'ادعي ولي أمر أو اقبلي دعوة لمتابعة الطفل بأمان.',
+            NumuwAppBar(
+              title: 'Ù…Ø´Ø§Ø±ÙƒØ© Ø§Ù„Ø¹ÙŠÙ„Ø©',
+              subtitle:
+                  'Ø§Ø¯Ø¹ÙŠ ÙˆÙ„ÙŠ Ø£Ù…Ø± Ø£Ùˆ Ø§Ù‚Ø¨Ù„ÙŠ Ø¯Ø¹ÙˆØ© Ù„Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„Ø·ÙÙ„ Ø¨Ø£Ù…Ø§Ù†.',
               leading: AppIconButton(
                 icon: Icons.arrow_forward_rounded,
                 onPressed: () => Navigator.pop(context),
@@ -108,9 +111,17 @@ class _FamilyScreenState extends State<FamilyScreen> {
                 iconSize: 20,
               ),
             ),
+            const SizedBox(height: 14),
+            const NumuwPlantProgress(
+              progress: .42,
+              label: 'Ø§Ù„Ø¨ÙŠØª Ù…ØªØµÙ„',
+            ),
             const SizedBox(height: 18),
             if (child == null)
-              const EmptyState(message: 'اختاري طفلًا أولًا لإدارة العيلة.')
+              const NumuwEmptyState(
+                message:
+                    'Ø§Ø®ØªØ§Ø±ÙŠ Ø·ÙÙ„Ù‹Ø§ Ø£ÙˆÙ„Ù‹Ø§ Ù„Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø¹ÙŠÙ„Ø©.',
+              )
             else
               FutureBuilder<_FamilyData>(
                 future: _future,
@@ -183,24 +194,26 @@ class _InviteCard extends StatelessWidget {
   final VoidCallback onCreate;
 
   @override
-  Widget build(BuildContext context) => SoftCard(
+  Widget build(BuildContext context) => NumuwCard(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionTitle(
-          title: 'دعوة ولي أمر',
+        const NumuwSectionHeader(
+          title: 'Ø¯Ø¹ÙˆØ© ÙˆÙ„ÙŠ Ø£Ù…Ø±',
           icon: Icons.group_add_outlined,
         ),
         const SizedBox(height: 10),
         AppTextField(
           controller: email,
-          label: 'البريد الإلكتروني اختياري',
+          label: 'Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ø§Ø®ØªÙŠØ§Ø±ÙŠ',
           keyboardType: TextInputType.emailAddress,
           textDirection: TextDirection.ltr,
         ),
         const SizedBox(height: 10),
-        PrimaryButton(
-          label: busy ? 'جاري إنشاء الدعوة...' : 'إنشاء كود دعوة',
+        NumuwPrimaryButton(
+          label: busy
+              ? 'Ø¬Ø§Ø±ÙŠ Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„Ø¯Ø¹ÙˆØ©...'
+              : 'Ø¥Ù†Ø´Ø§Ø¡ ÙƒÙˆØ¯ Ø¯Ø¹ÙˆØ©',
           onPressed: busy ? null : onCreate,
         ),
       ],
@@ -220,23 +233,23 @@ class _AcceptInviteCard extends StatelessWidget {
   final VoidCallback onAccept;
 
   @override
-  Widget build(BuildContext context) => SoftCard(
+  Widget build(BuildContext context) => NumuwCard(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionTitle(
-          title: 'قبول دعوة',
+        const NumuwSectionHeader(
+          title: 'Ù‚Ø¨ÙˆÙ„ Ø¯Ø¹ÙˆØ©',
           icon: Icons.mark_email_read_outlined,
         ),
         const SizedBox(height: 10),
         AppTextField(
           controller: code,
-          label: 'كود الدعوة',
+          label: 'ÙƒÙˆØ¯ Ø§Ù„Ø¯Ø¹ÙˆØ©',
           textDirection: TextDirection.ltr,
         ),
         const SizedBox(height: 10),
-        SecondaryButton(
-          label: busy ? 'جاري القبول...' : 'قبول الدعوة',
+        NumuwSecondaryButton(
+          label: busy ? 'Ø¬Ø§Ø±ÙŠ Ø§Ù„Ù‚Ø¨ÙˆÙ„...' : 'Ù‚Ø¨ÙˆÙ„ Ø§Ù„Ø¯Ø¹ÙˆØ©',
           onPressed: busy ? null : onAccept,
         ),
       ],
@@ -250,18 +263,18 @@ class _GuardiansCard extends StatelessWidget {
   final List<ChildGuardian> guardians;
 
   @override
-  Widget build(BuildContext context) => SoftCard(
+  Widget build(BuildContext context) => NumuwCard(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionTitle(
-          title: 'أولياء الأمور',
+        const NumuwSectionHeader(
+          title: 'Ø£ÙˆÙ„ÙŠØ§Ø¡ Ø§Ù„Ø£Ù…ÙˆØ±',
           icon: Icons.family_restroom_rounded,
         ),
         const SizedBox(height: 10),
         if (guardians.isEmpty)
           Text(
-            'لا توجد بيانات عيلة بعد.',
+            'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¨ÙŠØ§Ù†Ø§Øª Ø¹ÙŠÙ„Ø© Ø¨Ø¹Ø¯.',
             style: TextStyle(color: numuwSecondaryTextColor()),
           )
         else
@@ -274,7 +287,9 @@ class _GuardiansCard extends StatelessWidget {
               ),
               title: Text(guardian.label, textAlign: TextAlign.start),
               subtitle: Text(
-                guardian.role == 'owner' ? 'مالك الطفل' : 'ولي أمر',
+                guardian.role == 'owner'
+                    ? 'Ù…Ø§Ù„Ùƒ Ø§Ù„Ø·ÙÙ„'
+                    : 'ÙˆÙ„ÙŠ Ø£Ù…Ø±',
                 textAlign: TextAlign.start,
               ),
             ),
@@ -290,12 +305,12 @@ class _PendingInvitesCard extends StatelessWidget {
   final List<FamilyInvite> invites;
 
   @override
-  Widget build(BuildContext context) => SoftCard(
+  Widget build(BuildContext context) => NumuwCard(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionTitle(
-          title: 'دعوات معلقة',
+        const NumuwSectionHeader(
+          title: 'Ø¯Ø¹ÙˆØ§Øª Ù…Ø¹Ù„Ù‚Ø©',
           icon: Icons.pending_actions_rounded,
         ),
         const SizedBox(height: 10),
@@ -303,7 +318,7 @@ class _PendingInvitesCard extends StatelessWidget {
           (invite) => ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(invite.inviteCode, textDirection: TextDirection.ltr),
-            subtitle: Text(invite.invitedEmail ?? 'بدون بريد محدد'),
+            subtitle: Text(invite.invitedEmail ?? 'Ø¨Ø¯ÙˆÙ† Ø¨Ø±ÙŠØ¯ Ù…Ø­Ø¯Ø¯'),
           ),
         ),
       ],

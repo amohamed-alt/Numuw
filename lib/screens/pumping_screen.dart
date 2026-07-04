@@ -12,6 +12,7 @@ import '../state/child_session.dart';
 import '../state/log_timer_state.dart';
 import '../state/numuw_app_state.dart';
 import '../widgets/app_widgets.dart';
+import '../widgets/numuw_components.dart';
 
 class PumpingLogPane extends StatefulWidget {
   const PumpingLogPane({super.key, required this.onBack, this.onChanged});
@@ -237,6 +238,12 @@ class _PumpingLogPaneState extends State<PumpingLogPane> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _header(),
+        const SizedBox(height: 14),
+        NumuwPlantProgress(
+          progress: timerStart == null ? .34 : .72,
+          label: timerStart == null ? 'بداية هادئة' : 'جلسة نشطة',
+        ),
+        const SizedBox(height: 14),
         TimerCard(
           time: _timerText(duration),
           status: timerStart == null ? 'جاهزة للبدء' : 'جارية الآن',
@@ -284,46 +291,49 @@ class _PumpingLogPaneState extends State<PumpingLogPane> {
     );
   }
 
-  Widget _header() => Padding(
-    padding: const EdgeInsetsDirectional.only(bottom: 16),
-    child: Row(
-      children: [
-        AppIconButton(
-          icon: Icons.arrow_forward_rounded,
-          onPressed: widget.onBack,
-          badge: false,
-          size: 42,
-          radius: 13,
-          iconSize: 20,
-          borderWidth: 1.5,
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            'شفط',
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              color: numuwTextColor(),
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ),
-      ],
+  Widget _header() => NumuwAppBar(
+    title: 'شفط',
+    subtitle: 'سجّلي الجلسة والكمية بطريقة مريحة وواضحة',
+    leading: AppIconButton(
+      icon: Icons.arrow_forward_rounded,
+      onPressed: widget.onBack,
+      badge: false,
+      size: 42,
+      radius: 13,
+      iconSize: 20,
+      borderWidth: 1.5,
     ),
+    trailing: const NumuwStatusBadge(label: 'جاري', color: AppColors.mint),
   );
 
   Widget _timeCard() => SoftCard(
     onTap: _pickStartedAt,
     child: Row(
       children: [
-        const Icon(Icons.schedule_rounded, color: AppColors.mintDark),
-        const SizedBox(width: 10),
+        const IconBadge(icon: '🕒', background: AppColors.mintLight, size: 40),
+        const SizedBox(width: 12),
         Expanded(
-          child: Text(
-            '${ArabicFormatters.date(_startedAt)} · ${ArabicFormatters.time(_startedAt)}',
-            textAlign: TextAlign.start,
-            style: const TextStyle(fontWeight: FontWeight.w800),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'وقت البدء',
+                style: TextStyle(
+                  color: numuwTextColor(),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                '${ArabicFormatters.date(_startedAt)} · ${ArabicFormatters.time(_startedAt)}',
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: numuwSecondaryTextColor(),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
           ),
         ),
         Icon(Icons.edit_calendar_outlined, color: numuwSecondaryTextColor()),

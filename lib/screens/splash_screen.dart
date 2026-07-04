@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
 import '../widgets/app_widgets.dart';
+import '../widgets/numuw_components.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -10,48 +11,71 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: numuwPageColor(),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 104,
-              height: 104,
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(34),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x6659B8A5),
-                    blurRadius: 48,
-                    offset: Offset(0, 16),
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 28),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const _HeroMark(),
+                const SizedBox(height: 22),
+                Text(
+                  'نُموّ',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: numuwTextColor(),
+                    fontSize: 40,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -1,
+                    height: 1,
                   ),
-                ],
-              ),
-              child: CustomPaint(painter: _NumuwMarkPainter()),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'رفيقتكِ في رحلة الأمومة',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: numuwSecondaryTextColor(),
+                    fontSize: 15,
+                    height: 1.55,
+                  ),
+                ),
+                const SizedBox(height: 26),
+                const NumuwPlantProgress(progress: .12, label: 'البذرة الأولى'),
+                const SizedBox(height: 22),
+                const LoadingDots(color: AppColors.mintDark),
+              ],
             ),
-            const SizedBox(height: 28),
-            Text(
-              'نُمُوّ',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: numuwTextColor(),
-                fontSize: 40,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -1,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'رفيقتكِ في رحلة الأمومة',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: numuwSecondaryTextColor(), fontSize: 15),
-            ),
-            const SizedBox(height: 48),
-            const LoadingDots(color: AppColors.mint),
-          ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+class _HeroMark extends StatelessWidget {
+  const _HeroMark();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 138,
+      height: 138,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: const RadialGradient(
+          colors: [Color(0xFFF3E8D3), Color(0xFFE8DEC7)],
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x1A4F6242),
+            blurRadius: 30,
+            offset: Offset(0, 14),
+          ),
+        ],
+      ),
+      child: CustomPaint(painter: _NumuwMarkPainter()),
     );
   }
 }
@@ -59,57 +83,68 @@ class SplashScreen extends StatelessWidget {
 class _NumuwMarkPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final white = Paint()..color = Colors.white.withValues(alpha: .95);
-    final mint = Paint()..color = AppColors.mint;
-    final strokeWhite = Paint()
-      ..color = Colors.white
+    final center = Offset(size.width / 2, size.height / 2);
+    final stemPaint = Paint()
+      ..color = AppColors.mintDark
       ..strokeWidth = 3
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
-    final strokeMint = Paint()
+    final leafPaint = Paint()
       ..color = AppColors.mint
-      ..strokeWidth = 2.5
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+      ..style = PaintingStyle.fill;
+    final clayPaint = Paint()..color = AppColors.peach;
 
-    final cx = size.width / 2;
-    canvas.drawCircle(Offset(cx, size.height * .43), size.width * .23, white);
-    canvas.drawCircle(Offset(size.width * .42, size.height * .38), 2.5, mint);
-    canvas.drawCircle(Offset(size.width * .58, size.height * .38), 2.5, mint);
+    final pot = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: Offset(center.dx, size.height * .72),
+        width: size.width * .42,
+        height: size.height * .18,
+      ),
+      const Radius.circular(16),
+    );
+    canvas.drawRRect(pot, clayPaint);
 
-    final smile = Path()
-      ..moveTo(size.width * .42, size.height * .49)
-      ..quadraticBezierTo(
-        cx,
-        size.height * .56,
-        size.width * .58,
-        size.height * .49,
-      );
-    canvas.drawPath(smile, strokeMint);
     canvas.drawLine(
-      Offset(cx, size.height * .63),
-      Offset(cx, size.height * .86),
-      strokeWhite,
+      Offset(center.dx, size.height * .56),
+      Offset(center.dx, size.height * .40),
+      stemPaint,
     );
 
-    final leaf1 = Path()
-      ..moveTo(cx, size.height * .80)
+    final leftLeaf = Path()
+      ..moveTo(center.dx, size.height * .48)
       ..quadraticBezierTo(
-        size.width * .40,
-        size.height * .72,
-        size.width * .40,
-        size.height * .62,
-      );
-    final leaf2 = Path()
-      ..moveTo(cx, size.height * .77)
+        size.width * .24,
+        size.height * .42,
+        size.width * .30,
+        size.height * .31,
+      )
       ..quadraticBezierTo(
-        size.width * .60,
-        size.height * .70,
-        size.width * .60,
-        size.height * .59,
+        size.width * .42,
+        size.height * .37,
+        center.dx,
+        size.height * .48,
       );
-    canvas.drawPath(leaf1, strokeWhite..strokeWidth = 2.5);
-    canvas.drawPath(leaf2, strokeWhite..strokeWidth = 2.5);
+    final rightLeaf = Path()
+      ..moveTo(center.dx, size.height * .44)
+      ..quadraticBezierTo(
+        size.width * .76,
+        size.height * .36,
+        size.width * .70,
+        size.height * .24,
+      )
+      ..quadraticBezierTo(
+        size.width * .58,
+        size.height * .30,
+        center.dx,
+        size.height * .44,
+      );
+    canvas.drawPath(leftLeaf, leafPaint);
+    canvas.drawPath(rightLeaf, leafPaint);
+
+    final seed = Paint()
+      ..color = Colors.white.withValues(alpha: .8)
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(Offset(center.dx, size.height * .66), 6, seed);
   }
 
   @override

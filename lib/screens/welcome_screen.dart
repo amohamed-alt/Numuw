@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
 import '../widgets/app_widgets.dart';
+import '../widgets/numuw_components.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({
@@ -50,11 +51,14 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ),
                       alignment: Alignment.center,
-                      child: const Text('ðŸ‘¶', style: TextStyle(fontSize: 76)),
+                      child: const Text(
+                        'Ã°Å¸â€˜Â¶',
+                        style: TextStyle(fontSize: 76),
+                      ),
                     ),
                     const SizedBox(height: 22),
                     Text(
-                      'Ù†ÙÙ…ÙÙˆÙ‘',
+                      'Ã™â€ Ã™ÂÃ™â€¦Ã™ÂÃ™Ë†Ã™â€˜',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: numuwTextColor(),
@@ -65,7 +69,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Ø³Ø¬Ù‘Ù„ÙŠ Ø£Ø­Ø¯Ø§Ø« Ø·ÙÙ„ÙƒÙØŒ ØªØ§Ø¨Ø¹ÙŠ Ù†Ù…ÙˆÙ‘Ù‡\nÙˆØ§Ø·Ù…Ø¦Ù†ÙŠ ÙÙŠ ÙƒÙ„ Ù„Ø­Ø¸Ø© ðŸ’š',
+                      'Ã˜Â³Ã˜Â¬Ã™â€˜Ã™â€žÃ™Å  Ã˜Â£Ã˜Â­Ã˜Â¯Ã˜Â§Ã˜Â« Ã˜Â·Ã™ÂÃ™â€žÃ™Æ’Ã™ÂÃ˜Å’ Ã˜ÂªÃ˜Â§Ã˜Â¨Ã˜Â¹Ã™Å  Ã™â€ Ã™â€¦Ã™Ë†Ã™â€˜Ã™â€¡\nÃ™Ë†Ã˜Â§Ã˜Â·Ã™â€¦Ã˜Â¦Ã™â€ Ã™Å  Ã™ÂÃ™Å  Ã™Æ’Ã™â€ž Ã™â€žÃ˜Â­Ã˜Â¸Ã˜Â© Ã°Å¸â€™Å¡',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: numuwSecondaryTextColor(),
@@ -80,37 +84,44 @@ class WelcomeScreen extends StatelessWidget {
                 padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 40),
                 child: Column(
                   children: [
-                    PrimaryButton(
-                      label: 'ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„',
+                    NumuwPrimaryButton(
+                      label: 'Ã˜ÂªÃ˜Â³Ã˜Â¬Ã™Å Ã™â€ž Ã˜Â§Ã™â€žÃ˜Â¯Ã˜Â®Ã™Ë†Ã™â€ž',
                       onPressed: onSignIn,
                     ),
                     const SizedBox(height: 12),
-                    SecondaryButton(
-                      label: 'Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨ Ø¬Ø¯ÙŠØ¯',
+                    NumuwSecondaryButton(
+                      label:
+                          'Ã˜Â¥Ã™â€ Ã˜Â´Ã˜Â§Ã˜Â¡ Ã˜Â­Ã˜Â³Ã˜Â§Ã˜Â¨ Ã˜Â¬Ã˜Â¯Ã™Å Ã˜Â¯',
                       onPressed: onSignUp,
                     ),
                     const SizedBox(height: 24),
                     const _FeatureRow(
-                      icon: 'ðŸ¼',
+                      icon: 'Ã°Å¸ÂÂ¼',
                       color: AppColors.mintLight,
                       text:
-                          'ØªØ³Ø¬ÙŠÙ„ Ø³Ø±ÙŠØ¹ Ù„Ù„Ø±Ø¶Ø§Ø¹Ø© ÙˆØ§Ù„Ù†ÙˆÙ… ÙˆØ§Ù„Ø­ÙØ§Ø¶Ø§Øª',
+                          'Ã˜ÂªÃ˜Â³Ã˜Â¬Ã™Å Ã™â€ž Ã˜Â³Ã˜Â±Ã™Å Ã˜Â¹ Ã™â€žÃ™â€žÃ˜Â±Ã˜Â¶Ã˜Â§Ã˜Â¹Ã˜Â© Ã™Ë†Ã˜Â§Ã™â€žÃ™â€ Ã™Ë†Ã™â€¦ Ã™Ë†Ã˜Â§Ã™â€žÃ˜Â­Ã™ÂÃ˜Â§Ã˜Â¶Ã˜Â§Ã˜Âª',
                     ),
                     const SizedBox(height: 11),
                     const _FeatureRow(
-                      icon: 'ðŸ“Š',
+                      icon: 'Ã°Å¸â€œÅ ',
                       color: AppColors.purpleLight,
-                      text: 'Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„Ù†Ù…Ùˆ ÙˆØ§Ù„ØªØ·Ø¹ÙŠÙ…Ø§Øª',
+                      text:
+                          'Ã™â€¦Ã˜ÂªÃ˜Â§Ã˜Â¨Ã˜Â¹Ã˜Â© Ã˜Â§Ã™â€žÃ™â€ Ã™â€¦Ã™Ë† Ã™Ë†Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â·Ã˜Â¹Ã™Å Ã™â€¦Ã˜Â§Ã˜Âª',
                     ),
                     const SizedBox(height: 11),
                     const _FeatureRow(
-                      icon: 'ðŸ’¬',
+                      icon: 'Ã°Å¸â€™Â¬',
                       color: AppColors.peachLight,
                       text:
-                          'Ù…Ø³Ø§Ø¹Ø¯ Ø¢Ù…Ù† Ù„ØªÙ†Ø¸ÙŠÙ… Ø¨ÙŠØ§Ù†Ø§Øª Ø·ÙÙ„ÙƒÙ',
+                          'Ã™â€¦Ã˜Â³Ã˜Â§Ã˜Â¹Ã˜Â¯ Ã˜Â¢Ã™â€¦Ã™â€  Ã™â€žÃ˜ÂªÃ™â€ Ã˜Â¸Ã™Å Ã™â€¦ Ã˜Â¨Ã™Å Ã˜Â§Ã™â€ Ã˜Â§Ã˜Âª Ã˜Â·Ã™ÂÃ™â€žÃ™Æ’Ã™Â',
                     ),
                     const SizedBox(height: 18),
                     const _PrivacyTrustCard(),
+                    const SizedBox(height: 18),
+                    const NumuwPlantProgress(
+                      progress: .28,
+                      label: 'ØªØªÙØªØ­ Ø£ÙˆÙ„ Ø§Ù„Ø£ÙˆØ±Ø§Ù‚',
+                    ),
                   ],
                 ),
               ),
@@ -139,7 +150,7 @@ class _PrivacyTrustCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'خصوصيتك واضحة من البداية',
+                'Ø®ØµÙˆØµÙŠØªÙƒ ÙˆØ§Ø¶Ø­Ø© Ù…Ù† Ø§Ù„Ø¨Ø¯Ø§ÙŠØ©',
                 style: TextStyle(
                   color: numuwTextColor(),
                   fontSize: 14,
@@ -149,7 +160,7 @@ class _PrivacyTrustCard extends StatelessWidget {
               ),
               const SizedBox(height: 5),
               Text(
-                'بيانات طفلك لا تظهر إلا لكِ ولمن تسمحين له من مشاركة العيلة، ويمكنك إدارة الصلاحيات من داخل التطبيق.',
+                'Ø¨ÙŠØ§Ù†Ø§Øª Ø·ÙÙ„Ùƒ Ù„Ø§ ØªØ¸Ù‡Ø± Ø¥Ù„Ø§ Ù„ÙƒÙ ÙˆÙ„Ù…Ù† ØªØ³Ù…Ø­ÙŠÙ† Ù„Ù‡ Ù…Ù† Ù…Ø´Ø§Ø±ÙƒØ© Ø§Ù„Ø¹ÙŠÙ„Ø©ØŒ ÙˆÙŠÙ…ÙƒÙ†Ùƒ Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„ØµÙ„Ø§Ø­ÙŠØ§Øª Ù…Ù† Ø¯Ø§Ø®Ù„ Ø§Ù„ØªØ·Ø¨ÙŠÙ‚.',
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   color: numuwSecondaryTextColor(),
