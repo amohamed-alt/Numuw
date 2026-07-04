@@ -21,7 +21,7 @@ class NumuwApp extends StatelessWidget {
         final night = AppPreferences.instance.nightMode;
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Ù†ÙÙ…ÙÙˆÙ‘',
+          title: 'نُمُوّ',
           locale: const Locale('ar'),
           supportedLocales: const [Locale('ar'), Locale('en')],
           localizationsDelegates: const [
