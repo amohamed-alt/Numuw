@@ -64,7 +64,7 @@ class QuickLogSheet extends StatelessWidget {
                               onTap: () => Navigator.pop(context, action.mode),
                               borderRadius: BorderRadius.circular(18),
                               child: Container(
-                                minHeight: 70,
+                                constraints: const BoxConstraints(minHeight: 70),
                                 padding: const EdgeInsetsDirectional.all(14),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(18),

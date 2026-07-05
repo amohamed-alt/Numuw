@@ -890,7 +890,7 @@ class _QuickActionTile extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(18),
           child: Container(
-            minHeight: 72,
+            constraints: const BoxConstraints(minHeight: 72),
             padding: const EdgeInsetsDirectional.fromSTEB(14, 14, 14, 14),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), border: Border.all(color: numuwBorderColor())),
             child: Row(children: [
