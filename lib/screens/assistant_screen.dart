@@ -4,7 +4,6 @@ import '../core/app_colors.dart';
 import '../core/errors/app_error.dart';
 import '../models/ai_assistant_response.dart';
 import '../repositories/care_event_repository.dart';
-import '../repositories/doctor_question_repository.dart';
 import '../services/ai_assistant_service.dart';
 import '../state/child_session.dart';
 import '../widgets/app_widgets.dart';
@@ -19,7 +18,6 @@ class AssistantScreen extends StatefulWidget {
 class _AssistantScreenState extends State<AssistantScreen> {
   final _assistant = AiAssistantService();
   final _careRepo = CareEventRepository();
-  final _questionRepo = DoctorQuestionRepository();
   final _input = TextEditingController();
   final List<_Message> _messages = [];
   bool _loading = false;
@@ -51,21 +49,23 @@ class _AssistantScreenState extends State<AssistantScreen> {
       _error = null;
     });
     try {
-      if (text.contains('لخّصي') || text.contains('ملخص')) {
-        final events = await _careRepo.fetchRecent(child.id, limit: 50);
-        final response = await _assistant.dailySummary(
-          child: child,
-          events: events,
-          now: now,
-          locale: locale,
-        );
-        if (mounted) setState(() => _messages.add(_Message(false, _responseText(response))));
-      } else {
-        await _questionRepo.add(childId: child.id, question: text);
-        if (mounted) {
-          setState(() => _messages.add(const _Message(false,
-              'تم حفظ السؤال. يمكنك مراجعته من ملف الطفل وإضافته إلى التقرير.')));
-        }
+      final events = await _careRepo.fetchRecent(child.id, limit: 50);
+      final response = text.contains('لخّصي') || text.contains('ملخص')
+          ? await _assistant.dailySummary(
+              child: child,
+              events: events,
+              now: now,
+              locale: locale,
+            )
+          : await _assistant.chat(
+              child: child,
+              events: events,
+              question: text,
+              now: now,
+              locale: locale,
+            );
+      if (mounted) {
+        setState(() => _messages.add(_Message(false, _responseText(response))));
       }
     } catch (error, stackTrace) {
       logError(error, stackTrace);

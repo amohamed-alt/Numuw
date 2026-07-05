@@ -64,6 +64,41 @@ class AiAssistantService {
 
   final AiAssistantTransport _transport;
 
+  Future<AiAssistantResponse> chat({
+    required ChildProfile child,
+    required List<CareEvent> events,
+    required String question,
+    required DateTime now,
+    required Locale locale,
+  }) {
+    final text = question.trim();
+    if (text.isEmpty) {
+      throw const LocalValidationException('اكتبي سؤالك أولًا.');
+    }
+    if (text.length > 700) {
+      throw const LocalValidationException(
+        'السؤال طويل جدًا. اختصريه وحاولي مرة أخرى.',
+      );
+    }
+    if (containsEmergencyKeyword(text)) {
+      throw const EmergencyDetectedException();
+    }
+    return _call(
+      mode: AiAssistantMode.chat,
+      childId: child.id,
+      payload: {
+        ...AiContextBuilder.dailySummary(
+          child: child,
+          events: events,
+          now: now,
+          locale: _localeTag(locale),
+          timezoneOffsetMinutes: now.timeZoneOffset.inMinutes,
+        ),
+        'question': text,
+      },
+    );
+  }
+
   Future<AiAssistantResponse> dailySummary({
     required ChildProfile child,
     required List<CareEvent> events,
