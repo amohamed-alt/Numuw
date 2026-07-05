@@ -141,7 +141,7 @@ void main() {
         "actions": [
           {
             "event_type": "feeding",
-            "feeding_methods": ["صناعي", "breast"],
+            "feeding_methods": ["formula", "breast"],
             "needs_review": true
           }
         ]
