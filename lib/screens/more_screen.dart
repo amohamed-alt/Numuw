@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:printing/printing.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/app_colors.dart';
 import '../core/errors/app_error.dart';
 import '../services/auth_service.dart';
-import '../services/notification_service.dart';
 import '../services/report_service.dart';
-import 'family/family_screen.dart';
-import 'weekly_share_screen.dart';
 import '../state/app_preferences.dart';
 import '../state/child_session.dart';
 import '../widgets/app_widgets.dart';
-import '../widgets/numuw_components.dart';
+import 'family/family_screen.dart';
+import 'weekly_share_screen.dart';
 
 class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
@@ -23,317 +20,131 @@ class MoreScreen extends StatefulWidget {
 }
 
 class _MoreScreenState extends State<MoreScreen> {
-  String _version = '';
-  String? _message;
+  String? message;
 
   @override
   void initState() {
     super.initState();
-    PackageInfo.fromPlatform().then((info) {
-      if (mounted)
-        setState(() => _version = '${info.version}+${info.buildNumber}');
-    });
-    AppPreferences.instance.addListener(_prefsChanged);
-    ChildSession.instance.addListener(_prefsChanged);
+    AppPreferences.instance.addListener(_refresh);
+    ChildSession.instance.addListener(_refresh);
   }
 
   @override
   void dispose() {
-    AppPreferences.instance.removeListener(_prefsChanged);
-    ChildSession.instance.removeListener(_prefsChanged);
+    AppPreferences.instance.removeListener(_refresh);
+    ChildSession.instance.removeListener(_refresh);
     super.dispose();
   }
 
-  void _prefsChanged() => setState(() {});
+  void _refresh() {
+    if (mounted) setState(() {});
+  }
 
-  Future<void> _exportReport() async {
+  Future<void> _report() async {
     final child = ChildSession.instance.selectedChild;
-    if (child == null) return;
+    if (child == null) {
+      setState(() => message = 'اختاري طفلًا أولًا لإنشاء التقرير.');
+      return;
+    }
     try {
       final bytes = await ReportService().buildDoctorReport(child);
-      await Printing.sharePdf(
-        bytes: bytes,
-        filename: 'numuw-doctor-report.pdf',
-      );
+      await Printing.sharePdf(bytes: bytes, filename: 'numuw-doctor-report.pdf');
     } catch (error, stackTrace) {
       logError(error, stackTrace);
-      setState(() => _message = 'تعذر إنشاء التقرير: ${readableError(error)}');
+      if (mounted) setState(() => message = readableError(error));
     }
   }
 
   Future<void> _switchChild() async {
     final children = ChildSession.instance.children;
     if (children.length < 2) {
-      setState(() => _message = 'لا يوجد أكثر من طفل للتبديل.');
+      setState(() => message = 'لا يوجد أكثر من طفل للتبديل.');
       return;
     }
-    final selected = await showDialog<String>(
+    final id = await showModalBottomSheet<String>(
       context: context,
-      builder: (context) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: SimpleDialog(
-          title: const Text('اختاري الطفل'),
-          children: children
-              .map(
-                (c) => SimpleDialogOption(
-                  onPressed: () => Navigator.pop(context, c.id),
-                  child: Text(c.name),
-                ),
-              )
-              .toList(),
+      builder: (context) => SafeArea(
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('اختاري الطفل', style: TextStyle(color: numuwTextColor(), fontSize: 20, fontWeight: FontWeight.w900)),
+                const SizedBox(height: 12),
+                ...children.map((child) => ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const CircleAvatar(child: Text('👶')),
+                      title: Text(child.name),
+                      trailing: const Icon(Icons.chevron_left_rounded),
+                      onTap: () => Navigator.pop(context, child.id),
+                    )),
+              ],
+            ),
+          ),
         ),
       ),
     );
-    if (selected == null) return;
-    ChildSession.instance.selectChild(
-      children.firstWhere((c) => c.id == selected),
-    );
-    setState(() {});
+    if (id == null) return;
+    ChildSession.instance.selectChild(children.firstWhere((item) => item.id == id));
   }
 
-  void _feature(String title, String message) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => _FeatureInfoScreen(title: title, message: message),
-      ),
-    );
-  }
-
-  Future<void> _setReminder({
-    required Future<void> Function(bool value) setter,
-    required bool value,
-  }) async {
-    final child = ChildSession.instance.selectedChild;
-    await setter(value);
-    if (child == null) {
-      setState(() => _message = 'اختاري طفلًا أولًا لتحديث التذكيرات.');
-      return;
-    }
-    try {
-      await NotificationService.instance.rescheduleForChild(child.id);
-      setState(() => _message = 'تم تحديث إعدادات التذكيرات.');
-    } catch (error, stackTrace) {
-      logError(error, stackTrace);
-      setState(() => _message = readableError(error));
-    }
+  void _info(String title, String text) {
+    Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (_) => _InfoScreen(title: title, text: text),
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    final email =
-        Supabase.instance.client.auth.currentUser?.email ?? 'غير معروف';
+    final user = Supabase.instance.client.auth.currentUser;
     final child = ChildSession.instance.selectedChild;
-    final night = AppPreferences.instance.nightMode;
+    final name = user?.userMetadata?['full_name']?.toString().trim();
+    final displayName = name == null || name.isEmpty ? 'ماما' : name;
+    final email = user?.email ?? 'الحساب';
+
+    final items = <_Item>[
+      _Item(Icons.workspace_premium_outlined, 'نُمُوّ Premium', 'افتحي كل الميزات', AppColors.mint,
+          () => _info('نُمُوّ Premium', 'التقارير المتقدمة والمشاركة العائلية والميزات الإضافية.')),
+      _Item(Icons.favorite_border_rounded, 'صحّتك أنتِ', 'العناية بالأم', AppColors.peach,
+          () => _info('صحّتك أنتِ', 'مساحة هادئة لمتابعة راحتك واحتياجاتك اليومية.')),
+      _Item(Icons.pregnant_woman_rounded, 'وضع الحمل', 'التجهيز لاستقبال طفلك', AppColors.blue,
+          () => _info('وضع الحمل', 'قوائم التجهيز وخطة أول أسبوع بعد الولادة.')),
+      _Item(Icons.family_restroom_rounded, 'مشاركة الأسرة', 'الأب ومقدمو الرعاية', AppColors.success,
+          () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const FamilyScreen()))),
+      _Item(Icons.restaurant_menu_rounded, 'الطعام بعد 6 شهور', 'الوجبات والأطعمة', AppColors.mint,
+          () => _info('الطعام بعد 6 شهور', 'سجّلي الأطعمة والوجبات وردود الفعل من تبويب التسجيل.')),
+      _Item(Icons.notifications_none_rounded, 'التنبيهات', 'إدارة الإشعارات', AppColors.blue,
+          () => _info('التنبيهات', 'إعدادات التذكير متاحة من مفاتيح التنبيهات داخل التطبيق.')),
+      _Item(Icons.palette_outlined, 'المظهر والإعدادات', AppPreferences.instance.nightMode ? 'الوضع الليلي' : 'الوضع النهاري', AppColors.mint,
+          AppPreferences.instance.toggleNightMode),
+      _Item(Icons.child_care_rounded, 'الطفل المحدد', child?.name ?? 'لم يتم اختيار طفل', AppColors.blue, _switchChild),
+      _Item(Icons.picture_as_pdf_outlined, 'تقرير الطبيب', 'إنشاء ومشاركة PDF', AppColors.purple, _report),
+      _Item(Icons.ios_share_rounded, 'كارت الأسبوع', 'قابل للمشاركة', AppColors.success,
+          () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const WeeklyShareScreen()))),
+      _Item(Icons.logout_rounded, 'تسجيل الخروج', 'الخروج من الحساب الحالي', AppColors.danger, () async {
+        await AuthService().signOut();
+        ChildSession.instance.clear();
+      }),
+    ];
+
     return Scaffold(
+      backgroundColor: numuwPageColor(),
       body: AppPage(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            NumuwAppBar(
-              title: 'المزيد',
-              subtitle: 'الإعدادات والخدمات الإضافية',
-              trailing: const NumuwStatusBadge(
-                label: 'إعدادات',
-                color: AppColors.mint,
-              ),
-            ),
+            Text('المزيد', style: TextStyle(color: numuwTextColor(), fontSize: 25, fontWeight: FontWeight.w900)),
             const SizedBox(height: 14),
-            NumuwPlantProgress(
-              progress: child == null ? .24 : .56,
-              label: child == null ? 'اختاري طفلاً' : 'التجربة مكتملة جزئياً',
-            ),
-            const SizedBox(height: 14),
-            if (child != null) ...[
-              NumuwBabyHeader(name: child.name, subtitle: 'الحساب: $email'),
-              const SizedBox(height: 16),
-            ] else ...[
-              NumuwCard(
-                child: Text(
-                  'الحساب: $email',
-                  style: TextStyle(
-                    color: numuwSecondaryTextColor(),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
-            const _GroupLabel('أدوات المتابعة'),
-            const SizedBox(height: 9),
-            SettingsGroup(
-              children: [
-                SettingsRow(
-                  icon: Icons.bedtime_outlined,
-                  title: 'متابعة النوم',
-                  color: AppColors.purple,
-                  onTap: () => _feature(
-                    'متابعة النوم',
-                    'تظهر تسجيلات النوم الفعلية في صفحة التسجيل ولوحة اليوم.',
-                  ),
-                ),
-                SettingsRow(
-                  icon: Icons.baby_changing_station_outlined,
-                  title: 'متابعة الحفاضات',
-                  color: AppColors.blue,
-                  onTap: () => _feature(
-                    'متابعة الحفاضات',
-                    'استخدمي تبويب التسجيل لحفظ تغييرات الحفاضة ومراجعتها.',
-                  ),
-                ),
-                SettingsRow(
-                  icon: Icons.medication_outlined,
-                  title: 'الأدوية والمكملات',
-                  color: AppColors.peach,
-                  onTap: () => _feature(
-                    'الأدوية والمكملات',
-                    'يمكنك تسجيل الدواء والجرعة الموصوفة فقط دون أي توصية طبية.',
-                  ),
-                ),
-                SettingsRow(
-                  icon: Icons.ios_share_rounded,
-                  title: 'كارت الأسبوع القابل للمشاركة',
-                  color: AppColors.mint,
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const WeeklyShareScreen(),
-                    ),
-                  ),
-                ),
-                SettingsRow(
-                  icon: Icons.notifications_active_outlined,
-                  title: 'تذكير الرضعة القادمة',
-                  color: AppColors.yellow,
-                  trailing: NumuwSwitch(
-                    value: AppPreferences.instance.feedingRemindersEnabled,
-                    onChanged: (value) => _setReminder(
-                      setter: AppPreferences.instance.setFeedingReminders,
-                      value: value,
-                    ),
-                  ),
-                  onTap: () => _setReminder(
-                    setter: AppPreferences.instance.setFeedingReminders,
-                    value: !AppPreferences.instance.feedingRemindersEnabled,
-                  ),
-                ),
-                SettingsRow(
-                  icon: Icons.medication_liquid_outlined,
-                  title: 'تذكير الدواء المسجل',
-                  color: AppColors.peach,
-                  trailing: NumuwSwitch(
-                    value: AppPreferences.instance.medicineRemindersEnabled,
-                    onChanged: (value) => _setReminder(
-                      setter: AppPreferences.instance.setMedicineReminders,
-                      value: value,
-                    ),
-                  ),
-                  onTap: () => _setReminder(
-                    setter: AppPreferences.instance.setMedicineReminders,
-                    value: !AppPreferences.instance.medicineRemindersEnabled,
-                  ),
-                ),
-                SettingsRow(
-                  icon: Icons.vaccines_outlined,
-                  title: 'تذكير التطعيم القادم',
-                  color: AppColors.blue,
-                  trailing: NumuwSwitch(
-                    value: AppPreferences.instance.vaccinationRemindersEnabled,
-                    onChanged: (value) => _setReminder(
-                      setter: AppPreferences.instance.setVaccinationReminders,
-                      value: value,
-                    ),
-                  ),
-                  onTap: () => _setReminder(
-                    setter: AppPreferences.instance.setVaccinationReminders,
-                    value: !AppPreferences.instance.vaccinationRemindersEnabled,
-                  ),
-                ),
-              ],
-            ),
+            _Profile(name: displayName, email: email),
             const SizedBox(height: 16),
-            const _GroupLabel('التجربة'),
-            const SizedBox(height: 9),
-            SettingsGroup(
-              children: [
-                SettingsRow(
-                  icon: Icons.nightlight_round,
-                  title: 'وضع الليل الهادئ',
-                  color: AppColors.nightGold,
-                  trailing: NumuwSwitch(
-                    value: night,
-                    onChanged: (_) => AppPreferences.instance.toggleNightMode(),
-                  ),
-                  onTap: AppPreferences.instance.toggleNightMode,
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            const _GroupLabel('الحساب والطفل'),
-            const SizedBox(height: 9),
-            SettingsGroup(
-              children: [
-                SettingsRow(
-                  icon: Icons.email_outlined,
-                  title: 'الحساب: $email',
-                  color: AppColors.blue,
-                  onTap: () => _feature('الحساب', email),
-                ),
-                SettingsRow(
-                  icon: Icons.child_care_rounded,
-                  title: 'الطفل المحدد: ${child?.name ?? 'غير محدد'}',
-                  color: AppColors.mint,
-                  onTap: _switchChild,
-                ),
-                SettingsRow(
-                  icon: Icons.family_restroom_rounded,
-                  title: 'مشاركة العيلة',
-                  color: AppColors.mint,
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const FamilyScreen(),
-                    ),
-                  ),
-                ),
-                SettingsRow(
-                  icon: Icons.picture_as_pdf_outlined,
-                  title: 'تقرير الطبيب PDF',
-                  color: AppColors.purple,
-                  onTap: _exportReport,
-                ),
-                SettingsRow(
-                  icon: Icons.privacy_tip_outlined,
-                  title: 'الخصوصية',
-                  color: AppColors.yellow,
-                  onTap: () => _feature(
-                    'الخصوصية',
-                    'بيانات طفلك لا تظهر إلا لكِ ولمن تسمحين له من مشاركة العيلة. يمكنك إدارة أفراد العيلة وصلاحيات الوصول من شاشة مشاركة العيلة، ولا نضع مفاتيح سرية داخل التطبيق.',
-                  ),
-                ),
-                SettingsRow(
-                  icon: Icons.info_outline_rounded,
-                  title:
-                      'إصدار التطبيق: ${_version.isEmpty ? '...' : _version}',
-                  color: AppColors.blue,
-                  onTap: () => _feature(
-                    'إصدار التطبيق',
-                    _version.isEmpty ? 'غير متاح' : _version,
-                  ),
-                ),
-                SettingsRow(
-                  icon: Icons.logout_rounded,
-                  title: 'تسجيل الخروج',
-                  color: AppColors.peach,
-                  onTap: () async {
-                    await AuthService().signOut();
-                    ChildSession.instance.clear();
-                  },
-                ),
-              ],
-            ),
-            if (_message != null) ...[
-              const SizedBox(height: 14),
-              InfoBanner(message: _message!, icon: Icons.info_outline_rounded),
-            ],
+            ...items.map((item) => Padding(
+                  padding: const EdgeInsetsDirectional.only(bottom: 12),
+                  child: _MoreTile(item: item),
+                )),
+            if (message != null) InfoBanner(message: message!, icon: Icons.info_outline_rounded),
           ],
         ),
       ),
@@ -341,65 +152,97 @@ class _MoreScreenState extends State<MoreScreen> {
   }
 }
 
-class _GroupLabel extends StatelessWidget {
-  const _GroupLabel(this.text);
+class _Profile extends StatelessWidget {
+  const _Profile({required this.name, required this.email});
+  final String name;
+  final String email;
 
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsetsDirectional.all(16),
+        decoration: BoxDecoration(color: numuwSurfaceColor(), borderRadius: BorderRadius.circular(22), border: Border.all(color: numuwBorderColor())),
+        child: Row(children: [
+          Container(
+            width: 54,
+            height: 54,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(color: numuwAccentColor().withValues(alpha: .14), shape: BoxShape.circle),
+            child: Text(name.characters.first, style: TextStyle(color: numuwAccentColor(), fontSize: 22, fontWeight: FontWeight.w900)),
+          ),
+          const SizedBox(width: 13),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(name, style: TextStyle(color: numuwTextColor(), fontSize: 18, fontWeight: FontWeight.w900)),
+            const SizedBox(height: 3),
+            Text(email, overflow: TextOverflow.ellipsis, style: TextStyle(color: numuwSecondaryTextColor(), fontSize: 12.5)),
+          ])),
+          Icon(Icons.settings_outlined, color: numuwSecondaryTextColor()),
+        ]),
+      );
+}
+
+class _MoreTile extends StatelessWidget {
+  const _MoreTile({required this.item});
+  final _Item item;
+
+  @override
+  Widget build(BuildContext context) => Material(
+        color: numuwSurfaceColor(),
+        borderRadius: BorderRadius.circular(22),
+        child: InkWell(
+          onTap: item.onTap,
+          borderRadius: BorderRadius.circular(22),
+          child: Container(
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 14, 16, 14),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(22), border: Border.all(color: numuwBorderColor())),
+            child: Row(children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(color: item.color.withValues(alpha: .13), borderRadius: BorderRadius.circular(16)),
+                child: Icon(item.icon, color: item.color, size: 23),
+              ),
+              const SizedBox(width: 13),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(item.title, style: TextStyle(color: numuwTextColor(), fontSize: 16.5, fontWeight: FontWeight.w900)),
+                const SizedBox(height: 3),
+                Text(item.subtitle, style: TextStyle(color: numuwSecondaryTextColor(), fontSize: 12.5)),
+              ])),
+              Icon(Icons.chevron_left_rounded, color: numuwSecondaryTextColor()),
+            ]),
+          ),
+        ),
+      );
+}
+
+class _Item {
+  const _Item(this.icon, this.title, this.subtitle, this.color, this.onTap);
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Color color;
+  final VoidCallback onTap;
+}
+
+class _InfoScreen extends StatelessWidget {
+  const _InfoScreen({required this.title, required this.text});
+  final String title;
   final String text;
 
   @override
-  Widget build(BuildContext context) => Align(
-    alignment: AlignmentDirectional.centerStart,
-    child: Text(
-      text,
-      textAlign: TextAlign.start,
-      style: TextStyle(
-        color: numuwSecondaryTextColor(),
-        fontSize: 12,
-        fontWeight: FontWeight.w700,
-        letterSpacing: .5,
-      ),
-    ),
-  );
-}
-
-class _FeatureInfoScreen extends StatelessWidget {
-  const _FeatureInfoScreen({required this.title, required this.message});
-  final String title;
-  final String message;
-
-  @override
   Widget build(BuildContext context) => Scaffold(
-    body: AppPage(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          NumuwAppBar(
-            title: title,
-            subtitle: 'معلومات آمنة داخل التطبيق',
-            leading: AppIconButton(
-              icon: Icons.arrow_forward_rounded,
-              onPressed: () => Navigator.pop(context),
-              badge: false,
-              size: 42,
-              radius: 13,
-              iconSize: 20,
-              borderWidth: 1.5,
+        backgroundColor: numuwPageColor(),
+        appBar: AppBar(title: Text(title)),
+        body: AppPage(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(color: numuwAccentColor().withValues(alpha: .14), borderRadius: BorderRadius.circular(24)),
+              child: Icon(Icons.nightlight_round, color: numuwAccentColor(), size: 34),
             ),
-          ),
-          const SizedBox(height: 14),
-          NumuwCard(
-            child: Text(
-              message,
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                color: numuwTextColor(),
-                height: 1.7,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
+            const SizedBox(height: 18),
+            Text(text, style: TextStyle(color: numuwTextColor(), fontSize: 16, height: 1.75, fontWeight: FontWeight.w600)),
+          ]),
+        ),
+      );
 }
