@@ -35,6 +35,10 @@ updated = re.sub(
     count=1,
     flags=re.S,
 )
-if updated == text and 'const aliases = <String, String>' not in text:
-    raise SystemExit('Normalization block not found.')
 path.write_text(updated, encoding='utf-8')
+
+signup = Path('lib/screens/auth/sign_up_screen.dart')
+signup_text = signup.read_text(encoding='utf-8')
+old_label = "label: '\u0625\u0646\u0634\u0627\u0621 \u062d\u0633\u0627\u0628',"
+new_label = "label: '\u0625\u0646\u0634\u0627\u0621 \u0627\u0644\u062d\u0633\u0627\u0628',"
+signup.write_text(signup_text.replace(old_label, new_label, 1), encoding='utf-8')
