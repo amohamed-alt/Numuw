@@ -89,10 +89,10 @@ class ScheduledDose {
   bool get isOverdue => !completed && dueDate.isBefore(today);
 
   String get statusArabic {
-    if (completed) return 'مكتمل';
-    if (isOverdue) return 'متأخر';
-    if (isDueToday) return 'اليوم';
-    return 'قادم';
+    if (completed) return 'completed';
+    if (isOverdue) return 'overdue';
+    if (isDueToday) return 'today';
+    return 'upcoming';
   }
 }
 
@@ -100,31 +100,16 @@ class VaccinationScheduleCatalog {
   const VaccinationScheduleCatalog._();
 
   static final Map<NumuwCountry, VaccinationScheduleDefinition> schedules = {
-    for (final schedule in _schedules) schedule.country: schedule,
+    for (final country in NumuwCountry.values)
+      country: VaccinationScheduleDefinition(
+        country: country,
+        source: OfficialHealthSources.vaccinationSourceFor(country),
+        doses: const [],
+        status: HealthContentStatus.needsSourceExtraction,
+      ),
   };
 
   static VaccinationScheduleDefinition? forCountry(NumuwCountry country) => schedules[country];
-
-  static final List<VaccinationScheduleDefinition> _schedules = [
-    VaccinationScheduleDefinition(
-      country: NumuwCountry.egypt,
-      source: OfficialHealthSources.egyptVaccination,
-      doses: const [],
-      status: HealthContentStatus.needsSourceExtraction,
-    ),
-    VaccinationScheduleDefinition(
-      country: NumuwCountry.saudiArabia,
-      source: OfficialHealthSources.saudiVaccination,
-      doses: const [],
-      status: HealthContentStatus.needsSourceExtraction,
-    ),
-    VaccinationScheduleDefinition(
-      country: NumuwCountry.unitedArabEmirates,
-      source: OfficialHealthSources.uaeVaccination,
-      doses: const [],
-      status: HealthContentStatus.needsSourceExtraction,
-    ),
-  ];
 }
 
 DateTime _dateOnly(DateTime value) => DateTime(value.year, value.month, value.day);
