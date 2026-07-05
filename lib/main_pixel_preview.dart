@@ -30,10 +30,18 @@ class _NumuwPixelPreviewApp extends StatelessWidget {
         brightness: _darkMode ? Brightness.dark : Brightness.light,
         fontFamily: 'Cairo',
       ),
-      builder: (context, child) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: child ?? const SizedBox.shrink(),
-      ),
+      builder: (context, child) {
+        final media = MediaQuery.of(context);
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: MediaQuery(
+            data: media.copyWith(
+              textScaler: const TextScaler.linear(.94),
+            ),
+            child: child ?? const SizedBox.shrink(),
+          ),
+        );
+      },
       home: const NumuwPixelHomeFixedV2(darkMode: _darkMode),
     );
   }
