@@ -27,3 +27,5 @@ replace('lib/screens/quick_log_screen.dart', '    _reload();\n    ChildSession.i
 replace('lib/widgets/app_bottom_navigation.dart', '          height: 78,', '          height: 96,')
 replace('lib/widgets/quick_log_sheet.dart', '      child: Padding(\n        padding: const EdgeInsetsDirectional.fromSTEB(18, 6, 18, 22),', '      child: SingleChildScrollView(\n        padding: const EdgeInsetsDirectional.fromSTEB(18, 6, 18, 22),')
 replace('test/numuw_ui_smoke_test.dart', "    expect(find.text('تسجيل الدخول'), findsOneWidget);", "    expect(find.textContaining('تسجيل الدخول', findRichText: true), findsOneWidget);")
+
+exec(Path('tool/enable_ai_chat.py').read_text(encoding='utf-8'))
