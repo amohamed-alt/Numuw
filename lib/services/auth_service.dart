@@ -2,7 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService {
   AuthService({SupabaseClient? client})
-    : _client = client ?? Supabase.instance.client;
+      : _client = client ?? Supabase.instance.client;
 
   final SupabaseClient _client;
 
@@ -30,6 +30,14 @@ class AuthService {
 
   Future<void> resetPassword(String email) {
     return _client.auth.resetPasswordForEmail(email.trim());
+  }
+
+  Future<UserResponse> updatePassword(String password) {
+    return _client.auth.updateUser(UserAttributes(password: password));
+  }
+
+  Future<UserResponse> updateEmail(String email) {
+    return _client.auth.updateUser(UserAttributes(email: email.trim()));
   }
 
   Future<void> signOut() => _client.auth.signOut();
