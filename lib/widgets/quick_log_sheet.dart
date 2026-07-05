@@ -13,7 +13,12 @@ class QuickLogSheet extends StatelessWidget {
       _Action('sleep', 'نوم', Icons.dark_mode_outlined, AppColors.blue),
       _Action('diaper', 'حفاضة', Icons.opacity_rounded, AppColors.success),
       _Action('medicine', 'دواء', Icons.medication_outlined, AppColors.peach),
-      _Action('temperature', 'حرارة', Icons.thermostat_rounded, AppColors.danger),
+      _Action(
+        'temperature',
+        'حرارة',
+        Icons.thermostat_rounded,
+        AppColors.danger,
+      ),
       _Action('food', 'وجبة', Icons.restaurant_rounded, AppColors.mint),
       _Action('note', 'ملاحظة', Icons.note_alt_outlined, AppColors.blue),
       _Action('pumping', 'شفط', Icons.water_drop_outlined, AppColors.purple),
@@ -21,7 +26,7 @@ class QuickLogSheet extends StatelessWidget {
 
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsetsDirectional.fromSTEB(18, 6, 18, 22),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -64,7 +69,9 @@ class QuickLogSheet extends StatelessWidget {
                               onTap: () => Navigator.pop(context, action.mode),
                               borderRadius: BorderRadius.circular(18),
                               child: Container(
-                                constraints: const BoxConstraints(minHeight: 70),
+                                constraints: const BoxConstraints(
+                                  minHeight: 70,
+                                ),
                                 padding: const EdgeInsetsDirectional.all(14),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(18),
@@ -76,10 +83,16 @@ class QuickLogSheet extends StatelessWidget {
                                       width: 42,
                                       height: 42,
                                       decoration: BoxDecoration(
-                                        color: action.color.withValues(alpha: .13),
+                                        color: action.color.withValues(
+                                          alpha: .13,
+                                        ),
                                         borderRadius: BorderRadius.circular(14),
                                       ),
-                                      child: Icon(action.icon, color: action.color, size: 21),
+                                      child: Icon(
+                                        action.icon,
+                                        color: action.color,
+                                        size: 21,
+                                      ),
                                     ),
                                     const SizedBox(width: 10),
                                     Expanded(

@@ -14,27 +14,27 @@ import 'package:flutter_application_1/widgets/app_widgets.dart';
 import 'package:flutter_application_1/widgets/quick_log_sheet.dart';
 
 ChildProfile _child() => const ChildProfile(
-      id: '11111111-1111-4111-8111-111111111111',
-      createdBy: '22222222-2222-4222-8222-222222222222',
-      name: 'سلمى',
-      stage: 'born',
-      gender: 'female',
-      feedingType: 'formula',
-    );
+  id: '11111111-1111-4111-8111-111111111111',
+  createdBy: '22222222-2222-4222-8222-222222222222',
+  name: 'سلمى',
+  stage: 'born',
+  gender: 'female',
+  feedingType: 'formula',
+);
 
 Widget _welcomeHost({required bool night}) => MaterialApp(
-      theme: buildNumuwTheme(night: night),
-      home: WelcomeScreen(onSignIn: () {}, onSignUp: () {}),
-    );
+  theme: buildNumuwTheme(night: night),
+  home: WelcomeScreen(onSignIn: () {}, onSignUp: () {}),
+);
 
 Widget _quickLogHost(String mode) => MaterialApp(
-      home: Material(
-        child: Directionality(
-          textDirection: TextDirection.rtl,
-          child: QuickLogScreen(initialMode: mode),
-        ),
-      ),
-    );
+  home: Material(
+    child: Directionality(
+      textDirection: TextDirection.rtl,
+      child: QuickLogScreen(initialMode: mode),
+    ),
+  ),
+);
 
 void main() {
   setUp(() async {
@@ -54,13 +54,18 @@ void main() {
     await LogTimerState.instance.cancelPumping();
   });
 
-  testWidgets('welcome screen renders final onboarding controls', (tester) async {
+  testWidgets('welcome screen renders final onboarding controls', (
+    tester,
+  ) async {
     await tester.pumpWidget(_welcomeHost(night: false));
 
     expect(find.byType(WelcomeScreen), findsOneWidget);
     expect(find.byType(PrimaryButton), findsOneWidget);
     expect(find.text('التالي'), findsOneWidget);
-    expect(find.text('تسجيل الدخول'), findsOneWidget);
+    expect(
+      find.textContaining('تسجيل الدخول', findRichText: true),
+      findsOneWidget,
+    );
     expect(tester.takeException(), isNull);
   });
 
@@ -116,7 +121,9 @@ void main() {
     expect(selectedMode, 'feeding');
   });
 
-  testWidgets('active feeding timer appears in final feeding screen', (tester) async {
+  testWidgets('active feeding timer appears in final feeding screen', (
+    tester,
+  ) async {
     final child = _child();
     ChildSession.instance.setChildren([child], notify: false);
     await LogTimerState.instance.startFeeding(

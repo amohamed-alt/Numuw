@@ -37,7 +37,7 @@ class AppBottomNavigation extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Container(
-          height: 78,
+          height: 96,
           padding: const EdgeInsetsDirectional.fromSTEB(6, 8, 6, 10),
           decoration: BoxDecoration(
             color: surface,
@@ -78,10 +78,7 @@ class AppBottomNavigation extends StatelessWidget {
                               decoration: BoxDecoration(
                                 color: accent,
                                 shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: surface,
-                                  width: 4,
-                                ),
+                                border: Border.all(color: surface, width: 4),
                                 boxShadow: [
                                   BoxShadow(
                                     color: accent.withValues(alpha: .32),
