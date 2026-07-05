@@ -9,9 +9,13 @@ import '../widgets/app_widgets.dart';
 import 'account_screen.dart';
 import 'doctor_report_screen.dart';
 import 'family/family_screen.dart';
+import 'food_screen.dart';
+import 'notifications_screen.dart';
+import 'pregnancy_screen.dart';
 import 'premium_screen.dart';
 import 'settings_screen.dart';
 import 'weekly_share_screen.dart';
+import 'wellbeing_screen.dart';
 
 class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
@@ -94,11 +98,11 @@ class _MoreScreenState extends State<MoreScreen> {
 
     final items = <_Item>[
       _Item(Icons.workspace_premium_outlined, 'نُمُوّ Premium', 'افتحي كل الميزات', AppColors.mint, () => _open(const PremiumScreen())),
-      _Item(Icons.favorite_border_rounded, 'صحّتك أنتِ', 'العناية بالأم', AppColors.peach, () => _info('صحّتك أنتِ', 'مساحة هادئة لمتابعة راحتك ومزاجك واحتياجاتك اليومية.')),
-      _Item(Icons.pregnant_woman_rounded, 'وضع الحمل', 'التجهيز لاستقبال طفلك', AppColors.blue, () => _info('وضع الحمل', 'قوائم التجهيز وخطة أول أسبوع بعد الولادة وتقسيم المهام.')),
+      _Item(Icons.favorite_border_rounded, 'صحّتك أنتِ', 'العناية بالأم', AppColors.peach, () => _open(const WellbeingScreen())),
+      _Item(Icons.pregnant_woman_rounded, 'وضع الحمل', 'التجهيز لاستقبال طفلك', AppColors.blue, () => _open(const PregnancyScreen())),
       _Item(Icons.family_restroom_rounded, 'مشاركة الأسرة', 'الأب ومقدمو الرعاية', AppColors.success, () => _open(const FamilyScreen())),
-      _Item(Icons.restaurant_menu_rounded, 'الطعام بعد 6 شهور', 'الوجبات والأطعمة', AppColors.mint, () => _info('الطعام بعد 6 شهور', 'سجّلي الأطعمة والوجبات وردود الفعل من تبويب التسجيل.')),
-      _Item(Icons.notifications_none_rounded, 'التنبيهات', 'إدارة الإشعارات', AppColors.blue, () => _open(const SettingsScreen())),
+      _Item(Icons.restaurant_menu_rounded, 'الطعام بعد 6 شهور', 'الوجبات والأطعمة', AppColors.mint, () => _open(const FoodScreen())),
+      _Item(Icons.notifications_none_rounded, 'التنبيهات', 'إدارة الإشعارات', AppColors.blue, () => _open(const NotificationsScreen())),
       _Item(Icons.palette_outlined, 'المظهر والإعدادات', AppPreferences.instance.nightMode ? 'الوضع الليلي' : 'الوضع النهاري', AppColors.mint, () => _open(const SettingsScreen())),
       _Item(Icons.child_care_rounded, 'الطفل المحدد', child?.name ?? 'لم يتم اختيار طفل', AppColors.blue, _switchChild),
       _Item(Icons.picture_as_pdf_outlined, 'تقرير الطبيب', 'اختيار الأقسام والمعاينة', AppColors.purple, () => _open(const DoctorReportScreen())),
