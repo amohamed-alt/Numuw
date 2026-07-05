@@ -27,6 +27,29 @@ if path.exists():
 service_path = Path('lib/services/ai_assistant_service.dart')
 if service_path.exists():
     service = service_path.read_text(encoding='utf-8')
+    service = service.replace(
+        """  SupabaseAiAssistantTransport({SupabaseClient? client})
+    : _client = client ?? Supabase.instance.client;
+
+  final SupabaseClient _client;
+
+  @override
+  Session? get currentSession => _client.auth.currentSession;""",
+        """  SupabaseAiAssistantTransport({SupabaseClient? client}) : _client = client;
+
+  final SupabaseClient? _client;
+
+  SupabaseClient get _resolvedClient => _client ?? Supabase.instance.client;
+
+  @override
+  Session? get currentSession => _resolvedClient.auth.currentSession;""",
+        1,
+    )
+    service = service.replace(
+        '    final response = await _client.functions\n',
+        '    final response = await _resolvedClient.functions\n',
+        1,
+    )
     if "static const chatFunctionId = 'ai-assistant-chat';" not in service:
         service = service.replace(
             "  static const functionId = 'ai-assistant';\n",
