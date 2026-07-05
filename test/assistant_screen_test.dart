@@ -11,7 +11,7 @@ void main() {
       const ChildProfile(
         id: '11111111-1111-4111-8111-111111111111',
         createdBy: '22222222-2222-4222-8222-222222222222',
-        name: 'سلمى',
+        name: 'Salma',
         stage: 'born',
         gender: 'female',
         feedingType: 'formula',
@@ -19,32 +19,35 @@ void main() {
     ]);
   });
 
-  tearDown(() {
-    ChildSession.instance.clear();
-  });
+  tearDown(ChildSession.instance.clear);
 
-  testWidgets('assistant screen shows rtl labels', (tester) async {
+  testWidgets('assistant screen renders redesigned empty state', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: AssistantScreen()));
 
-    expect(find.text('اسألي'), findsOneWidget);
-    expect(find.text('ملخص للطبيب'), findsOneWidget);
-    expect(find.text('صياغة سؤال'), findsOneWidget);
+    expect(find.byIcon(Icons.nightlight_round), findsOneWidget);
+    expect(find.byIcon(Icons.info_outline_rounded), findsOneWidget);
+    expect(find.byType(TextField), findsOneWidget);
+    expect(find.byIcon(Icons.send_rounded), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
-  testWidgets('emergency notice can be shown', (tester) async {
+  testWidgets('assistant screen can start a fresh chat', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: AssistantScreen()));
 
-    await tester.tap(find.text('تنبيه الطوارئ'));
+    await tester.tap(find.byIcon(Icons.add_comment_outlined));
     await tester.pump();
 
-    expect(find.textContaining('الطوارئ'), findsWidgets);
+    expect(find.byType(TextField), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
-  testWidgets('dark mode smoke test', (tester) async {
+  testWidgets('assistant screen dark theme smoke test', (tester) async {
     await tester.pumpWidget(
       MaterialApp(theme: ThemeData.dark(), home: const AssistantScreen()),
     );
 
-    expect(find.text('اسألي'), findsOneWidget);
+    expect(find.byIcon(Icons.nightlight_round), findsOneWidget);
+    expect(find.byType(TextField), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }
