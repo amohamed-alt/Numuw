@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'screens/design_preview/pixel_perfect_home_screen.dart';
+import 'screens/design_preview/pixel_home_fixed.dart';
 
 const bool _darkMode = bool.fromEnvironment('PIXEL_DARK');
 
@@ -32,26 +32,9 @@ class _NumuwPixelPreviewApp extends StatelessWidget {
       ),
       builder: (context, child) => Directionality(
         textDirection: TextDirection.rtl,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final preview = child ?? const SizedBox.shrink();
-            if (constraints.maxWidth < 700) return preview;
-            return ColoredBox(
-              color: _darkMode
-                  ? const Color(0xFF121512)
-                  : const Color(0xFFF3EDE3),
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 430),
-                  child: preview,
-                ),
-              ),
-            );
-          },
-        ),
+        child: child ?? const SizedBox.shrink(),
       ),
-      home: const NumuwPixelHomeScreen(darkMode: _darkMode),
+      home: const NumuwPixelHomeFixed(darkMode: _darkMode),
     );
   }
 }
