@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:printing/printing.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/app_colors.dart';
-import '../core/errors/app_error.dart';
 import '../services/auth_service.dart';
-import '../services/report_service.dart';
 import '../state/app_preferences.dart';
 import '../state/child_session.dart';
 import '../widgets/app_widgets.dart';
+import 'account_screen.dart';
+import 'doctor_report_screen.dart';
 import 'family/family_screen.dart';
+import 'premium_screen.dart';
+import 'settings_screen.dart';
 import 'weekly_share_screen.dart';
 
 class MoreScreen extends StatefulWidget {
@@ -40,19 +41,8 @@ class _MoreScreenState extends State<MoreScreen> {
     if (mounted) setState(() {});
   }
 
-  Future<void> _report() async {
-    final child = ChildSession.instance.selectedChild;
-    if (child == null) {
-      setState(() => message = 'اختاري طفلًا أولًا لإنشاء التقرير.');
-      return;
-    }
-    try {
-      final bytes = await ReportService().buildDoctorReport(child);
-      await Printing.sharePdf(bytes: bytes, filename: 'numuw-doctor-report.pdf');
-    } catch (error, stackTrace) {
-      logError(error, stackTrace);
-      if (mounted) setState(() => message = readableError(error));
-    }
+  void _open(Widget screen) {
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => screen));
   }
 
   Future<void> _switchChild() async {
@@ -63,26 +53,25 @@ class _MoreScreenState extends State<MoreScreen> {
     }
     final id = await showModalBottomSheet<String>(
       context: context,
-      builder: (context) => SafeArea(
-        child: Directionality(
-          textDirection: TextDirection.rtl,
-          child: Padding(
-            padding: const EdgeInsetsDirectional.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('اختاري الطفل', style: TextStyle(color: numuwTextColor(), fontSize: 20, fontWeight: FontWeight.w900)),
-                const SizedBox(height: 12),
-                ...children.map((child) => ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: const CircleAvatar(child: Text('👶')),
-                      title: Text(child.name),
-                      trailing: const Icon(Icons.chevron_left_rounded),
-                      onTap: () => Navigator.pop(context, child.id),
-                    )),
-              ],
-            ),
+      useSafeArea: true,
+      builder: (context) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('اختاري الطفل', style: TextStyle(color: numuwTextColor(), fontSize: 20, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 12),
+              ...children.map((child) => ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const CircleAvatar(child: Text('👶')),
+                    title: Text(child.name),
+                    trailing: const Icon(Icons.chevron_left_rounded),
+                    onTap: () => Navigator.pop(context, child.id),
+                  )),
+            ],
           ),
         ),
       ),
@@ -92,38 +81,28 @@ class _MoreScreenState extends State<MoreScreen> {
   }
 
   void _info(String title, String text) {
-    Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (_) => _InfoScreen(title: title, text: text),
-    ));
+    _open(_InfoScreen(title: title, text: text));
   }
 
   @override
   Widget build(BuildContext context) {
     final user = Supabase.instance.client.auth.currentUser;
     final child = ChildSession.instance.selectedChild;
-    final name = user?.userMetadata?['full_name']?.toString().trim();
-    final displayName = name == null || name.isEmpty ? 'ماما' : name;
+    final rawName = user?.userMetadata?['full_name']?.toString().trim();
+    final name = rawName == null || rawName.isEmpty ? 'ماما' : rawName;
     final email = user?.email ?? 'الحساب';
 
     final items = <_Item>[
-      _Item(Icons.workspace_premium_outlined, 'نُمُوّ Premium', 'افتحي كل الميزات', AppColors.mint,
-          () => _info('نُمُوّ Premium', 'التقارير المتقدمة والمشاركة العائلية والميزات الإضافية.')),
-      _Item(Icons.favorite_border_rounded, 'صحّتك أنتِ', 'العناية بالأم', AppColors.peach,
-          () => _info('صحّتك أنتِ', 'مساحة هادئة لمتابعة راحتك واحتياجاتك اليومية.')),
-      _Item(Icons.pregnant_woman_rounded, 'وضع الحمل', 'التجهيز لاستقبال طفلك', AppColors.blue,
-          () => _info('وضع الحمل', 'قوائم التجهيز وخطة أول أسبوع بعد الولادة.')),
-      _Item(Icons.family_restroom_rounded, 'مشاركة الأسرة', 'الأب ومقدمو الرعاية', AppColors.success,
-          () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const FamilyScreen()))),
-      _Item(Icons.restaurant_menu_rounded, 'الطعام بعد 6 شهور', 'الوجبات والأطعمة', AppColors.mint,
-          () => _info('الطعام بعد 6 شهور', 'سجّلي الأطعمة والوجبات وردود الفعل من تبويب التسجيل.')),
-      _Item(Icons.notifications_none_rounded, 'التنبيهات', 'إدارة الإشعارات', AppColors.blue,
-          () => _info('التنبيهات', 'إعدادات التذكير متاحة من مفاتيح التنبيهات داخل التطبيق.')),
-      _Item(Icons.palette_outlined, 'المظهر والإعدادات', AppPreferences.instance.nightMode ? 'الوضع الليلي' : 'الوضع النهاري', AppColors.mint,
-          AppPreferences.instance.toggleNightMode),
+      _Item(Icons.workspace_premium_outlined, 'نُمُوّ Premium', 'افتحي كل الميزات', AppColors.mint, () => _open(const PremiumScreen())),
+      _Item(Icons.favorite_border_rounded, 'صحّتك أنتِ', 'العناية بالأم', AppColors.peach, () => _info('صحّتك أنتِ', 'مساحة هادئة لمتابعة راحتك ومزاجك واحتياجاتك اليومية.')),
+      _Item(Icons.pregnant_woman_rounded, 'وضع الحمل', 'التجهيز لاستقبال طفلك', AppColors.blue, () => _info('وضع الحمل', 'قوائم التجهيز وخطة أول أسبوع بعد الولادة وتقسيم المهام.')),
+      _Item(Icons.family_restroom_rounded, 'مشاركة الأسرة', 'الأب ومقدمو الرعاية', AppColors.success, () => _open(const FamilyScreen())),
+      _Item(Icons.restaurant_menu_rounded, 'الطعام بعد 6 شهور', 'الوجبات والأطعمة', AppColors.mint, () => _info('الطعام بعد 6 شهور', 'سجّلي الأطعمة والوجبات وردود الفعل من تبويب التسجيل.')),
+      _Item(Icons.notifications_none_rounded, 'التنبيهات', 'إدارة الإشعارات', AppColors.blue, () => _open(const SettingsScreen())),
+      _Item(Icons.palette_outlined, 'المظهر والإعدادات', AppPreferences.instance.nightMode ? 'الوضع الليلي' : 'الوضع النهاري', AppColors.mint, () => _open(const SettingsScreen())),
       _Item(Icons.child_care_rounded, 'الطفل المحدد', child?.name ?? 'لم يتم اختيار طفل', AppColors.blue, _switchChild),
-      _Item(Icons.picture_as_pdf_outlined, 'تقرير الطبيب', 'إنشاء ومشاركة PDF', AppColors.purple, _report),
-      _Item(Icons.ios_share_rounded, 'كارت الأسبوع', 'قابل للمشاركة', AppColors.success,
-          () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const WeeklyShareScreen()))),
+      _Item(Icons.picture_as_pdf_outlined, 'تقرير الطبيب', 'اختيار الأقسام والمعاينة', AppColors.purple, () => _open(const DoctorReportScreen())),
+      _Item(Icons.ios_share_rounded, 'كارت الأسبوع', 'قابل للمشاركة', AppColors.success, () => _open(const WeeklyShareScreen())),
       _Item(Icons.logout_rounded, 'تسجيل الخروج', 'الخروج من الحساب الحالي', AppColors.danger, () async {
         await AuthService().signOut();
         ChildSession.instance.clear();
@@ -133,50 +112,47 @@ class _MoreScreenState extends State<MoreScreen> {
     return Scaffold(
       backgroundColor: numuwPageColor(),
       body: AppPage(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('المزيد', style: TextStyle(color: numuwTextColor(), fontSize: 25, fontWeight: FontWeight.w900)),
-            const SizedBox(height: 14),
-            _Profile(name: displayName, email: email),
-            const SizedBox(height: 16),
-            ...items.map((item) => Padding(
-                  padding: const EdgeInsetsDirectional.only(bottom: 12),
-                  child: _MoreTile(item: item),
-                )),
-            if (message != null) InfoBanner(message: message!, icon: Icons.info_outline_rounded),
-          ],
-        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('المزيد', style: TextStyle(color: numuwTextColor(), fontSize: 25, fontWeight: FontWeight.w900)),
+          const SizedBox(height: 14),
+          _Profile(name: name, email: email, onTap: () => _open(const AccountScreen())),
+          const SizedBox(height: 16),
+          ...items.map((item) => Padding(padding: const EdgeInsetsDirectional.only(bottom: 12), child: _MoreTile(item: item))),
+          if (message != null) InfoBanner(message: message!, icon: Icons.info_outline_rounded),
+        ]),
       ),
     );
   }
 }
 
 class _Profile extends StatelessWidget {
-  const _Profile({required this.name, required this.email});
+  const _Profile({required this.name, required this.email, required this.onTap});
   final String name;
   final String email;
+  final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsetsDirectional.all(16),
-        decoration: BoxDecoration(color: numuwSurfaceColor(), borderRadius: BorderRadius.circular(22), border: Border.all(color: numuwBorderColor())),
-        child: Row(children: [
-          Container(
-            width: 54,
-            height: 54,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(color: numuwAccentColor().withValues(alpha: .14), shape: BoxShape.circle),
-            child: Text(name.characters.first, style: TextStyle(color: numuwAccentColor(), fontSize: 22, fontWeight: FontWeight.w900)),
+  Widget build(BuildContext context) => Material(
+        color: numuwSurfaceColor(),
+        borderRadius: BorderRadius.circular(22),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(22),
+          child: Container(
+            padding: const EdgeInsetsDirectional.all(16),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(22), border: Border.all(color: numuwBorderColor())),
+            child: Row(children: [
+              CircleAvatar(radius: 27, backgroundColor: numuwAccentColor().withValues(alpha: .14), child: Text(name.substring(0, 1), style: TextStyle(color: numuwAccentColor(), fontSize: 22, fontWeight: FontWeight.w900))),
+              const SizedBox(width: 13),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(name, style: TextStyle(color: numuwTextColor(), fontSize: 18, fontWeight: FontWeight.w900)),
+                const SizedBox(height: 3),
+                Text(email, overflow: TextOverflow.ellipsis, style: TextStyle(color: numuwSecondaryTextColor(), fontSize: 12.5)),
+              ])),
+              Icon(Icons.settings_outlined, color: numuwSecondaryTextColor()),
+            ]),
           ),
-          const SizedBox(width: 13),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(name, style: TextStyle(color: numuwTextColor(), fontSize: 18, fontWeight: FontWeight.w900)),
-            const SizedBox(height: 3),
-            Text(email, overflow: TextOverflow.ellipsis, style: TextStyle(color: numuwSecondaryTextColor(), fontSize: 12.5)),
-          ])),
-          Icon(Icons.settings_outlined, color: numuwSecondaryTextColor()),
-        ]),
+        ),
       );
 }
 
@@ -195,12 +171,7 @@ class _MoreTile extends StatelessWidget {
             padding: const EdgeInsetsDirectional.fromSTEB(16, 14, 16, 14),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(22), border: Border.all(color: numuwBorderColor())),
             child: Row(children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(color: item.color.withValues(alpha: .13), borderRadius: BorderRadius.circular(16)),
-                child: Icon(item.icon, color: item.color, size: 23),
-              ),
+              Container(width: 48, height: 48, decoration: BoxDecoration(color: item.color.withValues(alpha: .13), borderRadius: BorderRadius.circular(16)), child: Icon(item.icon, color: item.color, size: 23)),
               const SizedBox(width: 13),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(item.title, style: TextStyle(color: numuwTextColor(), fontSize: 16.5, fontWeight: FontWeight.w900)),
@@ -232,17 +203,6 @@ class _InfoScreen extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: numuwPageColor(),
         appBar: AppBar(title: Text(title)),
-        body: AppPage(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(color: numuwAccentColor().withValues(alpha: .14), borderRadius: BorderRadius.circular(24)),
-              child: Icon(Icons.nightlight_round, color: numuwAccentColor(), size: 34),
-            ),
-            const SizedBox(height: 18),
-            Text(text, style: TextStyle(color: numuwTextColor(), fontSize: 16, height: 1.75, fontWeight: FontWeight.w600)),
-          ]),
-        ),
+        body: AppPage(child: Text(text, style: TextStyle(color: numuwTextColor(), fontSize: 16, height: 1.75, fontWeight: FontWeight.w600))),
       );
 }
