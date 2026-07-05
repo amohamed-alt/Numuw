@@ -89,10 +89,10 @@ class ScheduledDose {
   bool get isOverdue => !completed && dueDate.isBefore(today);
 
   String get statusArabic {
-    if (completed) return 'completed';
-    if (isOverdue) return 'overdue';
-    if (isDueToday) return 'today';
-    return 'upcoming';
+    if (completed) return 'مكتمل';
+    if (isOverdue) return 'متأخر';
+    if (isDueToday) return 'اليوم';
+    return 'قادم';
   }
 }
 
