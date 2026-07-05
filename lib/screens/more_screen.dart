@@ -84,10 +84,6 @@ class _MoreScreenState extends State<MoreScreen> {
     ChildSession.instance.selectChild(children.firstWhere((item) => item.id == id));
   }
 
-  void _info(String title, String text) {
-    _open(_InfoScreen(title: title, text: text));
-  }
-
   @override
   Widget build(BuildContext context) {
     final user = Supabase.instance.client.auth.currentUser;
@@ -196,17 +192,4 @@ class _Item {
   final String subtitle;
   final Color color;
   final VoidCallback onTap;
-}
-
-class _InfoScreen extends StatelessWidget {
-  const _InfoScreen({required this.title, required this.text});
-  final String title;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        backgroundColor: numuwPageColor(),
-        appBar: AppBar(title: Text(title)),
-        body: AppPage(child: Text(text, style: TextStyle(color: numuwTextColor(), fontSize: 16, height: 1.75, fontWeight: FontWeight.w600))),
-      );
 }
