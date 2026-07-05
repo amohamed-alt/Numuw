@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../content/health_sources.dart';
 import '../core/app_colors.dart';
 import '../state/app_preferences.dart';
+import '../state/country_preference.dart';
 import '../widgets/app_widgets.dart';
+import 'country_selection_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -16,11 +19,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void initState() {
     super.initState();
     AppPreferences.instance.addListener(_refresh);
+    CountryPreference.instance.addListener(_refresh);
+    CountryPreference.instance.load();
   }
 
   @override
   void dispose() {
     AppPreferences.instance.removeListener(_refresh);
+    CountryPreference.instance.removeListener(_refresh);
     super.dispose();
   }
 
@@ -31,7 +37,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final prefs = AppPreferences.instance;
+    final country = CountryPreference.instance.country;
     final night = prefs.nightMode;
+
     return Scaffold(
       backgroundColor: numuwPageColor(),
       appBar: AppBar(title: const Text('الإعدادات')),
@@ -39,36 +47,52 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _Title('المظهر'),
+            const _Title('الدولة والمحتوى المحلي'),
             const SizedBox(height: 12),
             SoftCard(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const CountrySelectionScreen(),
+                ),
+              ),
               child: Row(
                 children: [
+                  _IconBox(icon: Icons.public_rounded, color: AppColors.blue),
+                  const SizedBox(width: 13),
                   Expanded(
-                    child: _Swatch(
-                      color: numuwPageColor(),
-                      label: 'الخلفية',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          country.arabicName,
+                          style: TextStyle(
+                            color: numuwTextColor(),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          'تُستخدم لمصادر التطعيمات والمحتوى الصحي المحلي',
+                          style: TextStyle(
+                            color: numuwSecondaryTextColor(),
+                            fontSize: 12.5,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _Swatch(
-                      color: numuwSurfaceColor(),
-                      label: 'البطاقة',
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _Swatch(
-                      color: numuwAccentColor(),
-                      label: 'الذهبي',
-                      highlighted: true,
-                    ),
+                  Icon(
+                    Icons.chevron_left_rounded,
+                    color: numuwSecondaryTextColor(),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 24),
+            const _Title('المظهر'),
+            const SizedBox(height: 12),
             SoftCard(
               padding: const EdgeInsetsDirectional.all(8),
               child: Column(
@@ -85,8 +109,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _ThemeOption(
                     icon: Icons.light_mode_outlined,
                     title: 'الوضع النهاري',
-                    description:
-                        'دفء ضوء الصباح — مناسب للقراءة والتقارير والنماذج',
+                    description: 'مناسب للقراءة والتقارير والنماذج',
                     selected: prefs.themePreference == 'light',
                     onTap: () => prefs.setThemePreference('light'),
                   ),
@@ -94,8 +117,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _ThemeOption(
                     icon: Icons.dark_mode_outlined,
                     title: 'الوضع الليلي',
-                    description:
-                        'قمر الليل — مريح للعين ليلًا وأثناء الرضاعة',
+                    description: 'قمر الليل — مريح أثناء الرضاعة ليلًا',
                     selected: prefs.themePreference == 'dark',
                     onTap: () => prefs.setThemePreference('dark'),
                   ),
@@ -103,104 +125,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            _Title('وضع التسجيل الليلي'),
-            const SizedBox(height: 12),
-            Opacity(
-              opacity: night ? 1 : .55,
-              child: SoftCard(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        _IconBox(
-                          icon: Icons.nights_stay_outlined,
-                          color: AppColors.blue,
-                        ),
-                        const SizedBox(width: 13),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'إضاءة منخفضة أثناء الليل',
-                                style: TextStyle(
-                                  color: numuwTextColor(),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                              const SizedBox(height: 3),
-                              Text(
-                                'يخفّف السطوع والتوهّج في شاشات التسجيل ويبقي المؤقّت وزر الحفظ واضحين.',
-                                style: TextStyle(
-                                  color: numuwSecondaryTextColor(),
-                                  fontSize: 13,
-                                  height: 1.6,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Switch.adaptive(
-                          value: prefs.nightLogging,
-                          onChanged: night
-                              ? (value) => prefs.setNightLogging(value)
-                              : null,
-                        ),
-                      ],
-                    ),
-                    if (!night) ...[
-                      const SizedBox(height: 12),
-                      Divider(height: 1, color: numuwBorderColor()),
-                      const SizedBox(height: 12),
-                      Text(
-                        'يعمل وضع التسجيل الليلي مع الوضع الليلي فقط.',
-                        style: TextStyle(
-                          color: numuwSecondaryTextColor(),
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            _Title('إمكانية الوصول'),
+            const _Title('الراحة وإمكانية الوصول'),
             const SizedBox(height: 12),
             SoftCard(
-              child: Row(
+              child: Column(
                 children: [
-                  _IconBox(
+                  _ToggleRow(
+                    icon: Icons.nights_stay_outlined,
+                    color: AppColors.blue,
+                    title: 'إضاءة منخفضة أثناء التسجيل',
+                    description: 'تقلل التوهج في شاشات التسجيل الليلي.',
+                    value: prefs.nightLogging,
+                    onChanged: night ? prefs.setNightLogging : null,
+                  ),
+                  Divider(height: 1, color: numuwBorderColor()),
+                  _ToggleRow(
                     icon: Icons.accessibility_new_rounded,
                     color: AppColors.success,
-                  ),
-                  const SizedBox(width: 13),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'تقليل الحركة',
-                          style: TextStyle(
-                            color: numuwTextColor(),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          'يستبدل الانتقالات الكبيرة بتلاشٍ بسيط ويزيل الحركة الزخرفية.',
-                          style: TextStyle(
-                            color: numuwSecondaryTextColor(),
-                            fontSize: 13,
-                            height: 1.6,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Switch.adaptive(
+                    title: 'تقليل الحركة',
+                    description: 'يقلل الانتقالات والحركة الزخرفية.',
                     value: prefs.reducedMotion,
                     onChanged: prefs.setReducedMotion,
                   ),
@@ -210,12 +153,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 18),
             Center(
               child: Text(
-                'يُحفظ اختيارك للمظهر وتفضيلات الوصول تلقائيًا.',
+                'تُحفظ اختياراتك تلقائيًا على هذا الجهاز.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: numuwSecondaryTextColor(),
                   fontSize: 13,
-                  height: 1.7,
                 ),
               ),
             ),
@@ -228,6 +170,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
 class _Title extends StatelessWidget {
   const _Title(this.text);
+
   final String text;
 
   @override
@@ -241,41 +184,21 @@ class _Title extends StatelessWidget {
       );
 }
 
-class _Swatch extends StatelessWidget {
-  const _Swatch({
-    required this.color,
-    required this.label,
-    this.highlighted = false,
-  });
+class _IconBox extends StatelessWidget {
+  const _IconBox({required this.icon, required this.color});
 
+  final IconData icon;
   final Color color;
-  final String label;
-  final bool highlighted;
 
   @override
-  Widget build(BuildContext context) => Column(
-        children: [
-          Container(
-            height: 42,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: highlighted
-                    ? numuwAccentColor()
-                    : numuwBorderColor(),
-              ),
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            style: TextStyle(
-              color: numuwSecondaryTextColor(),
-              fontSize: 11,
-            ),
-          ),
-        ],
+  Widget build(BuildContext context) => Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: .13),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Icon(icon, color: color, size: 21),
       );
 }
 
@@ -295,90 +218,66 @@ class _ThemeOption extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => Material(
-        color: selected
-            ? numuwAccentColor().withValues(alpha: .10)
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(14),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(14),
-          child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(12, 14, 12, 14),
-            child: Row(
-              children: [
-                _IconBox(icon: icon, color: numuwAccentColor()),
-                const SizedBox(width: 13),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          color: numuwTextColor(),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
-                        description,
-                        style: TextStyle(
-                          color: numuwSecondaryTextColor(),
-                          fontSize: 13,
-                          height: 1.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: 26,
-                  height: 26,
-                  decoration: BoxDecoration(
-                    color: selected
-                        ? numuwAccentColor()
-                        : Colors.transparent,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: selected
-                          ? numuwAccentColor()
-                          : numuwBorderColor(),
-                      width: 1.5,
-                    ),
-                  ),
-                  child: selected
-                      ? Icon(
-                          Icons.check_rounded,
-                          color: numuwNightMode()
-                              ? AppColors.nightBackground
-                              : Colors.white,
-                          size: 16,
-                        )
-                      : null,
-                ),
-              ],
-            ),
-          ),
+  Widget build(BuildContext context) => ListTile(
+        onTap: onTap,
+        leading: Icon(icon, color: selected ? numuwAccentColor() : null),
+        title: Text(title),
+        subtitle: Text(description),
+        trailing: Icon(
+          selected ? Icons.radio_button_checked : Icons.radio_button_off,
+          color: selected ? numuwAccentColor() : numuwSecondaryTextColor(),
         ),
       );
 }
 
-class _IconBox extends StatelessWidget {
-  const _IconBox({required this.icon, required this.color});
+class _ToggleRow extends StatelessWidget {
+  const _ToggleRow({
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.description,
+    required this.value,
+    required this.onChanged,
+  });
 
   final IconData icon;
   final Color color;
+  final String title;
+  final String description;
+  final bool value;
+  final ValueChanged<bool>? onChanged;
 
   @override
-  Widget build(BuildContext context) => Container(
-        width: 46,
-        height: 46,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: .13),
-          borderRadius: BorderRadius.circular(15),
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsetsDirectional.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            _IconBox(icon: icon, color: color),
+            const SizedBox(width: 13),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: numuwTextColor(),
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      color: numuwSecondaryTextColor(),
+                      fontSize: 12.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Switch.adaptive(value: value, onChanged: onChanged),
+          ],
         ),
-        child: Icon(icon, color: color, size: 22),
       );
 }
