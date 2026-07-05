@@ -94,23 +94,75 @@ class OfficialHealthSources {
 
   static final Map<NumuwCountry, HealthSource> _vaccinationSources = {
     for (final country in NumuwCountry.values)
-      country: HealthSource(
-        id: 'who-national-schedule-${country.isoCode.toLowerCase()}',
-        authority:
-            'World Health Organization / national immunization reporting authority',
-        title: 'الجدول الوطني للتطعيمات — ${country.arabicName}',
-        url: _whoCountryScheduleUrl,
-        versionLabel:
-            'WHO country scheduler؛ استخراج الجرعات ومطابقتها مع المصدر الوطني قيد المراجعة',
-        lastReviewed: DateTime(2026, 7, 6),
-        countryIsoCode: country.isoCode,
-        notes: [
-          'يجب تطبيق مرشح الدولة ${country.isoCode} عند مراجعة المصدر.',
-          'لا تُعرض جرعات داخل التطبيق قبل الاستخراج والمراجعة الطبية.',
-          'تُراجع النسخة الوطنية أو وزارة الصحة المحلية قبل اعتماد أي تحديث.',
-        ],
-      ),
+      country: _countryVaccinationSource(country),
   };
+
+  static HealthSource _countryVaccinationSource(NumuwCountry country) {
+    switch (country) {
+      case NumuwCountry.egypt:
+        return HealthSource(
+          id: 'egypt-mohp-routine-immunization',
+          authority: 'وزارة الصحة والسكان المصرية',
+          title: 'الجدول القومي للتطعيمات الإجبارية للأطفال — مصر',
+          url: 'https://www.mohp.gov.eg/',
+          versionLabel:
+              'مصدر وطني رسمي؛ استخراج الجرعات التفصيلية قيد المراجعة الطبية قبل العرض',
+          lastReviewed: DateTime(2026, 7, 6),
+          countryIsoCode: country.isoCode,
+          notes: const [
+            'لا تُعرض جرعات مصر داخل التطبيق قبل مطابقة الجدول الرسمي ومراجعته طبيًا.',
+            'تُستخدم هذه البيانات كبيانات مصدرية فقط إلى أن تكتمل مراجعة الجرعات والتوقيتات.',
+          ],
+        );
+      case NumuwCountry.saudiArabia:
+        return HealthSource(
+          id: 'saudi-moh-vaccination-schedule',
+          authority: 'وزارة الصحة السعودية',
+          title: 'جدول التطعيمات الأساسية — السعودية',
+          url: 'https://www.moh.gov.sa/',
+          versionLabel:
+              'مصدر وطني رسمي؛ استخراج الجرعات التفصيلية قيد المراجعة الطبية قبل العرض',
+          lastReviewed: DateTime(2026, 7, 6),
+          countryIsoCode: country.isoCode,
+          notes: const [
+            'لا تُعرض جرعات السعودية داخل التطبيق قبل مطابقة جدول وزارة الصحة ومراجعته طبيًا.',
+            'تُراجع أي تحديثات وطنية قبل تغيير المواعيد أو الجرعات.',
+          ],
+        );
+      case NumuwCountry.unitedArabEmirates:
+        return HealthSource(
+          id: 'uae-mohap-national-immunization-program',
+          authority: 'وزارة الصحة ووقاية المجتمع الإماراتية',
+          title: 'البرنامج الوطني للتحصين — الإمارات',
+          url: 'https://mohap.gov.ae/',
+          versionLabel:
+              'مصدر وطني رسمي؛ استخراج الجرعات التفصيلية قيد المراجعة الطبية قبل العرض',
+          lastReviewed: DateTime(2026, 7, 6),
+          countryIsoCode: country.isoCode,
+          notes: const [
+            'لا تُعرض جرعات الإمارات داخل التطبيق قبل مطابقة مصدر MOHAP ومراجعته طبيًا.',
+            'قد تختلف بعض الخدمات حسب الإمارة أو جهة تقديم الخدمة الصحية.',
+          ],
+        );
+      default:
+        return HealthSource(
+          id: 'who-national-schedule-${country.isoCode.toLowerCase()}',
+          authority:
+              'World Health Organization / national immunization reporting authority',
+          title: 'الجدول الوطني للتطعيمات — ${country.arabicName}',
+          url: _whoCountryScheduleUrl,
+          versionLabel:
+              'WHO country scheduler؛ استخراج الجرعات ومطابقتها مع المصدر الوطني قيد المراجعة',
+          lastReviewed: DateTime(2026, 7, 6),
+          countryIsoCode: country.isoCode,
+          notes: [
+            'يجب تطبيق مرشح الدولة ${country.isoCode} عند مراجعة المصدر.',
+            'لا تُعرض جرعات داخل التطبيق قبل الاستخراج والمراجعة الطبية.',
+            'تُراجع النسخة الوطنية أو وزارة الصحة المحلية قبل اعتماد أي تحديث.',
+          ],
+        );
+    }
+  }
 
   static HealthSource get egyptVaccination =>
       _vaccinationSources[NumuwCountry.egypt]!;
@@ -143,9 +195,9 @@ class OfficialHealthSources {
   );
 
   static final whoFeeding = HealthSource(
-    id: 'who-complementary-feeding',
+    id: 'who-iycf',
     authority: 'World Health Organization',
-    title: 'Complementary feeding',
+    title: 'Infant and young child feeding / Complementary feeding',
     url: 'https://www.who.int/health-topics/complementary-feeding',
     versionLabel:
         'WHO guidance for complementary feeding from around 6 months; Arabic localization review pending',
