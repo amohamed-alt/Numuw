@@ -189,18 +189,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                controlAffinity: ListTileControlAffinity.leading,
-                value: _accepted,
-                onChanged: (value) =>
-                    setState(() => _accepted = value ?? false),
-                title: Text(
-                  'أوافق على شروط الاستخدام وسياسة الخصوصية',
-                  style: TextStyle(
-                    color: numuwSecondaryTextColor(),
-                    fontSize: 12.5,
-                    height: 1.45,
+              Material(
+                color: Colors.transparent,
+                child: CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  value: _accepted,
+                  onChanged: (value) =>
+                      setState(() => _accepted = value ?? false),
+                  title: Text(
+                    'أوافق على شروط الاستخدام وسياسة الخصوصية',
+                    style: TextStyle(
+                      color: numuwSecondaryTextColor(),
+                      fontSize: 12.5,
+                      height: 1.45,
+                    ),
                   ),
                 ),
               ),
