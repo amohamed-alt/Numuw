@@ -2,7 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flutter_application_1/content/development_and_feeding_library.dart';
 import 'package:flutter_application_1/content/health_sources.dart';
+import 'package:flutter_application_1/content/vaccination_records.dart';
 import 'package:flutter_application_1/content/vaccination_schedule_catalog.dart';
+import 'package:flutter_application_1/content/who_growth_standards.dart';
 
 void main() {
   group('official health source catalog', () {
@@ -60,6 +62,62 @@ void main() {
       expect(rows.single.dueDate, DateTime(2026, 3, 2));
       expect(rows.single.isOverdue, isTrue);
       expect(rows.single.statusArabic, 'متأخر');
+    });
+
+    test('vaccination records drive completed and next dose calculations', () {
+      const firstDose = VaccineDoseDefinition(
+        id: 'dose-1',
+        vaccineNameArabic: 'تطعيم موثق',
+        doseLabelArabic: 'الأولى',
+        dueFromBirth: Duration(days: 0),
+        sourceId: 'test-source',
+      );
+      const secondDose = VaccineDoseDefinition(
+        id: 'dose-2',
+        vaccineNameArabic: 'تطعيم موثق',
+        doseLabelArabic: 'الثانية',
+        dueFromBirth: Duration(days: 30),
+        sourceId: 'test-source',
+      );
+
+      final schedule = VaccinationScheduleDefinition(
+        country: NumuwCountry.egypt,
+        source: OfficialHealthSources.egyptVaccination,
+        doses: const [firstDose, secondDose],
+      );
+
+      final plan = VaccinationPlan(
+        schedule: schedule,
+        birthDate: DateTime(2026, 1, 1),
+        today: DateTime(2026, 1, 15),
+        records: [
+          VaccinationRecord(doseId: 'dose-1', givenDate: DateTime(2026, 1, 1)),
+        ],
+      );
+
+      expect(plan.completedDoseIds, {'dose-1'});
+      expect(plan.nextDose?.definition.id, 'dose-2');
+      expect(plan.overdueDoses, isEmpty);
+      expect(plan.reminderCandidates.single.definition.id, 'dose-2');
+    });
+  });
+
+  group('WHO growth standards', () {
+    test('keeps charts gated until official LMS rows are imported', () {
+      expect(WhoGrowthStandards.metadata.source.id, 'who-child-growth-standards');
+      expect(WhoGrowthStandards.metadata.indicators, contains(GrowthIndicator.weightForAge));
+      expect(WhoGrowthStandards.metadata.indicators, contains(GrowthIndicator.lengthHeightForAge));
+      expect(WhoGrowthStandards.metadata.indicators, contains(GrowthIndicator.headCircumferenceForAge));
+      expect(WhoGrowthStandards.metadata.canDisplayCharts, isFalse);
+      expect(WhoGrowthStandards.lmsRows, isEmpty);
+      expect(
+        WhoGrowthStandards.rowFor(
+          indicator: GrowthIndicator.weightForAge,
+          sex: ChildSex.female,
+          ageMonths: 6,
+        ),
+        isNull,
+      );
     });
   });
 
