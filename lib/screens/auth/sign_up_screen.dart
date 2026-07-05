@@ -4,7 +4,6 @@ import '../../core/errors/app_error.dart';
 import '../../repositories/profile_repository.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/app_widgets.dart';
-import '../../widgets/numuw_components.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({
@@ -28,6 +27,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _email = TextEditingController();
   final _password = TextEditingController();
   bool _loading = false;
+  bool _obscure = true;
+  bool _accepted = true;
   String? _error;
 
   @override
@@ -39,14 +40,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _submit() async {
+    if (!_accepted) {
+      setState(() => _error = 'وافقي على شروط الاستخدام وسياسة الخصوصية.');
+      return;
+    }
     if (!_formKey.currentState!.validate() || _loading) return;
     setState(() {
       _loading = true;
       _error = null;
     });
     try {
-      final auth = AuthService();
-      final response = await auth.signUp(
+      final response = await AuthService().signUp(
         email: _email.text,
         password: _password.text,
       );
@@ -72,29 +76,75 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: numuwPageColor(),
       body: AppPage(
-        padding: const EdgeInsetsDirectional.fromSTEB(24, 64, 24, 40),
+        padding: const EdgeInsetsDirectional.fromSTEB(22, 28, 22, 32),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              NumuwAppBar(
-                title: 'إنشاء حساب ✨',
-                subtitle: 'ابدئي رحلتكِ مع نُمُوّ',
-                leading: AppIconButton(
-                  icon: Icons.arrow_forward_rounded,
-                  onPressed: widget.onBack,
-                  badge: false,
-                  size: 42,
-                  radius: 13,
-                  iconSize: 20,
-                  borderWidth: 1.5,
+              if (widget.onBack != null)
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: AppIconButton(
+                    icon: Icons.arrow_forward_rounded,
+                    onPressed: widget.onBack,
+                    badge: false,
+                    size: 44,
+                    radius: 14,
+                    iconSize: 21,
+                  ),
+                ),
+              const SizedBox(height: 20),
+              Center(
+                child: Container(
+                  width: 76,
+                  height: 76,
+                  decoration: BoxDecoration(
+                    color: numuwAccentColor().withValues(alpha: .14),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: numuwAccentColor().withValues(alpha: .28),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: numuwAccentColor().withValues(alpha: .16),
+                        blurRadius: 30,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.nightlight_round,
+                    color: numuwAccentColor(),
+                    size: 40,
+                  ),
                 ),
               ),
               const SizedBox(height: 14),
-              const NumuwPlantProgress(progress: .18, label: 'البداية الجديدة'),
-              const SizedBox(height: 22),
+              Center(
+                child: Text(
+                  'أهلًا بكِ في نُمُوّ',
+                  style: TextStyle(
+                    color: numuwTextColor(),
+                    fontSize: 26,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
+              Center(
+                child: Text(
+                  'أنشئي حسابك لنبدأ رحلتنا معًا',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: numuwSecondaryTextColor(),
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 28),
               NumuwTextField(
                 controller: _name,
                 label: 'اسمكِ',
@@ -106,44 +156,130 @@ class _SignUpScreenState extends State<SignUpScreen> {
               NumuwTextField(
                 controller: _email,
                 label: 'البريد الإلكتروني',
-                hint: 'example@email.com',
+                hint: 'you@example.com',
                 keyboardType: TextInputType.emailAddress,
                 textDirection: TextDirection.ltr,
                 validator: _emailValidator,
               ),
               const SizedBox(height: 15),
-              NumuwPasswordField(
+              Text(
+                'كلمة المرور',
+                style: TextStyle(
+                  color: numuwTextColor(),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 7),
+              TextFormField(
                 controller: _password,
-                label: 'كلمة المرور',
+                obscureText: _obscure,
+                textDirection: TextDirection.ltr,
                 validator: _passwordValidator,
+                decoration: InputDecoration(
+                  hintText: '••••••••',
+                  suffixIcon: IconButton(
+                    onPressed: () => setState(() => _obscure = !_obscure),
+                    icon: Icon(
+                      _obscure
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                controlAffinity: ListTileControlAffinity.leading,
+                value: _accepted,
+                onChanged: (value) =>
+                    setState(() => _accepted = value ?? false),
+                title: Text(
+                  'أوافق على شروط الاستخدام وسياسة الخصوصية',
+                  style: TextStyle(
+                    color: numuwSecondaryTextColor(),
+                    fontSize: 12.5,
+                    height: 1.45,
+                  ),
+                ),
               ),
               if (_error != null) ...[
-                const SizedBox(height: 12),
                 ErrorMessageCard(message: _error!),
+                const SizedBox(height: 12),
               ],
-              const SizedBox(height: 18),
               PrimaryButton(
-                label: 'إنشاء الحساب',
+                label: 'إنشاء حساب',
                 loading: _loading,
                 onPressed: _submit,
               ),
+              const SizedBox(height: 22),
+              Row(
+                children: [
+                  Expanded(child: Divider(color: numuwBorderColor())),
+                  Padding(
+                    padding: const EdgeInsetsDirectional.symmetric(
+                      horizontal: 12,
+                    ),
+                    child: Text(
+                      'أو المتابعة عبر',
+                      style: TextStyle(
+                        color: numuwSecondaryTextColor(),
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                  Expanded(child: Divider(color: numuwBorderColor())),
+                ],
+              ),
               const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => setState(
+                        () => _error =
+                            'إنشاء الحساب عبر Google سيُفعّل بعد إعداد OAuth.',
+                      ),
+                      icon: const Icon(Icons.g_mobiledata_rounded, size: 24),
+                      label: const Text('Google'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => setState(
+                        () => _error =
+                            'إنشاء الحساب عبر Apple سيُفعّل بعد إعداد OAuth.',
+                      ),
+                      icon: const Icon(Icons.apple_rounded, size: 20),
+                      label: const Text('Apple'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
               Center(
-                child: Wrap(
-                  alignment: WrapAlignment.center,
-                  children: [
-                    Text(
-                      'لديكِ حساب؟ ',
+                child: TextButton(
+                  onPressed: widget.onSignIn,
+                  child: Text.rich(
+                    TextSpan(
                       style: TextStyle(
                         color: numuwSecondaryTextColor(),
                         fontSize: 14,
                       ),
+                      children: [
+                        const TextSpan(text: 'لديكِ حساب بالفعل؟ '),
+                        TextSpan(
+                          text: 'تسجيل الدخول',
+                          style: TextStyle(
+                            color: numuwAccentColor(),
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ],
                     ),
-                    TextActionButton(
-                      label: 'تسجيل الدخول',
-                      onTap: widget.onSignIn ?? () {},
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ],
@@ -157,8 +293,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 String? _emailValidator(String? value) {
   final email = value?.trim() ?? '';
   if (email.isEmpty) return 'اكتبي البريد الإلكتروني.';
-  if (!email.contains('@') || !email.contains('.'))
+  if (!email.contains('@') || !email.contains('.')) {
     return 'اكتبي بريدًا إلكترونيًا صحيحًا.';
+  }
   return null;
 }
 
