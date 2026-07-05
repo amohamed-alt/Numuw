@@ -31,14 +31,6 @@ class AiSummarySection {
         items: _stringList(map['items'] ?? map['lines'] ?? map['values']),
       );
 
-  factory AiAssistantResponse.fromJsonString(String source) {
-    final decoded = jsonDecode(source);
-    if (decoded is! Map) {
-      throw const FormatException('Assistant response must be a JSON object.');
-    }
-    return AiAssistantResponse.fromJson(Map<String, dynamic>.from(decoded));
-  }
-
   Map<String, dynamic> toJson() => {'title': title, 'items': items};
 }
 
@@ -352,6 +344,14 @@ class AiAssistantResponse {
       disclaimer: _string(map['disclaimer']),
       raw: Map<String, dynamic>.from(map),
     );
+  }
+
+  factory AiAssistantResponse.fromJsonString(String source) {
+    final decoded = jsonDecode(source);
+    if (decoded is! Map) {
+      throw const FormatException('Assistant response must be a JSON object.');
+    }
+    return AiAssistantResponse.fromJson(Map<String, dynamic>.from(decoded));
   }
 
   Map<String, dynamic> toJson() => {
