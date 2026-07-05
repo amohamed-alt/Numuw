@@ -1,0 +1,31 @@
+name: Export source
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - numuw-redesign
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Export repository
+        run: |
+          find . -path './.git' -prune -o -type f -print | sort > repository-tree.txt
+          zip -r numuw-source.zip . -x '.git/*' 'numuw-source.zip'
+
+      - name: Upload source artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: numuw-source
+          path: |
+            numuw-source.zip
+            repository-tree.txt
+          retention-days: 1
