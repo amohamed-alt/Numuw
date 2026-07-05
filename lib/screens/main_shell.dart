@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/app_bottom_navigation.dart';
+import '../widgets/app_widgets.dart';
+import '../widgets/quick_log_sheet.dart';
 import 'assistant_screen.dart';
 import 'child_screen.dart';
 import 'home_screen.dart';
@@ -26,10 +28,33 @@ class _MainShellState extends State<MainShell> {
   }
 
   void _selectTab(int index) {
+    if (index == 1) {
+      _openQuickLog();
+      return;
+    }
     setState(() {
       selectedIndex = index;
       _ensurePage(index);
     });
+  }
+
+  Future<void> _openQuickLog() async {
+    final mode = await showModalBottomSheet<String>(
+      context: context,
+      useSafeArea: true,
+      isScrollControlled: true,
+      backgroundColor: numuwSurfaceColor(),
+      builder: (_) => const QuickLogSheet(),
+    );
+    if (!mounted || mode == null) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => Scaffold(
+          backgroundColor: numuwPageColor(),
+          body: QuickLogScreen(initialMode: mode),
+        ),
+      ),
+    );
   }
 
   void _openChildSection(String section) {
@@ -43,7 +68,6 @@ class _MainShellState extends State<MainShell> {
   void _ensurePage(int index) {
     _pages[index] ??= switch (index) {
       0 => const HomeScreen(),
-      1 => const QuickLogScreen(),
       2 => ChildScreen(initialSection: childInitialSection),
       3 => const AssistantScreen(),
       4 => const MoreScreen(),
@@ -58,6 +82,7 @@ class _MainShellState extends State<MainShell> {
       selectTab: _selectTab,
       openChildSection: _openChildSection,
       child: Scaffold(
+        backgroundColor: numuwPageColor(),
         body: Stack(
           children: [
             for (var i = 0; i < _pages.length; i++)
