@@ -21,7 +21,9 @@ if 'factory AiAssistantResponse.fromJsonString' not in text:
   }
 
 '''
-    model.write_text(text.replace(marker, method + marker, 1), encoding='utf-8')
+    text = text.replace(marker, method + marker, 1)
+text = text.replace('    raw: raw,', '    raw: this.raw,', 1)
+model.write_text(text, encoding='utf-8')
 
 replace('lib/screens/quick_log_screen.dart', '    _reload();\n    ChildSession.instance.addListener(_onChildChanged);', "    if (_mode == 'log') _reload();\n    ChildSession.instance.addListener(_onChildChanged);")
 replace('lib/widgets/app_bottom_navigation.dart', '          height: 78,', '          height: 96,')
