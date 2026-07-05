@@ -1,34 +1,31 @@
-name: Normalize AI helper
+name: Apply remaining Flutter repairs
 on:
   pull_request:
     branches: [main]
 permissions:
   contents: write
 jobs:
-  normalize:
+  repair:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: numuw-redesign
-      - name: Replace helper with idempotent validation
-        run: |
-          cat > tool/enable_ai_chat.py <<'PY'
-          from pathlib import Path
-
-          service = Path('lib/services/ai_assistant_service.dart').read_text(encoding='utf-8')
-          screen = Path('lib/screens/assistant_screen.dart').read_text(encoding='utf-8')
-
-          if 'Future<AiAssistantResponse> chat({' not in service:
-              raise SystemExit('AI chat service method is missing.')
-          if '_assistant.chat(' not in screen:
-              raise SystemExit('Assistant screen is not connected to AI chat.')
-          PY
-      - name: Commit
-        run: |
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.4'
+          channel: stable
+      - run: python tool/model_alias_patch.py
+      - run: python tool/signup_material_patch.py
+      - run: python tool/lazy_assistant_patch.py
+      - run: dart format lib/models/ai_assistant_response.dart lib/screens/auth/sign_up_screen.dart lib/screens/assistant_screen.dart
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tool/enable_ai_chat.py
-          git diff --cached --quiet || git commit -m "chore: make AI helper idempotent"
-          git push origin numuw-redesign
+          git add lib
+          git diff --cached --quiet || git commit -m "fix: apply remaining Flutter repairs"
+          git push origin HEAD:numuw-redesign
