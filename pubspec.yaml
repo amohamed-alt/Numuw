@@ -23,6 +23,7 @@ dependencies:
   fl_chart: ^1.2.0
   share_plus: ^13.2.0
   path_provider: ^2.1.6
+  flutter_svg: ^2.0.17
 
 dev_dependencies:
   flutter_test:
@@ -34,6 +35,7 @@ flutter:
   assets:
     - assets/fonts/NotoNaskhArabic-Regular.ttf
     - assets/fonts/Cairo-VariableFont_slnt,wght.ttf
+    - assets/illustrations/
   fonts:
     - family: NotoNaskhArabic
       fonts:
