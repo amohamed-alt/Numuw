@@ -1,0 +1,254 @@
+name: Apply redesign stability fixes
+
+on:
+  push:
+    branches: [numuw-redesign]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: numuw-redesign
+      - name: Apply targeted fixes
+        shell: python
+        run: |
+          from pathlib import Path
+
+          def replace_one(path, old, new):
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              if old not in text:
+                  raise SystemExit(f'Expected text not found in {path}: {old[:80]!r}')
+              p.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          # Restore the JSON-string parser expected by the model tests.
+          replace_one(
+              'lib/models/ai_assistant_response.dart',
+              """    return AiAssistantResponse(
+              message: _string(map['message'] ?? map['reply'] ?? map['summary']) ?? '',
+              requiresConfirmation: _bool(map['requires_confirmation'] ?? map['requiresConfirmation']) ?? actions.isNotEmpty,
+              sections: sections,
+              actions: actions,
+              disclaimer: _string(map['disclaimer']),
+              raw: Map<String, dynamic>.from(map),
+            );
+          }
+
+          Map<String, dynamic> toJson() => {""",
+              """    return AiAssistantResponse(
+              message: _string(map['message'] ?? map['reply'] ?? map['summary']) ?? '',
+              requiresConfirmation: _bool(map['requires_confirmation'] ?? map['requiresConfirmation']) ?? actions.isNotEmpty,
+              sections: sections,
+              actions: actions,
+              disclaimer: _string(map['disclaimer']),
+              raw: Map<String, dynamic>.from(map),
+            );
+          }
+
+          factory AiAssistantResponse.fromJsonString(String source) {
+            final decoded = jsonDecode(source);
+            if (decoded is! Map) {
+              throw const FormatException('Assistant response must be a JSON object.');
+            }
+            return AiAssistantResponse.fromJson(Map<String, dynamic>.from(decoded));
+          }
+
+          Map<String, dynamic> toJson() => {""",
+          )
+
+          # Resolve Supabase only when the assistant is actually called.
+          replace_one(
+              'lib/services/ai_assistant_service.dart',
+              """class SupabaseAiAssistantTransport implements AiAssistantTransport {
+            SupabaseAiAssistantTransport({SupabaseClient? client})
+              : _client = client ?? Supabase.instance.client;
+
+            final SupabaseClient _client;
+
+            @override
+            Session? get currentSession => _client.auth.currentSession;""",
+              """class SupabaseAiAssistantTransport implements AiAssistantTransport {
+            SupabaseAiAssistantTransport({SupabaseClient? client}) : _client = client;
+
+            final SupabaseClient? _client;
+
+            SupabaseClient get _resolvedClient => _client ?? Supabase.instance.client;
+
+            @override
+            Session? get currentSession => _resolvedClient.auth.currentSession;""",
+          )
+          replace_one(
+              'lib/services/ai_assistant_service.dart',
+              """    final response = await _client.functions
+                .invoke(""",
+              """    final response = await _resolvedClient.functions
+                .invoke(""",
+          )
+          replace_one(
+              'lib/services/ai_assistant_service.dart',
+              """  final AiAssistantTransport _transport;
+
+            Future<AiAssistantResponse> dailySummary({""",
+              """  final AiAssistantTransport _transport;
+
+            Future<AiAssistantResponse> chat({
+              required ChildProfile child,
+              required List<CareEvent> events,
+              required String question,
+              required DateTime now,
+              required Locale locale,
+            }) {
+              final text = question.trim();
+              if (text.isEmpty) {
+                throw const LocalValidationException('اكتبي سؤالك أولًا.');
+              }
+              if (text.length > 700) {
+                throw const LocalValidationException(
+                  'السؤال طويل جدًا. اختصريه وحاولي مرة أخرى.',
+                );
+              }
+              if (containsEmergencyKeyword(text)) {
+                throw const EmergencyDetectedException();
+              }
+              return _call(
+                mode: AiAssistantMode.chat,
+                childId: child.id,
+                payload: {
+                  ...AiContextBuilder.dailySummary(
+                    child: child,
+                    events: events,
+                    now: now,
+                    locale: _localeTag(locale),
+                    timezoneOffsetMinutes: now.timeZoneOffset.inMinutes,
+                  ),
+                  'question': text,
+                },
+              );
+            }
+
+            Future<AiAssistantResponse> dailySummary({""",
+          )
+
+          # Build assistant dependencies lazily and send normal questions to Gemini chat.
+          replace_one(
+              'lib/screens/assistant_screen.dart',
+              "import '../repositories/doctor_question_repository.dart';\n",
+              '',
+          )
+          replace_one(
+              'lib/screens/assistant_screen.dart',
+              """  final _assistant = AiAssistantService();
+            final _careRepo = CareEventRepository();
+            final _questionRepo = DoctorQuestionRepository();""",
+              """  AiAssistantService? _assistantValue;
+            CareEventRepository? _careRepoValue;
+
+            AiAssistantService get _assistant =>
+                _assistantValue ??= AiAssistantService();
+            CareEventRepository get _careRepo =>
+                _careRepoValue ??= CareEventRepository();""",
+          )
+          replace_one(
+              'lib/screens/assistant_screen.dart',
+              """      if (text.contains('لخّصي') || text.contains('ملخص')) {
+                final events = await _careRepo.fetchRecent(child.id, limit: 50);
+                final response = await _assistant.dailySummary(
+                  child: child,
+                  events: events,
+                  now: now,
+                  locale: locale,
+                );
+                if (mounted) setState(() => _messages.add(_Message(false, _responseText(response))));
+              } else {
+                await _questionRepo.add(childId: child.id, question: text);
+                if (mounted) {
+                  setState(() => _messages.add(const _Message(false,
+                      'تم حفظ السؤال. يمكنك مراجعته من ملف الطفل وإضافته إلى التقرير.')));
+                }
+              }""",
+              """      final events = await _careRepo.fetchRecent(child.id, limit: 50);
+              final response = text.contains('لخّصي') || text.contains('ملخص')
+                  ? await _assistant.dailySummary(
+                      child: child,
+                      events: events,
+                      now: now,
+                      locale: locale,
+                    )
+                  : await _assistant.chat(
+                      child: child,
+                      events: events,
+                      question: text,
+                      now: now,
+                      locale: locale,
+                    );
+              if (mounted) {
+                setState(
+                  () => _messages.add(
+                    _Message(false, _responseText(response)),
+                  ),
+                );
+              }""",
+          )
+
+          # Detail log screens do not need to query recent events while opening.
+          replace_one(
+              'lib/screens/quick_log_screen.dart',
+              """    _reload();
+            ChildSession.instance.addListener(_onChildChanged);""",
+              """    if (_mode == 'log') _reload();
+            ChildSession.instance.addListener(_onChildChanged);""",
+          )
+
+          # Give the elevated center navigation action enough layout space.
+          replace_one(
+              'lib/widgets/app_bottom_navigation.dart',
+              '          height: 78,',
+              '          height: 96,',
+          )
+
+          # Let the quick-action sheet scroll on shorter viewports.
+          replace_one(
+              'lib/widgets/quick_log_sheet.dart',
+              """      child: Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(18, 6, 18, 22),
+                child: Column(""",
+              """      child: SingleChildScrollView(
+                padding: const EdgeInsetsDirectional.fromSTEB(18, 6, 18, 22),
+                child: Column(""",
+          )
+
+          # Prevent ListTile ink assertions inside the sign-up form background.
+          signup = Path('lib/screens/auth/sign_up_screen.dart')
+          text = signup.read_text(encoding='utf-8')
+          start = text.index('              CheckboxListTile(')
+          end = text.index('              if (_error != null)', start)
+          block = text[start:end].strip()
+          wrapped = (
+              '              Material(\n'
+              '                color: Colors.transparent,\n'
+              '                child: ' + block + '\n'
+              '              ),\n'
+          )
+          signup.write_text(text[:start] + wrapped + text[end:], encoding='utf-8')
+
+          # RichText contains the sign-in label, so include rich text in the finder.
+          replace_one(
+              'test/numuw_ui_smoke_test.dart',
+              "    expect(find.text('تسجيل الدخول'), findsOneWidget);",
+              "    expect(\n      find.textContaining('تسجيل الدخول', findRichText: true),\n      findsOneWidget,\n    );",
+          )
+      - name: Format changed Dart files
+        run: dart format lib/models/ai_assistant_response.dart lib/services/ai_assistant_service.dart lib/screens/assistant_screen.dart lib/screens/quick_log_screen.dart lib/widgets/app_bottom_navigation.dart lib/widgets/quick_log_sheet.dart lib/screens/auth/sign_up_screen.dart test/numuw_ui_smoke_test.dart
+      - name: Commit fixes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lib test
+          git commit -m "fix: stabilize redesigned UI and assistant flows"
+          git push origin numuw-redesign
