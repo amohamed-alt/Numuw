@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
 import '../core/errors/app_error.dart';
+import '../models/ai_assistant_response.dart';
 import '../repositories/care_event_repository.dart';
 import '../repositories/doctor_question_repository.dart';
-import '../services/report_service.dart';
+import '../services/ai_assistant_service.dart';
 import '../state/child_session.dart';
 import '../widgets/app_widgets.dart';
 
@@ -16,7 +17,7 @@ class AssistantScreen extends StatefulWidget {
 }
 
 class _AssistantScreenState extends State<AssistantScreen> {
-  final _assistant = const AssistantService();
+  final _assistant = AiAssistantService();
   final _careRepo = CareEventRepository();
   final _questionRepo = DoctorQuestionRepository();
   final _input = TextEditingController();
@@ -41,6 +42,8 @@ class _AssistantScreenState extends State<AssistantScreen> {
     final child = ChildSession.instance.selectedChild;
     final text = (preset ?? _input.text).trim();
     if (child == null || text.isEmpty || _loading) return;
+    final locale = Localizations.localeOf(context);
+    final now = DateTime.now();
     setState(() {
       _messages.add(_Message(true, text));
       _input.clear();
@@ -50,8 +53,13 @@ class _AssistantScreenState extends State<AssistantScreen> {
     try {
       if (text.contains('لخّصي') || text.contains('ملخص')) {
         final events = await _careRepo.fetchRecent(child.id, limit: 50);
-        final result = _assistant.localSummary(child, events);
-        if (mounted) setState(() => _messages.add(_Message(false, result)));
+        final response = await _assistant.dailySummary(
+          child: child,
+          events: events,
+          now: now,
+          locale: locale,
+        );
+        if (mounted) setState(() => _messages.add(_Message(false, _responseText(response))));
       } else {
         await _questionRepo.add(childId: child.id, question: text);
         if (mounted) {
@@ -65,6 +73,22 @@ class _AssistantScreenState extends State<AssistantScreen> {
     } finally {
       if (mounted) setState(() => _loading = false);
     }
+  }
+
+  String _responseText(AiAssistantResponse response) {
+    final parts = <String>[];
+    final message = response.message.trim();
+    if (message.isNotEmpty) parts.add(message);
+    for (final section in response.sections) {
+      final title = section.title.trim();
+      final items = section.items.map((item) => item.trim()).where((item) => item.isNotEmpty).toList();
+      if (title.isEmpty && items.isEmpty) continue;
+      if (title.isNotEmpty) parts.add(title);
+      if (items.isNotEmpty) parts.add(items.map((item) => '• $item').join('\n'));
+    }
+    final disclaimer = response.disclaimer?.trim();
+    if (disclaimer != null && disclaimer.isNotEmpty) parts.add(disclaimer);
+    return parts.isEmpty ? 'لم يصلني ملخص واضح. جرّبي مرة أخرى بعد قليل.' : parts.join('\n\n');
   }
 
   @override
