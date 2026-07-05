@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'screens/design_preview/pixel_home_fixed.dart';
+import 'screens/design_preview/pixel_home_fixed_v2.dart';
 
 const bool _darkMode = bool.fromEnvironment('PIXEL_DARK');
 
@@ -34,7 +34,7 @@ class _NumuwPixelPreviewApp extends StatelessWidget {
         textDirection: TextDirection.rtl,
         child: child ?? const SizedBox.shrink(),
       ),
-      home: const NumuwPixelHomeFixed(darkMode: _darkMode),
+      home: const NumuwPixelHomeFixedV2(darkMode: _darkMode),
     );
   }
 }
