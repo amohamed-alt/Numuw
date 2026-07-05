@@ -1,12 +1,10 @@
 name: Run current CI fixer
 on:
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 jobs:
   fix:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,9 +19,4 @@ jobs:
       - run: flutter pub get
       - run: flutter analyze
       - run: flutter test
-      - run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add lib test
-          git diff --cached --quiet || git commit -m "fix: resolve current redesign CI failures"
-          git push origin HEAD:numuw-redesign
+      - run: git diff --exit-code
