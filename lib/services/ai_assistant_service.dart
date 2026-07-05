@@ -60,6 +60,7 @@ class AiAssistantService {
     : _transport = transport ?? SupabaseAiAssistantTransport();
 
   static const functionId = 'ai-assistant';
+  static const chatFunctionId = 'ai-assistant-chat';
   static const defaultModel = 'gemini-3.5-flash';
 
   final AiAssistantTransport _transport;
@@ -86,6 +87,7 @@ class AiAssistantService {
     return _call(
       mode: AiAssistantMode.chat,
       childId: child.id,
+      targetFunctionId: chatFunctionId,
       payload: {
         ...AiContextBuilder.dailySummary(
           child: child,
@@ -173,10 +175,11 @@ class AiAssistantService {
     required AiAssistantMode mode,
     required String childId,
     required Map<String, dynamic> payload,
+    String? targetFunctionId,
   }) async {
     try {
       final response = await _transport.invoke(
-        functionId: functionId,
+        functionId: targetFunctionId ?? functionId,
         body: {'mode': mode.value, 'child_id': childId, 'payload': payload},
         timeout: aiAssistantTimeout,
       );
