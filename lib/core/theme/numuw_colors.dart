@@ -3,36 +3,38 @@ import 'package:flutter/material.dart';
 class NumuwColorTokens {
   const NumuwColorTokens._();
 
-  static const lightBackground = Color(0xFFFBF8F1);
-  static const lightSurface = Color(0xFFFFFDF9);
-  static const lightSurfaceSoft = Color(0xFFF6F0E7);
-  static const lightPrimary = Color(0xFF74865B);
-  static const lightPrimaryDark = Color(0xFF4F6242);
-  static const lightPrimarySoft = Color(0xFFE5EAD9);
-  static const lightClay = Color(0xFFC98E6D);
-  static const lightClaySoft = Color(0xFFF0DDD1);
-  static const lightMoon = Color(0xFFE7D7B2);
-  static const lightLavenderSoft = Color(0xFFE7E1EF);
-  static const lightTextPrimary = Color(0xFF37372F);
-  static const lightTextSecondary = Color(0xFF7D7A70);
-  static const lightBorder = Color(0xFFE7DED2);
-  static const lightSuccess = Color(0xFF68846B);
-  static const lightWarning = Color(0xFFC58B58);
-  static const lightError = Color(0xFFBD6F68);
-  static const lightWebBackground = Color(0xFFF3EDE3);
+  // Light mode
+  static const lightBackground = Color(0xFFF7F3EA);
+  static const lightSurface = Color(0xFFFFFDFC);
+  static const lightSurfaceSoft = Color(0xFFEFE8DC);
+  static const lightPrimary = Color(0xFFB98235);
+  static const lightPrimaryDark = Color(0xFF8F6125);
+  static const lightPrimarySoft = Color(0xFFF4E6CC);
+  static const lightClay = Color(0xFFB96658);
+  static const lightClaySoft = Color(0xFFF6E5E1);
+  static const lightMoon = Color(0xFFEAD5AE);
+  static const lightLavenderSoft = Color(0xFFEDE8F3);
+  static const lightTextPrimary = Color(0xFF18222D);
+  static const lightTextSecondary = Color(0xFF607080);
+  static const lightBorder = Color(0xFFDDD5C8);
+  static const lightSuccess = Color(0xFF4F8E73);
+  static const lightWarning = Color(0xFFB96658);
+  static const lightError = Color(0xFFB84F45);
+  static const lightWebBackground = Color(0xFFEFE8DC);
 
-  static const darkBackground = Color(0xFF171B17);
-  static const darkSurface = Color(0xFF222820);
-  static const darkSurfaceElevated = Color(0xFF2A3128);
-  static const darkPrimary = Color(0xFFA8B58E);
-  static const darkPrimarySoft = Color(0xFF343D30);
-  static const darkTextPrimary = Color(0xFFF5F1E8);
-  static const darkTextSecondary = Color(0xFFBDB8AC);
-  static const darkBorder = Color(0xFF394137);
-  static const darkSuccess = Color(0xFF8FA690);
-  static const darkWarning = Color(0xFFC2A171);
-  static const darkError = Color(0xFFC8807A);
-  static const darkWebBackground = Color(0xFF121512);
+  // Dark mode
+  static const darkBackground = Color(0xFF0F1923);
+  static const darkSurface = Color(0xFF172130);
+  static const darkSurfaceElevated = Color(0xFF1D283A);
+  static const darkPrimary = Color(0xFFE8B86D);
+  static const darkPrimarySoft = Color(0xFF332A1E);
+  static const darkTextPrimary = Color(0xFFF7F3EA);
+  static const darkTextSecondary = Color(0xFFAAB4BE);
+  static const darkBorder = Color(0xFF263342);
+  static const darkSuccess = Color(0xFF79B89C);
+  static const darkWarning = Color(0xFFD98C7C);
+  static const darkError = Color(0xFFE08C82);
+  static const darkWebBackground = Color(0xFF0B1119);
 
   static const primaryGradient = LinearGradient(
     begin: Alignment.topLeft,
@@ -55,7 +57,7 @@ class NumuwColorTokens {
   static const botanicalGlow = RadialGradient(
     center: Alignment.topLeft,
     radius: 1.1,
-    colors: [Color(0x22E7D7B2), Colors.transparent],
+    colors: [Color(0x2EE8B86D), Colors.transparent],
     stops: [0.0, 1.0],
   );
 }
