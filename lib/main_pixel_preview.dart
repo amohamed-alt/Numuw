@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'screens/design_preview/pixel_home_fixed_v2.dart';
+import 'screens/design_preview/numuw_master_preview.dart';
 
 const bool _darkMode = bool.fromEnvironment('PIXEL_DARK');
 
@@ -17,7 +17,7 @@ class _NumuwPixelPreviewApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Numuw Pixel Preview',
+      title: 'Numuw Master Preview',
       locale: const Locale('ar'),
       supportedLocales: const [Locale('ar'), Locale('en')],
       localizationsDelegates: const [
@@ -35,14 +35,12 @@ class _NumuwPixelPreviewApp extends StatelessWidget {
         return Directionality(
           textDirection: TextDirection.rtl,
           child: MediaQuery(
-            data: media.copyWith(
-              textScaler: const TextScaler.linear(.94),
-            ),
+            data: media.copyWith(textScaler: const TextScaler.linear(.94)),
             child: child ?? const SizedBox.shrink(),
           ),
         );
       },
-      home: const NumuwPixelHomeFixedV2(darkMode: _darkMode),
+      home: const NumuwMasterPreview(initialDark: _darkMode),
     );
   }
 }
