@@ -212,7 +212,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 12),
               ],
               PrimaryButton(
-                label: 'إنشاء حساب',
+                label: 'إنشاء الحساب',
                 loading: _loading,
                 onPressed: _submit,
               ),
@@ -265,24 +265,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Center(
                 child: TextButton(
                   onPressed: widget.onSignIn,
-                  child: Text.rich(
-                    TextSpan(
-                      style: TextStyle(
-                        color: numuwSecondaryTextColor(),
-                        fontSize: 14,
-                      ),
-                      children: [
-                        const TextSpan(text: 'لديكِ حساب بالفعل؟ '),
-                        TextSpan(
-                          text: 'تسجيل الدخول',
-                          style: TextStyle(
-                            color: numuwAccentColor(),
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  child: const Text('لديكِ حساب؟ سجّلي الدخول'),
                 ),
               ),
             ],
@@ -294,14 +277,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
 }
 
 String? _emailValidator(String? value) {
-  final email = value?.trim() ?? '';
-  if (email.isEmpty) return 'اكتبي البريد الإلكتروني.';
-  if (!email.contains('@') || !email.contains('.')) {
-    return 'اكتبي بريدًا إلكترونيًا صحيحًا.';
-  }
+  final text = (value ?? '').trim();
+  if (text.isEmpty) return 'اكتبي البريد الإلكتروني.';
+  if (!text.contains('@')) return 'البريد الإلكتروني غير صحيح.';
   return null;
 }
 
-String? _passwordValidator(String? value) => (value ?? '').length < 6
-    ? 'كلمة المرور يجب أن تكون 6 أحرف على الأقل.'
-    : null;
+String? _passwordValidator(String? value) {
+  final text = value ?? '';
+  if (text.length < 6) return 'كلمة المرور لا تقل عن 6 أحرف.';
+  return null;
+}
