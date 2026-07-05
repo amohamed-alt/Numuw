@@ -65,92 +65,106 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       backgroundColor: numuwPageColor(),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(22, 12, 22, 20),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  TextButton(
-                    onPressed: widget.onSignUp,
-                    child: Text(
-                      'تخطي',
-                      style: TextStyle(color: numuwSecondaryTextColor()),
-                    ),
-                  ),
-                  const Spacer(),
-                  Row(
-                    children: [
-                      Text(
-                        'نُمُوّ',
-                        style: TextStyle(
-                          color: numuwTextColor(),
-                          fontSize: 19,
-                          fontWeight: FontWeight.w900,
-                        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final compact = constraints.maxHeight < 700;
+            final horizontalPadding = constraints.maxWidth < 360 ? 18.0 : 22.0;
+            final content = Column(
+              children: [
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: widget.onSignUp,
+                      child: Text(
+                        'تخطي',
+                        style: TextStyle(color: numuwSecondaryTextColor()),
                       ),
-                      const SizedBox(width: 8),
-                      _MoonMark(size: 42),
-                    ],
-                  ),
-                ],
-              ),
-              Expanded(
-                child: PageView.builder(
-                  controller: _controller,
-                  itemCount: _slides.length,
-                  onPageChanged: (value) => setState(() => _index = value),
-                  itemBuilder: (context, index) => _SlideView(
-                    slide: _slides[index],
-                    index: index,
-                  ),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  _slides.length,
-                  (index) => AnimatedContainer(
-                    duration: const Duration(milliseconds: 240),
-                    width: index == _index ? 26 : 8,
-                    height: 8,
-                    margin: const EdgeInsetsDirectional.symmetric(horizontal: 4),
-                    decoration: BoxDecoration(
-                      color: index == _index ? accent : numuwBorderColor(),
-                      borderRadius: BorderRadius.circular(999),
                     ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              PrimaryButton(
-                label: _index == _slides.length - 1 ? 'ابدئي الآن' : 'التالي',
-                onPressed: _next,
-              ),
-              const SizedBox(height: 5),
-              TextButton(
-                onPressed: widget.onSignIn,
-                child: Text.rich(
-                  TextSpan(
-                    style: TextStyle(
-                      color: numuwSecondaryTextColor(),
-                      fontSize: 15,
-                    ),
-                    children: [
-                      const TextSpan(text: 'لديكِ حساب بالفعل؟ '),
-                      TextSpan(
-                        text: 'تسجيل الدخول',
-                        style: TextStyle(
-                          color: accent,
-                          fontWeight: FontWeight.w900,
+                    const Spacer(),
+                    Row(
+                      children: [
+                        Text(
+                          'نُمُوّ',
+                          style: TextStyle(
+                            color: numuwTextColor(),
+                            fontSize: 19,
+                            fontWeight: FontWeight.w900,
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 8),
+                        _MoonMark(size: compact ? 38 : 42),
+                      ],
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: PageView.builder(
+                    controller: _controller,
+                    itemCount: _slides.length,
+                    onPageChanged: (value) => setState(() => _index = value),
+                    itemBuilder: (context, index) => _SlideView(
+                      slide: _slides[index],
+                      index: index,
+                      compact: compact,
+                    ),
                   ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    _slides.length,
+                    (index) => AnimatedContainer(
+                      duration: const Duration(milliseconds: 240),
+                      width: index == _index ? 26 : 8,
+                      height: 8,
+                      margin: const EdgeInsetsDirectional.symmetric(horizontal: 4),
+                      decoration: BoxDecoration(
+                        color: index == _index ? accent : numuwBorderColor(),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: compact ? 16 : 24),
+                PrimaryButton(
+                  label: _index == _slides.length - 1 ? 'ابدئي الآن' : 'التالي',
+                  onPressed: _next,
+                ),
+                SizedBox(height: compact ? 2 : 5),
+                TextButton(
+                  onPressed: widget.onSignIn,
+                  child: Text.rich(
+                    TextSpan(
+                      style: TextStyle(
+                        color: numuwSecondaryTextColor(),
+                        fontSize: compact ? 14 : 15,
+                      ),
+                      children: [
+                        const TextSpan(text: 'لديكِ حساب بالفعل؟ '),
+                        TextSpan(
+                          text: 'تسجيل الدخول',
+                          style: TextStyle(
+                            color: accent,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+
+            return Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(
+                horizontalPadding,
+                compact ? 6 : 12,
+                horizontalPadding,
+                compact ? 10 : 20,
               ),
-            ],
-          ),
+              child: content,
+            );
+          },
         ),
       ),
     );
@@ -158,95 +172,124 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 }
 
 class _SlideView extends StatelessWidget {
-  const _SlideView({required this.slide, required this.index});
+  const _SlideView({
+    required this.slide,
+    required this.index,
+    required this.compact,
+  });
 
   final _Slide slide;
   final int index;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     final accent = numuwAccentColor();
+    final illustrationHeight = compact ? 178.0 : 245.0;
+    final outerCircle = compact ? 164.0 : 220.0;
+    final innerCircle = compact ? 116.0 : 150.0;
+    final floatingCircle = compact ? 48.0 : 62.0;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(
-          height: 245,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                width: 220,
-                height: 220,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      accent.withValues(alpha: .18),
-                      accent.withValues(alpha: .03),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                width: 150,
-                height: 150,
-                decoration: BoxDecoration(
-                  color: numuwSurfaceColor(),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: accent.withValues(alpha: .26),
-                    width: 1.5,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: accent.withValues(alpha: .16),
-                      blurRadius: 34,
-                      offset: const Offset(0, 12),
-                    ),
-                  ],
-                ),
-                child: Icon(slide.icon, color: accent, size: 68),
-              ),
-              if (index == 0)
-                PositionedDirectional(
-                  bottom: 24,
-                  start: 40,
-                  child: Container(
-                    width: 62,
-                    height: 62,
-                    alignment: Alignment.center,
+        Flexible(
+          flex: compact ? 5 : 6,
+          child: Center(
+            child: SizedBox(
+              height: illustrationHeight,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: outerCircle,
+                    height: outerCircle,
                     decoration: BoxDecoration(
-                      color: AppColors.peachLight,
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.peach.withValues(alpha: .22),
+                      gradient: RadialGradient(
+                        colors: [
+                          accent.withValues(alpha: .18),
+                          accent.withValues(alpha: .03),
+                        ],
                       ),
                     ),
-                    child: const Text('🤱', style: TextStyle(fontSize: 30)),
                   ),
-                ),
-            ],
+                  Container(
+                    width: innerCircle,
+                    height: innerCircle,
+                    decoration: BoxDecoration(
+                      color: numuwSurfaceColor(),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: accent.withValues(alpha: .26),
+                        width: 1.5,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: accent.withValues(alpha: .16),
+                          blurRadius: compact ? 24 : 34,
+                          offset: const Offset(0, 12),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      slide.icon,
+                      color: accent,
+                      size: compact ? 52 : 68,
+                    ),
+                  ),
+                  if (index == 0)
+                    PositionedDirectional(
+                      bottom: compact ? 12 : 24,
+                      start: compact ? 34 : 40,
+                      child: Container(
+                        width: floatingCircle,
+                        height: floatingCircle,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: AppColors.peachLight,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppColors.peach.withValues(alpha: .22),
+                          ),
+                        ),
+                        child: Text(
+                          '🤱',
+                          style: TextStyle(fontSize: compact ? 24 : 30),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
-        const SizedBox(height: 14),
+        SizedBox(height: compact ? 8 : 14),
         Text(
           slide.title,
           textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: numuwTextColor(),
-            fontSize: 26,
-            height: 1.4,
+            fontSize: compact ? 22 : 26,
+            height: 1.35,
             fontWeight: FontWeight.w900,
           ),
         ),
-        const SizedBox(height: 13),
-        Text(
-          slide.description,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: numuwSecondaryTextColor(),
-            fontSize: 16,
-            height: 1.75,
+        SizedBox(height: compact ? 8 : 13),
+        Flexible(
+          flex: compact ? 2 : 1,
+          child: Text(
+            slide.description,
+            textAlign: TextAlign.center,
+            maxLines: compact ? 3 : 4,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: numuwSecondaryTextColor(),
+              fontSize: compact ? 14 : 16,
+              height: compact ? 1.55 : 1.75,
+            ),
           ),
         ),
       ],
