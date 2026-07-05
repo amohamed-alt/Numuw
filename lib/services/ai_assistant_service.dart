@@ -26,13 +26,14 @@ abstract class AiAssistantTransport {
 }
 
 class SupabaseAiAssistantTransport implements AiAssistantTransport {
-  SupabaseAiAssistantTransport({SupabaseClient? client})
-    : _client = client ?? Supabase.instance.client;
+  SupabaseAiAssistantTransport({SupabaseClient? client}) : _client = client;
 
-  final SupabaseClient _client;
+  final SupabaseClient? _client;
+
+  SupabaseClient get _resolvedClient => _client ?? Supabase.instance.client;
 
   @override
-  Session? get currentSession => _client.auth.currentSession;
+  Session? get currentSession => _resolvedClient.auth.currentSession;
 
   @override
   Future<Map<String, dynamic>> invoke({
@@ -44,11 +45,11 @@ class SupabaseAiAssistantTransport implements AiAssistantTransport {
     if (session == null || session.accessToken.isEmpty) {
       throw const InvalidSessionException();
     }
-    final response = await _client.functions
+    final response = await _resolvedClient.functions
         .invoke(
           functionId,
           body: body,
-          headers: {'Authorization': 'Bearer ${session.accessToken}'},
+          headers: {'Authorization': 'Bearer ' + session.accessToken},
         )
         .timeout(timeout);
     return _normalizeResponse(response.data);
