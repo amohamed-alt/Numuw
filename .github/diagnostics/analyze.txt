@@ -27,4 +27,4 @@ Got dependencies!
 23 packages have newer versions incompatible with dependency constraints.
 Try `flutter pub outdated` for more information.
 Analyzing Numuw...                                              
-No issues found! (ran in 20.2s)
+No issues found! (ran in 19.7s)
