@@ -32,7 +32,7 @@ void main() {
     final plan = VaccinationPlanMapper.buildPlan(
       schedule: schedule,
       birthDate: DateTime(2026, 1, 1),
-      today: DateTime(2026, 5, 1),
+      today: DateTime(2026, 5, 2),
       records: [
         Vaccination(
           id: 'row-1',
