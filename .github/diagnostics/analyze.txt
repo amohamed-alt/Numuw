@@ -28,9 +28,8 @@ Got dependencies!
 Try `flutter pub outdated` for more information.
 Analyzing Numuw...                                              
 
-  error • The getter 'selectedCountry' isn't defined for the type 'CountryPreference'. Try importing the library that defines 'selectedCountry', correcting the name to the name of an existing getter, or defining a getter or field named 'selectedCountry' • lib/screens/settings_screen.dart:38:48 • undefined_getter
-  error • The method 'NumuwCard' isn't defined for the type '_SettingsScreenState'. Try correcting the name to the name of an existing method, or defining a method named 'NumuwCard' • lib/screens/settings_screen.dart:50:13 • undefined_method
-  error • The method 'NumuwCard' isn't defined for the type '_SettingsScreenState'. Try correcting the name to the name of an existing method, or defining a method named 'NumuwCard' • lib/screens/settings_screen.dart:93:13 • undefined_method
-  error • The method 'NumuwCard' isn't defined for the type '_SettingsScreenState'. Try correcting the name to the name of an existing method, or defining a method named 'NumuwCard' • lib/screens/settings_screen.dart:120:13 • undefined_method
+  error • The getter 'flagEmoji' isn't defined for the type 'NumuwCountry'. Try importing the library that defines 'flagEmoji', correcting the name to the name of an existing getter, or defining a getter or field named 'flagEmoji' • lib/screens/settings_screen.dart:57:36 • undefined_getter
+  error • The getter 'sourceSummary' isn't defined for the type 'NumuwCountry'. Try importing the library that defines 'sourceSummary', correcting the name to the name of an existing getter, or defining a getter or field named 'sourceSummary' • lib/screens/settings_screen.dart:57:81 • undefined_getter
+  error • The getter 'sourceSummary' isn't defined for the type 'NumuwCountry'. Try importing the library that defines 'sourceSummary', correcting the name to the name of an existing getter, or defining a getter or field named 'sourceSummary' • lib/screens/settings_screen.dart:133:49 • undefined_getter
 
-4 issues found. (ran in 19.8s)
+3 issues found. (ran in 17.9s)
