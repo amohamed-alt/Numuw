@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../content/health_sources.dart';
 import '../core/app_colors.dart';
 import '../state/app_preferences.dart';
 import '../state/country_preference.dart';
@@ -20,7 +19,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     AppPreferences.instance.addListener(_refresh);
     CountryPreference.instance.addListener(_refresh);
-    CountryPreference.instance.load();
   }
 
   @override
@@ -37,128 +35,111 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final prefs = AppPreferences.instance;
-    final country = CountryPreference.instance.country;
-    final night = prefs.nightMode;
-
+    final country = CountryPreference.instance.selectedCountry;
     return Scaffold(
       backgroundColor: numuwPageColor(),
-      appBar: AppBar(title: const Text('الإعدادات')),
       body: AppPage(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const _Title('الدولة والمحتوى المحلي'),
-            const SizedBox(height: 12),
-            SoftCard(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const CountrySelectionScreen(),
-                ),
-              ),
-              child: Row(
-                children: [
-                  _IconBox(icon: Icons.public_rounded, color: AppColors.blue),
-                  const SizedBox(width: 13),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          country.arabicName,
-                          style: TextStyle(
-                            color: numuwTextColor(),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          'تُستخدم لمصادر التطعيمات والمحتوى الصحي المحلي',
-                          style: TextStyle(
-                            color: numuwSecondaryTextColor(),
-                            fontSize: 12.5,
-                            height: 1.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Icon(
-                    Icons.chevron_left_rounded,
-                    color: numuwSecondaryTextColor(),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            const _Title('المظهر'),
-            const SizedBox(height: 12),
-            SoftCard(
-              padding: const EdgeInsetsDirectional.all(8),
-              child: Column(
-                children: [
-                  _ThemeOption(
-                    icon: Icons.smartphone_rounded,
-                    title: 'حسب إعداد الجهاز',
-                    description:
-                        'يتبع مظهر هاتفك تلقائيًا · حاليًا ${night ? 'الوضع الليلي' : 'الوضع النهاري'}',
-                    selected: prefs.themePreference == 'system',
-                    onTap: () => prefs.setThemePreference('system'),
-                  ),
-                  Divider(height: 1, color: numuwBorderColor()),
-                  _ThemeOption(
-                    icon: Icons.light_mode_outlined,
-                    title: 'الوضع النهاري',
-                    description: 'مناسب للقراءة والتقارير والنماذج',
-                    selected: prefs.themePreference == 'light',
-                    onTap: () => prefs.setThemePreference('light'),
-                  ),
-                  Divider(height: 1, color: numuwBorderColor()),
-                  _ThemeOption(
-                    icon: Icons.dark_mode_outlined,
-                    title: 'الوضع الليلي',
-                    description: 'قمر الليل — مريح أثناء الرضاعة ليلًا',
-                    selected: prefs.themePreference == 'dark',
-                    onTap: () => prefs.setThemePreference('dark'),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            const _Title('الراحة وإمكانية الوصول'),
-            const SizedBox(height: 12),
-            SoftCard(
-              child: Column(
-                children: [
-                  _ToggleRow(
-                    icon: Icons.nights_stay_outlined,
-                    color: AppColors.blue,
-                    title: 'إضاءة منخفضة أثناء التسجيل',
-                    description: 'تقلل التوهج في شاشات التسجيل الليلي.',
-                    value: prefs.nightLogging,
-                    onChanged: night ? prefs.setNightLogging : null,
-                  ),
-                  Divider(height: 1, color: numuwBorderColor()),
-                  _ToggleRow(
-                    icon: Icons.accessibility_new_rounded,
-                    color: AppColors.success,
-                    title: 'تقليل الحركة',
-                    description: 'يقلل الانتقالات والحركة الزخرفية.',
-                    value: prefs.reducedMotion,
-                    onChanged: prefs.setReducedMotion,
-                  ),
-                ],
-              ),
+            const NumuwHeader(
+              title: 'الإعدادات',
+              subtitle: 'تحكّمي في تجربة نُمُوّ بما يناسب بيتكِ.',
             ),
             const SizedBox(height: 18),
-            Center(
-              child: Text(
-                'تُحفظ اختياراتك تلقائيًا على هذا الجهاز.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: numuwSecondaryTextColor(),
-                  fontSize: 13,
-                ),
+            NumuwCard(
+              child: Column(
+                children: [
+                  _SettingsRow(
+                    icon: Icons.public_rounded,
+                    title: 'الدولة والمصادر الصحية',
+                    subtitle: country == null
+                        ? 'اختاري الدولة لعرض التطعيمات والمراجع المناسبة.'
+                        : '${country.flagEmoji} ${country.arabicName} · ${country.sourceSummary}',
+                    onTap: () async {
+                      await Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const CountrySelectionScreen(),
+                        ),
+                      );
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                  const Divider(height: 24),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    value: prefs.nightMode,
+                    onChanged: (value) async => prefs.setNightMode(value),
+                    title: Text(
+                      'وضع الليل الهادئ',
+                      style: TextStyle(
+                        color: numuwTextColor(),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'ألوان أهدى للرضعات وتسجيلات الساعة 3 الفجر.',
+                      style: TextStyle(
+                        color: numuwSecondaryTextColor(),
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            NumuwCard(
+              child: Column(
+                children: [
+                  _SettingsRow(
+                    icon: Icons.notifications_active_outlined,
+                    title: 'التنبيهات',
+                    subtitle: 'تذكيرات الرضاعة، الدواء، والتطعيمات.',
+                    onTap: () {},
+                  ),
+                  const Divider(height: 24),
+                  _SettingsRow(
+                    icon: Icons.lock_outline_rounded,
+                    title: 'الخصوصية والأمان',
+                    subtitle: 'الحساب، حذف البيانات، وصلاحيات الأسرة.',
+                    onTap: () {},
+                  ),
+                  const Divider(height: 24),
+                  _SettingsRow(
+                    icon: Icons.workspace_premium_outlined,
+                    title: 'الاشتراك المميز',
+                    subtitle: 'التقارير، الذكاء الاصطناعي، ومكتبة الوثائق.',
+                    onTap: () {},
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            NumuwCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'مصدر المحتوى الطبي',
+                    style: TextStyle(
+                      color: numuwTextColor(),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    country == null
+                        ? 'اختيار الدولة مطلوب قبل عرض جداول التطعيمات المحلية. لا يتم عرض أي جرعة غير موثقة.'
+                        : 'المصادر الحالية: ${country.sourceSummary}. تظهر التفاصيل داخل شاشة الدولة قبل الاعتماد.',
+                    style: TextStyle(
+                      color: numuwSecondaryTextColor(),
+                      height: 1.6,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -168,116 +149,64 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 }
 
-class _Title extends StatelessWidget {
-  const _Title(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Text(
-        text,
-        style: TextStyle(
-          color: numuwTextColor(),
-          fontSize: 18,
-          fontWeight: FontWeight.w900,
-        ),
-      );
-}
-
-class _IconBox extends StatelessWidget {
-  const _IconBox({required this.icon, required this.color});
-
-  final IconData icon;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: .13),
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Icon(icon, color: color, size: 21),
-      );
-}
-
-class _ThemeOption extends StatelessWidget {
-  const _ThemeOption({
+class _SettingsRow extends StatelessWidget {
+  const _SettingsRow({
     required this.icon,
     required this.title,
-    required this.description,
-    required this.selected,
+    required this.subtitle,
     required this.onTap,
   });
 
   final IconData icon;
   final String title;
-  final String description;
-  final bool selected;
+  final String subtitle;
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => ListTile(
-        onTap: onTap,
-        leading: Icon(icon, color: selected ? numuwAccentColor() : null),
-        title: Text(title),
-        subtitle: Text(description),
-        trailing: Icon(
-          selected ? Icons.radio_button_checked : Icons.radio_button_off,
-          color: selected ? numuwAccentColor() : numuwSecondaryTextColor(),
-        ),
-      );
-}
-
-class _ToggleRow extends StatelessWidget {
-  const _ToggleRow({
-    required this.icon,
-    required this.color,
-    required this.title,
-    required this.description,
-    required this.value,
-    required this.onChanged,
-  });
-
-  final IconData icon;
-  final Color color;
-  final String title;
-  final String description;
-  final bool value;
-  final ValueChanged<bool>? onChanged;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsetsDirectional.symmetric(vertical: 10),
-        child: Row(
-          children: [
-            _IconBox(icon: icon, color: color),
-            const SizedBox(width: 13),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: numuwTextColor(),
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    description,
-                    style: TextStyle(
-                      color: numuwSecondaryTextColor(),
-                      fontSize: 12.5,
-                    ),
-                  ),
-                ],
-              ),
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(20),
+      onTap: onTap,
+      child: Row(
+        children: [
+          Container(
+            width: 46,
+            height: 46,
+            decoration: BoxDecoration(
+              color: AppColors.mint.withValues(alpha: .12),
+              borderRadius: BorderRadius.circular(16),
             ),
-            Switch.adaptive(value: value, onChanged: onChanged),
-          ],
-        ),
-      );
+            child: Icon(icon, color: AppColors.mint),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: numuwTextColor(),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    color: numuwSecondaryTextColor(),
+                    fontSize: 13,
+                    height: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Icon(Icons.chevron_left_rounded, color: numuwSecondaryTextColor()),
+        ],
+      ),
+    );
+  }
 }
