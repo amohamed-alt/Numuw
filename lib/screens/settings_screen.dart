@@ -35,7 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final prefs = AppPreferences.instance;
-    final country = CountryPreference.instance.selectedCountry;
+    final country = CountryPreference.instance.country;
     return Scaffold(
       backgroundColor: numuwPageColor(),
       body: AppPage(
@@ -47,15 +47,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               subtitle: 'تحكّمي في تجربة نُمُوّ بما يناسب بيتكِ.',
             ),
             const SizedBox(height: 18),
-            NumuwCard(
+            SoftCard(
               child: Column(
                 children: [
                   _SettingsRow(
                     icon: Icons.public_rounded,
                     title: 'الدولة والمصادر الصحية',
-                    subtitle: country == null
-                        ? 'اختاري الدولة لعرض التطعيمات والمراجع المناسبة.'
-                        : '${country.flagEmoji} ${country.arabicName} · ${country.sourceSummary}',
+                    subtitle:
+                        '${country.flagEmoji} ${country.arabicName} · ${country.sourceSummary}',
                     onTap: () async {
                       await Navigator.of(context).push(
                         MaterialPageRoute<void>(
@@ -90,7 +89,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            NumuwCard(
+            SoftCard(
               child: Column(
                 children: [
                   _SettingsRow(
@@ -117,7 +116,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            NumuwCard(
+            SoftCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -131,9 +130,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    country == null
-                        ? 'اختيار الدولة مطلوب قبل عرض جداول التطعيمات المحلية. لا يتم عرض أي جرعة غير موثقة.'
-                        : 'المصادر الحالية: ${country.sourceSummary}. تظهر التفاصيل داخل شاشة الدولة قبل الاعتماد.',
+                    'المصادر الحالية: ${country.sourceSummary}. تظهر التفاصيل داخل شاشة الدولة قبل الاعتماد، ولا يتم عرض أي جرعة غير موثقة.',
                     style: TextStyle(
                       color: numuwSecondaryTextColor(),
                       height: 1.6,
