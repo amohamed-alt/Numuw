@@ -13,7 +13,7 @@ class VaccinationRepository {
   final SupabaseClient? _client;
   SupabaseClient get _supabase => _client ?? Supabase.instance.client;
   static const columns =
-      'id,child_id,created_by,name,dose_label,scheduled_date,administered_date,provider,status,card_image_path,source_name,source_url,created_at,updated_at';
+      'id,child_id,created_by,name,official_dose_id,dose_label,scheduled_date,administered_date,provider,status,card_image_path,notes,source_name,source_url,created_at,updated_at';
 
   Future<List<Vaccination>> fetch(String childId) async {
     final rows = await withRepositoryTimeout(
@@ -46,11 +46,13 @@ class VaccinationRepository {
   Future<Vaccination> add({
     required String childId,
     required String name,
+    String? officialDoseId,
     String? doseLabel,
     DateTime? scheduledDate,
     DateTime? administeredDate,
     String? provider,
     String status = 'scheduled',
+    String? notes,
     String? sourceName,
     String? sourceUrl,
   }) async {
@@ -61,11 +63,13 @@ class VaccinationRepository {
             'child_id': childId,
             'created_by': currentUserId(),
             'name': name.trim(),
+            'official_dose_id': blankToNull(officialDoseId),
             'dose_label': blankToNull(doseLabel),
             'scheduled_date': dateOnly(scheduledDate),
             'administered_date': dateOnly(administeredDate),
             'provider': blankToNull(provider),
             'status': status,
+            'notes': blankToNull(notes),
             'source_name': blankToNull(sourceName),
             'source_url': blankToNull(sourceUrl),
           })
@@ -100,6 +104,7 @@ class VaccinationRepository {
             'child_id': childId,
             'created_by': currentUserId(),
             'name': dose.vaccineNameArabic,
+            'official_dose_id': dose.id,
             'dose_label': dose.doseLabelArabic,
             'scheduled_date': dateOnly(dose.dueDateFor(birthDate)),
             'status': 'scheduled',
@@ -143,11 +148,13 @@ class VaccinationRepository {
   Future<Vaccination> update({
     required String id,
     required String name,
+    String? officialDoseId,
     String? doseLabel,
     DateTime? scheduledDate,
     DateTime? administeredDate,
     String? provider,
     required String status,
+    String? notes,
     String? sourceName,
     String? sourceUrl,
   }) async {
@@ -156,11 +163,13 @@ class VaccinationRepository {
           .from('vaccinations')
           .update({
             'name': name.trim(),
+            'official_dose_id': blankToNull(officialDoseId),
             'dose_label': blankToNull(doseLabel),
             'scheduled_date': dateOnly(scheduledDate),
             'administered_date': dateOnly(administeredDate),
             'provider': blankToNull(provider),
             'status': status,
+            'notes': blankToNull(notes),
             'source_name': blankToNull(sourceName),
             'source_url': blankToNull(sourceUrl),
           })
