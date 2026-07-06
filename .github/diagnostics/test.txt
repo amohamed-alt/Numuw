@@ -43,8 +43,8 @@ Try `flutter pub outdated` for more information.
 00:01 +11: /home/runner/work/Numuw/Numuw/test/health_content_test.dart: development and feeding library calculates completed months correctly
 00:01 +12: /home/runner/work/Numuw/Numuw/test/health_content_test.dart: development and feeding library feeding library keeps source attribution
 00:01 +13: loading /home/runner/work/Numuw/Numuw/test/growth_chart_series_test.dart
-00:01 +13: /home/runner/work/Numuw/Numuw/test/growth_chart_series_test.dart: WHO LMS seed rows are source gated
-00:01 +14: /home/runner/work/Numuw/Numuw/test/growth_chart_series_test.dart: growth chart series calculates completed months and z score
+00:02 +13: /home/runner/work/Numuw/Numuw/test/growth_chart_series_test.dart: WHO LMS seed rows are source gated
+00:02 +14: /home/runner/work/Numuw/Numuw/test/growth_chart_series_test.dart: growth chart series calculates completed months and z score
 00:02 +15: loading /home/runner/work/Numuw/Numuw/test/weekly_summary_test.dart
 00:02 +15: /home/runner/work/Numuw/Numuw/test/weekly_summary_test.dart: WeeklySummaryCalculator calculates current and previous week totals
 00:02 +16: /home/runner/work/Numuw/Numuw/test/weekly_summary_test.dart: WeeklySummaryCalculator does not count pumping as normal feeding
@@ -84,7 +84,7 @@ Try `flutter pub outdated` for more information.
 00:13 +47: /home/runner/work/Numuw/Numuw/test/ai_assistant_response_test.dart: diaper wet dirty mapping
 00:13 +48: /home/runner/work/Numuw/Numuw/test/ai_assistant_response_test.dart: ambiguous time remains reviewable
 00:13 +49: loading /home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart
-00:13 +49: /home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart: assistant screen renders redesigned empty state
+00:14 +49: /home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart: assistant screen renders redesigned empty state
 00:14 +50: /home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart: assistant screen can start a fresh chat
 00:15 +51: /home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart: assistant screen dark theme smoke test
 00:15 +52: loading /home/runner/work/Numuw/Numuw/test/growth_math_test.dart
@@ -99,26 +99,48 @@ Try `flutter pub outdated` for more information.
 00:17 +58: /home/runner/work/Numuw/Numuw/test/offline_care_event_queue_test.dart: OfflineCareEventQueue stores and restores pending care event insert payloads
 00:17 +59: /home/runner/work/Numuw/Numuw/test/offline_care_event_queue_test.dart: OfflineCareEventQueue replacePending clears storage when no pending payload remains
 00:17 +60: loading /home/runner/work/Numuw/Numuw/test/widget_test.dart
-lib/auth/auth_gate.dart:272:47: Error: Member not found: 'moonGold'.
-                  Icon(icon, color: AppColors.moonGold, size: 40),
-                                              ^^^^^^^^
-lib/auth/auth_gate.dart:264:18: Error: The method 'GlassCard' isn't defined for the type '_StateScreen'.
- - '_StateScreen' is from 'package:flutter_application_1/auth/auth_gate.dart' ('lib/auth/auth_gate.dart').
-Try correcting the name to the name of an existing method, or defining a method named 'GlassCard'.
-          child: GlassCard(
-                 ^^^^^^^^^
-00:21 +60 -1: loading /home/runner/work/Numuw/Numuw/test/widget_test.dart [E]
-  Failed to load "/home/runner/work/Numuw/Numuw/test/widget_test.dart":
-  Compilation failed for testPath=/home/runner/work/Numuw/Numuw/test/widget_test.dart: lib/auth/auth_gate.dart:272:47: Error: Member not found: 'moonGold'.
-                    Icon(icon, color: AppColors.moonGold, size: 40),
-                                                ^^^^^^^^
-  lib/auth/auth_gate.dart:264:18: Error: The method 'GlassCard' isn't defined for the type '_StateScreen'.
-   - '_StateScreen' is from 'package:flutter_application_1/auth/auth_gate.dart' ('lib/auth/auth_gate.dart').
-  Try correcting the name to the name of an existing method, or defining a method named 'GlassCard'.
-            child: GlassCard(
-                   ^^^^^^^^^
-  .
-00:21 +60 -1: Some tests failed.
-
-Failing tests:
-  /home/runner/work/Numuw/Numuw/test/widget_test.dart: loading /home/runner/work/Numuw/Numuw/test/widget_test.dart
+00:22 +60: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Arabic age formatter shows weeks and days
+00:22 +61: /home/runner/work/Numuw/Numuw/test/widget_test.dart: ChildProfile mapping handles nullable fields
+00:22 +62: /home/runner/work/Numuw/Numuw/test/widget_test.dart: ChildGuardian mapping accepts RPC display name and email
+00:22 +63: /home/runner/work/Numuw/Numuw/test/widget_test.dart: CareEvent mapping handles feeding fields
+00:22 +64: /home/runner/work/Numuw/Numuw/test/widget_test.dart: New pumping event parsing exposes pumped amount
+00:22 +65: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Split pumping amounts calculate the stored total
+00:22 +66: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Missing split pumping metadata does not crash
+00:22 +67: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Pumping metadata parses int, double, and numeric string values
+00:22 +68: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Legacy feeding pumping record remains compatible
+00:22 +69: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Normal feeding events are not counted as pumping
+00:22 +70: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Pumping comparison calculates current and previous seven-day totals
+00:22 +71: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Pumping comparison detects percentage increase
+00:22 +72: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Pumping comparison detects percentage decrease
+00:22 +73: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Pumping comparison treats changes within five percent as stable
+00:22 +74: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Previous total zero does not generate infinity
+00:22 +75: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Both pumping periods empty return insufficient data
+00:22 +76: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Invalid zero or negative pumping amounts are ignored
+00:22 +77: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Events outside the fourteen-day pumping range are ignored
+00:22 +78: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Local day aggregation sums multiple pumping sessions per day
+00:22 +79: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Different children are never mixed in pumping analytics
+00:22 +80: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Feeding reminder uses average interval and ignores pumping
+00:22 +81: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Medicine reminder is scheduled from medicine event
+00:22 +82: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Vaccination reminder is scheduled at nine on due date
+00:22 +83: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Egypt official vaccination schedule has source and expected size
+00:22 +84: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Egypt official vaccination due dates are calculated from birth date
+00:22 +85: /home/runner/work/Numuw/Numuw/test/widget_test.dart: CareEvent mapping never emits null metadata
+00:22 +86: /home/runner/work/Numuw/Numuw/test/widget_test.dart: CareEvent mapping keeps multiple feeding methods metadata
+00:22 +87: /home/runner/work/Numuw/Numuw/test/widget_test.dart: readableError returns Arabic timeout message
+00:22 +88: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Old feeding_method remains available without feeding_methods metadata
+00:22 +89: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Dashboard sleep calculation sums multiple sessions today
+00:22 +90: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Dashboard sleep calculation clips sessions crossing midnight
+00:22 +91: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Dashboard sleep calculation counts active sleep until now
+00:22 +92: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Dashboard sleep calculation ignores invalid negative duration
+00:22 +93: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Dashboard sleep calculation handles UTC-to-local boundary safely
+00:22 +94: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Task title validation rejects malformed titles
+00:22 +95: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Selected-child state propagation notifies listeners
+00:22 +96: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Failed sleep save can preserve local session until success finish
+00:22 +97: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Pumping timer remains associated with its original child
+00:22 +98: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Numuw app shows setup error without Supabase config immediately
+00:23 +99: /home/runner/work/Numuw/Numuw/test/widget_test.dart: MainShell lazily creates unopened tabs
+00:23 +100: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Basic RTL widget smoke test
+00:23 +101: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Sign in validation shows email and password errors
+00:24 +102: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Sign up validation shows name email and password errors
+00:24 +103: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Basic RTL pumping-screen widget test
+00:24 +104: All tests passed!
