@@ -27,13 +27,19 @@ class VaccinationPlanMapper {
     VaccinationScheduleDefinition schedule,
   ) {
     if (record.status != 'completed') return null;
+    final officialDoseId = record.officialDoseId?.trim();
     for (final dose in schedule.doses) {
-      if (dose.vaccineNameArabic.trim() == record.name.trim() &&
-          dose.doseLabelArabic.trim() == (record.doseLabel ?? '').trim()) {
+      final matchesOfficialId = officialDoseId != null &&
+          officialDoseId.isNotEmpty &&
+          dose.id == officialDoseId;
+      final matchesLabels = dose.vaccineNameArabic.trim() == record.name.trim() &&
+          dose.doseLabelArabic.trim() == (record.doseLabel ?? '').trim();
+      if (matchesOfficialId || matchesLabels) {
         return VaccinationRecord(
           doseId: dose.id,
           givenDate: record.administeredDate ?? record.scheduledDate ?? DateTime.now(),
           providerName: record.provider,
+          notesArabic: record.notes,
           attachmentPath: record.cardImagePath,
         );
       }
