@@ -27,4 +27,8 @@ Got dependencies!
 23 packages have newer versions incompatible with dependency constraints.
 Try `flutter pub outdated` for more information.
 Analyzing Numuw...                                              
-No issues found! (ran in 20.1s)
+
+  error • The method 'GlassCard' isn't defined for the type '_StateScreen'. Try correcting the name to the name of an existing method, or defining a method named 'GlassCard' • lib/auth/auth_gate.dart:264:18 • undefined_method
+  error • The getter 'moonGold' isn't defined for the type 'AppColors'. Try importing the library that defines 'moonGold', correcting the name to the name of an existing getter, or defining a getter or field named 'moonGold' • lib/auth/auth_gate.dart:272:47 • undefined_getter
+
+2 issues found. (ran in 20.2s)
