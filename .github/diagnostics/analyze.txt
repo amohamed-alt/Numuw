@@ -27,9 +27,4 @@ Got dependencies!
 23 packages have newer versions incompatible with dependency constraints.
 Try `flutter pub outdated` for more information.
 Analyzing Numuw...                                              
-
-  error • The getter 'flagEmoji' isn't defined for the type 'NumuwCountry'. Try importing the library that defines 'flagEmoji', correcting the name to the name of an existing getter, or defining a getter or field named 'flagEmoji' • lib/screens/settings_screen.dart:57:36 • undefined_getter
-  error • The getter 'sourceSummary' isn't defined for the type 'NumuwCountry'. Try importing the library that defines 'sourceSummary', correcting the name to the name of an existing getter, or defining a getter or field named 'sourceSummary' • lib/screens/settings_screen.dart:57:81 • undefined_getter
-  error • The getter 'sourceSummary' isn't defined for the type 'NumuwCountry'. Try importing the library that defines 'sourceSummary', correcting the name to the name of an existing getter, or defining a getter or field named 'sourceSummary' • lib/screens/settings_screen.dart:133:49 • undefined_getter
-
-3 issues found. (ran in 19.9s)
+No issues found! (ran in 20.2s)
