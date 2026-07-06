@@ -1,8 +1,9 @@
 # Latest Numuw redesign CI diagnostics
 
-Generated from commit: ac331697545e81652bb218ca940a43170725f57d
+Generated from commit: 8a9d504b88d7ec3d001bc598b09cf17f146b9ead
 
 ## Analyze summary
+2 issues found. (ran in 19.3s)
 
 ## Test summary
 00:00 +0: loading /home/runner/work/Numuw/Numuw/test/health_sources_test.dart
@@ -36,10 +37,10 @@ Generated from commit: ac331697545e81652bb218ca940a43170725f57d
 00:07 +22 -1: /home/runner/work/Numuw/Numuw/test/ai_assistant_service_test.dart: service allows parse responses with message but no actions
 00:07 +23 -1: /home/runner/work/Numuw/Numuw/test/ai_assistant_service_test.dart: malformed response maps to invalid ai response
 00:07 +24 -1: loading /home/runner/work/Numuw/Numuw/test/numuw_ui_smoke_test.dart
-00:08 +24 -1: /home/runner/work/Numuw/Numuw/test/numuw_ui_smoke_test.dart: welcome screen renders final onboarding controls
+00:09 +24 -1: /home/runner/work/Numuw/Numuw/test/numuw_ui_smoke_test.dart: welcome screen renders final onboarding controls
 00:09 +25 -1: /home/runner/work/Numuw/Numuw/test/numuw_ui_smoke_test.dart: bottom navigation updates the selected tab
-00:09 +26 -1: /home/runner/work/Numuw/Numuw/test/numuw_ui_smoke_test.dart: center action opens quick logging sheet
-00:09 +27 -1: /home/runner/work/Numuw/Numuw/test/numuw_ui_smoke_test.dart: active feeding timer appears in final feeding screen
+00:10 +26 -1: /home/runner/work/Numuw/Numuw/test/numuw_ui_smoke_test.dart: center action opens quick logging sheet
+00:10 +27 -1: /home/runner/work/Numuw/Numuw/test/numuw_ui_smoke_test.dart: active feeding timer appears in final feeding screen
 00:10 +28 -1: /home/runner/work/Numuw/Numuw/test/numuw_ui_smoke_test.dart: active sleep timer shows wake action
 00:10 +29 -1: /home/runner/work/Numuw/Numuw/test/numuw_ui_smoke_test.dart: dirty diaper choice reveals color controls
 00:10 +30 -1: /home/runner/work/Numuw/Numuw/test/numuw_ui_smoke_test.dart: light and dark theme smoke tests
@@ -59,20 +60,20 @@ Generated from commit: ac331697545e81652bb218ca940a43170725f57d
 00:11 +43 -1: /home/runner/work/Numuw/Numuw/test/ai_assistant_response_test.dart: ambiguous time remains reviewable
 00:11 +44 -1: loading /home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart
 00:12 +44 -1: /home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart: assistant screen renders redesigned empty state
-00:12 +45 -1: /home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart: assistant screen can start a fresh chat
-00:12 +46 -1: /home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart: assistant screen dark theme smoke test
+00:13 +45 -1: /home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart: assistant screen can start a fresh chat
+00:13 +46 -1: /home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart: assistant screen dark theme smoke test
 00:13 +47 -1: loading /home/runner/work/Numuw/Numuw/test/growth_math_test.dart
-00:13 +47 -1: /home/runner/work/Numuw/Numuw/test/growth_math_test.dart: zScore returns zero when value equals m
-00:13 +48 -1: /home/runner/work/Numuw/Numuw/test/growth_math_test.dart: zScore supports l zero rows
-00:13 +49 -1: /home/runner/work/Numuw/Numuw/test/growth_math_test.dart: assess returns unavailable without a matching row
-00:13 +50 -1: /home/runner/work/Numuw/Numuw/test/growth_math_test.dart: assess picks matching row and categorizes bands
-00:13 +51 -1: loading /home/runner/work/Numuw/Numuw/test/vaccination_plan_summary_test.dart
+00:14 +47 -1: /home/runner/work/Numuw/Numuw/test/growth_math_test.dart: zScore returns zero when value equals m
+00:14 +48 -1: /home/runner/work/Numuw/Numuw/test/growth_math_test.dart: zScore supports l zero rows
+00:14 +49 -1: /home/runner/work/Numuw/Numuw/test/growth_math_test.dart: assess returns unavailable without a matching row
+00:14 +50 -1: /home/runner/work/Numuw/Numuw/test/growth_math_test.dart: assess picks matching row and categorizes bands
+00:14 +51 -1: loading /home/runner/work/Numuw/Numuw/test/vaccination_plan_summary_test.dart
 00:14 +51 -1: /home/runner/work/Numuw/Numuw/test/vaccination_plan_summary_test.dart: vaccination summary handles unavailable country schedule safely
 00:14 +52 -1: /home/runner/work/Numuw/Numuw/test/vaccination_plan_summary_test.dart: vaccination summary prioritizes overdue and completion state
-00:14 +53 -1: loading /home/runner/work/Numuw/Numuw/test/offline_care_event_queue_test.dart
-00:14 +53 -1: /home/runner/work/Numuw/Numuw/test/offline_care_event_queue_test.dart: OfflineCareEventQueue stores and restores pending care event insert payloads
-00:14 +54 -1: /home/runner/work/Numuw/Numuw/test/offline_care_event_queue_test.dart: OfflineCareEventQueue replacePending clears storage when no pending payload remains
-00:14 +55 -1: loading /home/runner/work/Numuw/Numuw/test/widget_test.dart
+00:15 +53 -1: loading /home/runner/work/Numuw/Numuw/test/offline_care_event_queue_test.dart
+00:15 +53 -1: /home/runner/work/Numuw/Numuw/test/offline_care_event_queue_test.dart: OfflineCareEventQueue stores and restores pending care event insert payloads
+00:15 +54 -1: /home/runner/work/Numuw/Numuw/test/offline_care_event_queue_test.dart: OfflineCareEventQueue replacePending clears storage when no pending payload remains
+00:15 +55 -1: loading /home/runner/work/Numuw/Numuw/test/widget_test.dart
 00:20 +55 -1: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Arabic age formatter shows weeks and days
 00:20 +56 -1: /home/runner/work/Numuw/Numuw/test/widget_test.dart: ChildProfile mapping handles nullable fields
 00:20 +57 -1: /home/runner/work/Numuw/Numuw/test/widget_test.dart: ChildGuardian mapping accepts RPC display name and email
@@ -112,9 +113,9 @@ Generated from commit: ac331697545e81652bb218ca940a43170725f57d
 00:20 +91 -1: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Failed sleep save can preserve local session until success finish
 00:20 +92 -1: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Pumping timer remains associated with its original child
 00:20 +93 -1: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Numuw app shows setup error without Supabase config immediately
-00:20 +94 -1: /home/runner/work/Numuw/Numuw/test/widget_test.dart: MainShell lazily creates unopened tabs
+00:21 +94 -1: /home/runner/work/Numuw/Numuw/test/widget_test.dart: MainShell lazily creates unopened tabs
 00:21 +95 -1: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Basic RTL widget smoke test
 00:21 +96 -1: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Sign in validation shows email and password errors
-00:21 +97 -1: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Sign up validation shows name email and password errors
-00:21 +98 -1: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Basic RTL pumping-screen widget test
-00:21 +99 -1: Some tests failed.
+00:22 +97 -1: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Sign up validation shows name email and password errors
+00:22 +98 -1: /home/runner/work/Numuw/Numuw/test/widget_test.dart: Basic RTL pumping-screen widget test
+00:22 +99 -1: Some tests failed.
