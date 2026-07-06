@@ -86,6 +86,35 @@ enum NumuwCountry {
   }
 }
 
+extension NumuwCountryDisplay on NumuwCountry {
+  String get flagEmoji => switch (this) {
+        NumuwCountry.egypt => '🇪🇬',
+        NumuwCountry.saudiArabia => '🇸🇦',
+        NumuwCountry.unitedArabEmirates => '🇦🇪',
+        NumuwCountry.kuwait => '🇰🇼',
+        NumuwCountry.qatar => '🇶🇦',
+        NumuwCountry.bahrain => '🇧🇭',
+        NumuwCountry.oman => '🇴🇲',
+        NumuwCountry.jordan => '🇯🇴',
+        NumuwCountry.lebanon => '🇱🇧',
+        NumuwCountry.iraq => '🇮🇶',
+        NumuwCountry.palestine => '🇵🇸',
+        NumuwCountry.morocco => '🇲🇦',
+        NumuwCountry.algeria => '🇩🇿',
+        NumuwCountry.tunisia => '🇹🇳',
+        NumuwCountry.libya => '🇱🇾',
+        NumuwCountry.sudan => '🇸🇩',
+        NumuwCountry.yemen => '🇾🇪',
+        NumuwCountry.syria => '🇸🇾',
+        NumuwCountry.mauritania => '🇲🇷',
+      };
+
+  String get sourceSummary {
+    final source = OfficialHealthSources.vaccinationSourceFor(this);
+    return '${source.authority} · ${source.versionLabel}';
+  }
+}
+
 class OfficialHealthSources {
   const OfficialHealthSources._();
 
