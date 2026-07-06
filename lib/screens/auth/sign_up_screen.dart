@@ -78,7 +78,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       backgroundColor: numuwPageColor(),
       body: AppPage(
-        padding: const EdgeInsetsDirectional.fromSTEB(22, 28, 22, 32),
+        padding: const EdgeInsetsDirectional.fromSTEB(22, 16, 22, 24),
         child: Form(
           key: _formKey,
           child: Column(
@@ -96,11 +96,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     iconSize: 21,
                   ),
                 ),
-              const SizedBox(height: 20),
+              SizedBox(height: widget.onBack == null ? 4 : 10),
               Center(
                 child: Container(
-                  width: 76,
-                  height: 76,
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
                     color: numuwAccentColor().withValues(alpha: .14),
                     shape: BoxShape.circle,
@@ -109,42 +109,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: numuwAccentColor().withValues(alpha: .16),
-                        blurRadius: 30,
-                        offset: const Offset(0, 10),
+                        color: numuwAccentColor().withValues(alpha: .14),
+                        blurRadius: 24,
+                        offset: const Offset(0, 8),
                       ),
                     ],
                   ),
                   child: Icon(
                     Icons.nightlight_round,
                     color: numuwAccentColor(),
-                    size: 40,
+                    size: 28,
                   ),
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 8),
               Center(
                 child: Text(
                   'أهلًا بكِ في نُمُوّ',
                   style: TextStyle(
                     color: numuwTextColor(),
-                    fontSize: 26,
+                    fontSize: 24,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 4),
               Center(
                 child: Text(
                   'أنشئي حسابك لنبدأ رحلتنا معًا',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: numuwSecondaryTextColor(),
-                    fontSize: 15,
+                    fontSize: 14,
                   ),
                 ),
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 18),
               NumuwTextField(
                 controller: _name,
                 label: 'اسمكِ',
@@ -152,7 +152,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 validator: (value) =>
                     (value ?? '').trim().isEmpty ? 'اكتبي اسمكِ.' : null,
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 8),
               NumuwTextField(
                 controller: _email,
                 label: 'البريد الإلكتروني',
@@ -161,7 +161,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 textDirection: TextDirection.ltr,
                 validator: _emailValidator,
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 8),
               Text(
                 'كلمة المرور',
                 style: TextStyle(
@@ -170,7 +170,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: 7),
+              const SizedBox(height: 4),
               TextFormField(
                 controller: _password,
                 obscureText: _obscure,
@@ -188,10 +188,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 4),
               Material(
                 color: Colors.transparent,
                 child: CheckboxListTile(
+                  dense: true,
+                  visualDensity: VisualDensity.compact,
                   contentPadding: EdgeInsets.zero,
                   controlAffinity: ListTileControlAffinity.leading,
                   value: _accepted,
@@ -202,21 +204,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     style: TextStyle(
                       color: numuwSecondaryTextColor(),
                       fontSize: 12.5,
-                      height: 1.45,
+                      height: 1.35,
                     ),
                   ),
                 ),
               ),
               if (_error != null) ...[
                 ErrorMessageCard(message: _error!),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
               ],
               PrimaryButton(
                 label: 'إنشاء الحساب',
                 loading: _loading,
                 onPressed: _submit,
               ),
-              const SizedBox(height: 22),
+              const SizedBox(height: 18),
               Row(
                 children: [
                   Expanded(child: Divider(color: numuwBorderColor())),
@@ -235,7 +237,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Expanded(child: Divider(color: numuwBorderColor())),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
               Row(
                 children: [
                   Expanded(
@@ -261,7 +263,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
               Center(
                 child: TextButton(
                   onPressed: widget.onSignIn,
@@ -285,6 +287,6 @@ String? _emailValidator(String? value) {
 
 String? _passwordValidator(String? value) {
   final text = value ?? '';
-  if (text.length < 6) return 'كلمة المرور لا تقل عن 6 أحرف.';
+  if (text.length < 6) return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل.';
   return null;
 }
