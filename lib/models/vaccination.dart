@@ -6,12 +6,14 @@ class Vaccination {
     required this.childId,
     required this.createdBy,
     required this.name,
+    this.officialDoseId,
     this.doseLabel,
     this.scheduledDate,
     this.administeredDate,
     this.provider,
     required this.status,
     this.cardImagePath,
+    this.notes,
     this.sourceName,
     this.sourceUrl,
     this.createdAt,
@@ -22,12 +24,14 @@ class Vaccination {
   final String childId;
   final String createdBy;
   final String name;
+  final String? officialDoseId;
   final String? doseLabel;
   final DateTime? scheduledDate;
   final DateTime? administeredDate;
   final String? provider;
   final String status;
   final String? cardImagePath;
+  final String? notes;
   final String? sourceName;
   final String? sourceUrl;
   final DateTime? createdAt;
@@ -38,12 +42,14 @@ class Vaccination {
     childId: map['child_id'] as String,
     createdBy: map['created_by'] as String,
     name: map['name'] as String? ?? '',
+    officialDoseId: map['official_dose_id'] as String?,
     doseLabel: map['dose_label'] as String?,
     scheduledDate: MapReader.date(map['scheduled_date']),
     administeredDate: MapReader.date(map['administered_date']),
     provider: map['provider'] as String?,
     status: map['status'] as String? ?? 'scheduled',
     cardImagePath: map['card_image_path'] as String?,
+    notes: map['notes'] as String?,
     sourceName: map['source_name'] as String?,
     sourceUrl: map['source_url'] as String?,
     createdAt: MapReader.date(map['created_at']),
@@ -55,12 +61,14 @@ class Vaccination {
     'child_id': childId,
     'created_by': createdBy,
     'name': name,
+    'official_dose_id': officialDoseId,
     'dose_label': doseLabel,
     'scheduled_date': _dateOnly(scheduledDate),
     'administered_date': _dateOnly(administeredDate),
     'provider': provider,
     'status': status,
     'card_image_path': cardImagePath,
+    'notes': notes,
     'source_name': sourceName,
     'source_url': sourceUrl,
     'created_at': createdAt?.toUtc().toIso8601String(),
