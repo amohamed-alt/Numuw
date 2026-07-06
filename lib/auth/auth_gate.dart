@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../core/app_colors.dart';
 import '../core/errors/app_error.dart';
 import '../models/child_profile.dart';
 import '../repositories/child_repository.dart';
@@ -208,7 +207,7 @@ class EmailConfirmationScreen extends StatelessWidget {
           children: [
             const IconBadge(
               icon: '📧',
-              background: AppColors.mintLight,
+              background: Color(0xFFDFF5EF),
               size: 96,
             ),
             const SizedBox(height: 24),
@@ -218,7 +217,7 @@ class EmailConfirmationScreen extends StatelessWidget {
               style: TextStyle(
                 color: numuwTextColor(),
                 fontSize: 24,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: 12),
@@ -261,7 +260,7 @@ class _StateScreen extends StatelessWidget {
       body: AppPage(
         padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 24),
         child: Center(
-          child: GlassCard(
+          child: SoftCard(
             padding: const EdgeInsetsDirectional.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -269,13 +268,13 @@ class _StateScreen extends StatelessWidget {
                 if (loading)
                   const CircularProgressIndicator()
                 else
-                  Icon(icon, color: AppColors.moonGold, size: 40),
+                  Icon(icon, color: numuwAccentColor(), size: 40),
                 const SizedBox(height: 16),
                 Text(
                   title,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w700,
                     fontSize: 22,
                   ),
                 ),
