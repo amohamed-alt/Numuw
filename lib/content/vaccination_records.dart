@@ -38,6 +38,11 @@ class VaccinationPlan {
 
   Set<String> get completedDoseIds => records.map((record) => record.doseId).toSet();
 
+  bool get hasOfficialSchedule => schedule.doses.isNotEmpty;
+
+  String get sourceSummaryArabic =>
+      '${schedule.source.authority} · ${schedule.source.versionLabel}';
+
   List<ScheduledDose> get scheduledDoses => schedule.buildForBirthDate(
         birthDate,
         today: today,
@@ -58,9 +63,27 @@ class VaccinationPlan {
   List<ScheduledDose> get overdueDoses =>
       scheduledDoses.where((dose) => dose.isOverdue && !dose.completed).toList();
 
+  List<ScheduledDose> get dueNowDoses => scheduledDoses
+      .where((dose) => !dose.completed && (dose.isOverdue || dose.isDueToday))
+      .toList(growable: false);
+
+  List<ScheduledDose> get upcomingDoses => scheduledDoses
+      .where((dose) => !dose.completed && dose.isUpcoming)
+      .toList(growable: false);
+
   List<ScheduledDose> get reminderCandidates => scheduledDoses
       .where((dose) => !dose.completed && (dose.isOverdue || dose.isDueToday || dose.isUpcoming))
       .toList();
+
+  VaccinationPlan copyWithRecord(VaccinationRecord record) => VaccinationPlan(
+        schedule: schedule,
+        birthDate: birthDate,
+        records: [
+          ...records.where((item) => item.doseId != record.doseId),
+          record,
+        ],
+        today: today,
+      );
 }
 
 int _priority(ScheduledDose dose) {
