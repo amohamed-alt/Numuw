@@ -28,18 +28,9 @@ Got dependencies!
 Try `flutter pub outdated` for more information.
 Analyzing Numuw...                                              
 
-   info • Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' • lib/repositories/care_event_repository.dart:202:7 • use_null_aware_elements
-   info • Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' • lib/repositories/care_event_repository.dart:203:7 • use_null_aware_elements
-   info • Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' • lib/repositories/care_event_repository.dart:204:7 • use_null_aware_elements
-   info • Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' • lib/repositories/care_event_repository.dart:205:7 • use_null_aware_elements
-   info • Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' • lib/repositories/care_event_repository.dart:206:7 • use_null_aware_elements
-   info • Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' • lib/repositories/care_event_repository.dart:207:7 • use_null_aware_elements
-   info • Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' • lib/repositories/care_event_repository.dart:210:7 • use_null_aware_elements
-   info • Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' • lib/repositories/care_event_repository.dart:211:7 • use_null_aware_elements
-   info • Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' • lib/screens/home_screen.dart:758:7 • use_null_aware_elements
-warning • Unused import: '../content/health_sources.dart'. Try removing the import directive • lib/screens/settings_screen.dart:3:8 • unused_import
-   info • Use interpolation to compose strings and values. Try using string interpolation to build the composite string • lib/services/ai_assistant_service.dart:52:38 • prefer_interpolation_to_compose_strings
-   info • Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' • lib/widgets/app_widgets.dart:406:7 • use_null_aware_elements
-   info • Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' • lib/widgets/numuw_components.dart:135:11 • use_null_aware_elements
+  error • The getter 'selectedCountry' isn't defined for the type 'CountryPreference'. Try importing the library that defines 'selectedCountry', correcting the name to the name of an existing getter, or defining a getter or field named 'selectedCountry' • lib/screens/settings_screen.dart:38:48 • undefined_getter
+  error • The method 'NumuwCard' isn't defined for the type '_SettingsScreenState'. Try correcting the name to the name of an existing method, or defining a method named 'NumuwCard' • lib/screens/settings_screen.dart:50:13 • undefined_method
+  error • The method 'NumuwCard' isn't defined for the type '_SettingsScreenState'. Try correcting the name to the name of an existing method, or defining a method named 'NumuwCard' • lib/screens/settings_screen.dart:93:13 • undefined_method
+  error • The method 'NumuwCard' isn't defined for the type '_SettingsScreenState'. Try correcting the name to the name of an existing method, or defining a method named 'NumuwCard' • lib/screens/settings_screen.dart:120:13 • undefined_method
 
-13 issues found. (ran in 22.8s)
+4 issues found. (ran in 19.8s)
