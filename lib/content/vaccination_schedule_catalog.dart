@@ -45,6 +45,22 @@ class VaccinationScheduleDefinition {
   final List<VaccineDoseDefinition> doses;
   final HealthContentStatus status;
 
+  bool get hasExtractedDoses => doses.isNotEmpty;
+
+  bool get canSeedUserRecords =>
+      hasExtractedDoses &&
+      doses.every((dose) => dose.status != HealthContentStatus.unavailable);
+
+  String get availabilityArabic {
+    if (doses.isEmpty) {
+      return 'مصدر الدولة محفوظ، والجرعات التفصيلية لم تُستخرج بعد للمراجعة الطبية.';
+    }
+    if (status == HealthContentStatus.verified) {
+      return 'جدول مستخرج ومراجع، مع ضرورة تأكيد الموعد مع الطبيب أو الجهة الرسمية.';
+    }
+    return 'جدول مستخرج كمحتوى مساعد وقيد المراجعة الطبية قبل اعتباره نهائيًا.';
+  }
+
   List<ScheduledDose> buildForBirthDate(
     DateTime birthDate, {
     DateTime? today,
@@ -101,16 +117,183 @@ class VaccinationScheduleCatalog {
 
   static final Map<NumuwCountry, VaccinationScheduleDefinition> schedules = {
     for (final country in NumuwCountry.values)
-      country: VaccinationScheduleDefinition(
-        country: country,
-        source: OfficialHealthSources.vaccinationSourceFor(country),
-        doses: const [],
-        status: HealthContentStatus.needsSourceExtraction,
-      ),
+      country: _definitionFor(country),
   };
 
   static VaccinationScheduleDefinition? forCountry(NumuwCountry country) => schedules[country];
+
+  static List<VaccinationScheduleDefinition> get all =>
+      NumuwCountry.values.map((country) => schedules[country]!).toList(growable: false);
+
+  static VaccinationScheduleDefinition _definitionFor(NumuwCountry country) {
+    final source = OfficialHealthSources.vaccinationSourceFor(country);
+    if (country == NumuwCountry.egypt) {
+      return VaccinationScheduleDefinition(
+        country: country,
+        source: source,
+        doses: _egyptDoses(source.id),
+        status: HealthContentStatus.needsClinicalReview,
+      );
+    }
+
+    return VaccinationScheduleDefinition(
+      country: country,
+      source: source,
+      doses: const [],
+      status: HealthContentStatus.needsSourceExtraction,
+    );
+  }
+
+  static List<VaccineDoseDefinition> _egyptDoses(String sourceId) => [
+        _egyptDose(
+          id: 'eg-birth-hepb',
+          name: 'كبدي ب رضع',
+          label: 'جرعة الميلاد خلال أول 24 ساعة',
+          days: 0,
+          sourceId: sourceId,
+          notes: const ['تُراجع مع وحدة الرعاية أو طبيب الأطفال عند وجود موانع أو ظرف خاص.'],
+        ),
+        _egyptDose(
+          id: 'eg-birth-opv0',
+          name: 'سابين',
+          label: 'الجرعة الصفرية',
+          days: 0,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-birth-bcg',
+          name: 'بي.سي.جي',
+          label: 'جرعة الدرن',
+          days: 0,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-2m-opv1',
+          name: 'سابين',
+          label: 'الجرعة الأولى',
+          days: 60,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-2m-penta1',
+          name: 'طعم الخماسي',
+          label: 'الجرعة الأولى',
+          days: 60,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-2m-ipv1',
+          name: 'طعم سولك',
+          label: 'الجرعة الأولى',
+          days: 60,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-4m-opv2',
+          name: 'سابين',
+          label: 'الجرعة الثانية',
+          days: 120,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-4m-penta2',
+          name: 'طعم الخماسي',
+          label: 'الجرعة الثانية',
+          days: 120,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-4m-ipv2',
+          name: 'طعم سولك',
+          label: 'الجرعة الثانية',
+          days: 120,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-6m-opv3',
+          name: 'سابين',
+          label: 'الجرعة الثالثة',
+          days: 180,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-6m-penta3',
+          name: 'طعم الخماسي',
+          label: 'الجرعة الثالثة',
+          days: 180,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-6m-ipv3',
+          name: 'طعم سولك',
+          label: 'الجرعة الثالثة',
+          days: 180,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-9m-opv4',
+          name: 'سابين',
+          label: 'الجرعة الرابعة',
+          days: 270,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-12m-opv5',
+          name: 'سابين',
+          label: 'الجرعة الخامسة',
+          days: 365,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-12m-mmr1',
+          name: 'ام ام ار الفيروسي',
+          label: 'جرعة 12 شهر',
+          days: 365,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-18m-opv-booster',
+          name: 'سابين',
+          label: 'الجرعة المنشطة',
+          days: 548,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-18m-mmr2',
+          name: 'ام ام ار الفيروسي',
+          label: 'جرعة 18 شهر',
+          days: 548,
+          sourceId: sourceId,
+        ),
+        _egyptDose(
+          id: 'eg-18m-dpt-booster',
+          name: 'الثلاثي البكتيري',
+          label: 'الجرعة المنشطة',
+          days: 548,
+          sourceId: sourceId,
+        ),
+      ];
 }
+
+VaccineDoseDefinition _egyptDose({
+  required String id,
+  required String name,
+  required String label,
+  required int days,
+  required String sourceId,
+  List<String> notes = const <String>[],
+}) =>
+    VaccineDoseDefinition(
+      id: id,
+      vaccineNameArabic: name,
+      doseLabelArabic: label,
+      dueFromBirth: Duration(days: days),
+      windowStart: days == 0 ? Duration.zero : Duration(days: days - 7),
+      windowEnd: Duration(days: days + 30),
+      sourceId: sourceId,
+      notesArabic: notes,
+      status: HealthContentStatus.needsClinicalReview,
+    );
 
 DateTime _dateOnly(DateTime value) => DateTime(value.year, value.month, value.day);
 
