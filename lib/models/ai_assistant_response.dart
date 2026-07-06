@@ -414,12 +414,24 @@ String? _normalizeEventType(Object? value) {
 
 List<String> _normalizeMethods(Object? value) {
   final values = value is List ? value : [value];
-  const allowed = <String>{'breast', 'formula', 'mixed', 'bottle'};
+  const aliases = <String, String>{
+    'breast': 'breast',
+    'طبيعي': 'breast',
+    'رضاعة طبيعية': 'breast',
+    'formula': 'formula',
+    'صناعي': 'formula',
+    'رضاعة صناعية': 'formula',
+    'mixed': 'mixed',
+    'مختلط': 'mixed',
+    'رضاعة مختلطة': 'mixed',
+    'bottle': 'bottle',
+    'زجاجة': 'bottle',
+  };
   return values
       .map(_string)
       .whereType<String>()
-      .map((item) => item.toLowerCase())
-      .where(allowed.contains)
+      .map((item) => aliases[item.toLowerCase()])
+      .whereType<String>()
       .toSet()
       .toList(growable: false);
 }

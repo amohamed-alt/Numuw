@@ -101,7 +101,8 @@ class _AssistantScreenState extends State<AssistantScreen> {
           .toList();
       if (title.isEmpty && items.isEmpty) continue;
       if (title.isNotEmpty) parts.add(title);
-      if (items.isNotEmpty) parts.add(items.map((item) => '• $item').join('\n'));
+      if (items.isNotEmpty)
+        parts.add(items.map((item) => '• $item').join('\n'));
     }
     final disclaimer = response.disclaimer?.trim();
     if (disclaimer != null && disclaimer.isNotEmpty) parts.add(disclaimer);
@@ -368,7 +369,10 @@ class _Suggestion extends StatelessWidget {
                   ),
                 ),
               ),
-              Icon(Icons.chevron_left_rounded, color: numuwSecondaryTextColor()),
+              Icon(
+                Icons.chevron_left_rounded,
+                color: numuwSecondaryTextColor(),
+              ),
             ],
           ),
         ),
