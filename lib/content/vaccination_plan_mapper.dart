@@ -27,38 +27,17 @@ class VaccinationPlanMapper {
     VaccinationScheduleDefinition schedule,
   ) {
     if (record.status != 'completed') return null;
-    final doseId = record.officialDoseId ?? _matchDoseId(record, schedule);
-    if (doseId == null) return null;
-    return VaccinationRecord(
-      doseId: doseId,
-      givenDate: record.administeredDate ?? record.scheduledDate ?? DateTime.now(),
-      providerName: record.provider,
-      notesArabic: record.notes,
-      attachmentPath: record.cardImagePath,
-    );
-  }
-
-  static String? _matchDoseId(
-    Vaccination record,
-    VaccinationScheduleDefinition schedule,
-  ) {
-    final normalizedName = _normalize(record.name);
-    final normalizedDose = _normalize(record.doseLabel ?? '');
     for (final dose in schedule.doses) {
-      final sameName = _normalize(dose.vaccineNameArabic) == normalizedName;
-      final sameLabel = _normalize(dose.doseLabelArabic) == normalizedDose;
-      if (sameName && sameLabel) return dose.id;
+      if (dose.vaccineNameArabic.trim() == record.name.trim() &&
+          dose.doseLabelArabic.trim() == (record.doseLabel ?? '').trim()) {
+        return VaccinationRecord(
+          doseId: dose.id,
+          givenDate: record.administeredDate ?? record.scheduledDate ?? DateTime.now(),
+          providerName: record.provider,
+          attachmentPath: record.cardImagePath,
+        );
+      }
     }
     return null;
   }
-
-  static String _normalize(String value) => value
-      .trim()
-      .replaceAll('أ', 'ا')
-      .replaceAll('إ', 'ا')
-      .replaceAll('آ', 'ا')
-      .replaceAll('ى', 'ي')
-      .replaceAll('ة', 'ه')
-      .replaceAll(RegExp(r'\s+'), ' ')
-      .toLowerCase();
 }
