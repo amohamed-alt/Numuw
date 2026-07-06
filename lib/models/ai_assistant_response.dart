@@ -137,6 +137,7 @@ class AiCareEventDraft {
     bool? needsReview,
     bool? timeNeedsReview,
     bool? dateNeedsReview,
+    Map<String, dynamic>? raw,
   }) => AiCareEventDraft(
     eventType: eventType ?? this.eventType,
     startedAt: clearStartedAt ? null : startedAt ?? this.startedAt,
@@ -163,7 +164,7 @@ class AiCareEventDraft {
     needsReview: needsReview ?? this.needsReview,
     timeNeedsReview: timeNeedsReview ?? this.timeNeedsReview,
     dateNeedsReview: dateNeedsReview ?? this.dateNeedsReview,
-    raw: raw,
+    raw: raw ?? this.raw,
   );
 
   factory AiCareEventDraft.fromJson(Map<String, dynamic> map) {
