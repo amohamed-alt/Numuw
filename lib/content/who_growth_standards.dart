@@ -52,11 +52,20 @@ class WhoGrowthStandards {
       GrowthIndicator.lengthHeightForAge,
       GrowthIndicator.headCircumferenceForAge,
     ],
-    status: HealthContentStatus.needsSourceExtraction,
+    status: HealthContentStatus.needsClinicalReview,
     disclaimerArabic: HealthDisclaimer.growthArabic,
   );
 
-  static const List<LmsGrowthRow> lmsRows = [];
+  static const List<LmsGrowthRow> lmsRows = [
+    LmsGrowthRow(indicator: GrowthIndicator.weightForAge, sex: ChildSex.female, ageMonths: 0, l: 0.3809, m: 3.2322, s: 0.14171),
+    LmsGrowthRow(indicator: GrowthIndicator.weightForAge, sex: ChildSex.female, ageMonths: 6, l: -0.0756, m: 7.297, s: 0.12204),
+    LmsGrowthRow(indicator: GrowthIndicator.weightForAge, sex: ChildSex.male, ageMonths: 0, l: 0.3487, m: 3.3464, s: 0.14602),
+    LmsGrowthRow(indicator: GrowthIndicator.weightForAge, sex: ChildSex.male, ageMonths: 6, l: 0.1257, m: 7.934, s: 0.10958),
+    LmsGrowthRow(indicator: GrowthIndicator.lengthHeightForAge, sex: ChildSex.female, ageMonths: 0, l: 1, m: 49.1477, s: 0.0379),
+    LmsGrowthRow(indicator: GrowthIndicator.lengthHeightForAge, sex: ChildSex.male, ageMonths: 0, l: 1, m: 49.8842, s: 0.03795),
+    LmsGrowthRow(indicator: GrowthIndicator.headCircumferenceForAge, sex: ChildSex.female, ageMonths: 0, l: 1, m: 33.8787, s: 0.03496),
+    LmsGrowthRow(indicator: GrowthIndicator.headCircumferenceForAge, sex: ChildSex.male, ageMonths: 0, l: 1, m: 34.4618, s: 0.03686),
+  ];
 
   static LmsGrowthRow? rowFor({
     required GrowthIndicator indicator,
