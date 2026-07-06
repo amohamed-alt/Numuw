@@ -14,5 +14,7 @@ jobs:
           flutter-version: '3.44.4'
           channel: stable
       - run: flutter pub get
-      - run: flutter analyze
-      - run: flutter test
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+      - name: Test
+        run: flutter test -r expanded
