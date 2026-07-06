@@ -48,10 +48,10 @@ class GrowthMath {
     required ChildSex sex,
     required int ageMonths,
     required double value,
-    List<LmsGrowthRow> rows = WhoGrowthStandards.lmsRows,
+    List<LmsGrowthRow>? rows,
   }) {
     final row = rowFor(
-      rows: rows,
+      rows: rows ?? WhoGrowthStandards.lmsRows,
       indicator: indicator,
       sex: sex,
       ageMonths: ageMonths,
