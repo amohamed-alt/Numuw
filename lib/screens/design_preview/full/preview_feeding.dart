@@ -64,7 +64,7 @@ class _PreviewFeedingScreenState extends State<PreviewFeedingScreen> {
             _amountMl = int.tryParse(value) ?? 0;
           }),
           onAmountDelta: (delta) => setState(() {
-            _amountMl = (_amountMl + delta).clamp(0, 990);
+            _amountMl = (_amountMl + delta).clamp(0, 990).toInt();
             _amount.text = _amountMl.toString();
           }),
           onBurpedChanged: (value) => setState(() => _burped = value),
