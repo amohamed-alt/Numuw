@@ -54,6 +54,56 @@ jobs:
             --dart-define=SUPABASE_URL="$SUPABASE_URL" \
             --dart-define=SUPABASE_PUBLISHABLE_KEY="$SUPABASE_PUBLISHABLE_KEY"
 
+      - name: Verify Flutter web runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [ -z "$CHROME" ]; then
+            echo "No Chromium browser is available on the runner."
+            exit 1
+          fi
+
+          rm -rf /tmp/numuw-pages /tmp/numuw-chrome-profile
+          mkdir -p /tmp/numuw-pages/Numuw
+          cp -a build/web/. /tmp/numuw-pages/Numuw/
+
+          python3 -m http.server 8765 --directory /tmp/numuw-pages >/tmp/numuw-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+
+          set +e
+          "$CHROME" \
+            --headless=new \
+            --no-sandbox \
+            --disable-dev-shm-usage \
+            --no-first-run \
+            --no-default-browser-check \
+            --user-data-dir=/tmp/numuw-chrome-profile \
+            --use-gl=swiftshader \
+            --enable-webgl \
+            --virtual-time-budget=15000 \
+            --dump-dom \
+            http://127.0.0.1:8765/Numuw/ \
+            >/tmp/numuw-dom.html 2>/tmp/numuw-chrome.log
+          CHROME_EXIT=$?
+          set -e
+
+          if [ "$CHROME_EXIT" -ne 0 ] || ! grep -q "flt-glass-pane" /tmp/numuw-dom.html; then
+            echo "Flutter did not attach a rendered view during the Pages smoke test."
+            echo "--- Chrome log ---"
+            tail -200 /tmp/numuw-chrome.log || true
+            echo "--- HTTP log ---"
+            tail -100 /tmp/numuw-http.log || true
+            echo "--- DOM ---"
+            head -120 /tmp/numuw-dom.html || true
+            exit 1
+          fi
+
+          echo "Flutter web runtime smoke test passed."
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
