@@ -24,15 +24,12 @@ class MediaPickerService {
   final ImagePicker _images = ImagePicker();
 
   Future<NumuwPickedFile?> pickDocument() async {
-    final result = await FilePicker.platform.pickFiles(
+    final file = await FilePicker.pickFile(
       type: FileType.custom,
       allowedExtensions: const ['pdf', 'png', 'jpg', 'jpeg'],
-      withData: true,
     );
-    if (result == null || result.files.isEmpty) return null;
-    final file = result.files.single;
-    final bytes = file.bytes;
-    if (bytes == null) return null;
+    if (file == null) return null;
+    final bytes = await file.readAsBytes();
     return NumuwPickedFile(
       name: file.name,
       bytes: bytes,
