@@ -194,7 +194,7 @@ class NumuwAnimatedNumber extends StatelessWidget {
     tween: Tween(end: value),
     duration: duration,
     curve: NumuwMotionTokens.standard,
-    builder: builder,
+    builder: (context, value, child) => builder(context, value),
   );
 }
 
