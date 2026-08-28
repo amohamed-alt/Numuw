@@ -14,11 +14,11 @@ class AppBottomNavigation extends StatelessWidget {
   final ValueChanged<int> onChanged;
 
   static const items = [
-    _NavData(Icons.home_rounded, 'اليوم'),
-    _NavData(Icons.edit_note_rounded, 'التسجيل'),
+    _NavData(Icons.calendar_today_rounded, 'اليوم'),
+    _NavData(Icons.add_rounded, 'التسجيل'),
     _NavData(Icons.child_care_rounded, 'طفلي'),
-    _NavData(Icons.chat_bubble_outline_rounded, 'اسألي'),
-    _NavData(Icons.menu_rounded, 'المزيد'),
+    _NavData(Icons.auto_awesome_rounded, 'اسألي نُمُوّ'),
+    _NavData(Icons.grid_view_rounded, 'المزيد'),
   ];
 
   @override
@@ -27,99 +27,144 @@ class AppBottomNavigation extends StatelessWidget {
     final surface = numuwSurfaceColor();
     final border = numuwBorderColor();
     final accent = numuwAccentColor();
-    final inactive = numuwSecondaryTextColor();
-    final activeBackground = night
-        ? AppColors.nightGold.withValues(alpha: .16)
-        : AppColors.mintLight;
+    final inactive = numuwNightMode()
+        ? AppColors.nightMutedText
+        : AppColors.mutedText;
 
-    return SafeArea(
-      top: false,
-      minimum: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 10),
-      child: Material(
-        color: Colors.transparent,
+    return Material(
+      color: surface,
+      elevation: 0,
+      child: SafeArea(
+        top: false,
         child: Container(
-          height: 68,
-          padding: const EdgeInsetsDirectional.symmetric(
-            horizontal: 6,
-            vertical: 6,
-          ),
+          height: 96,
+          padding: const EdgeInsetsDirectional.fromSTEB(6, 8, 6, 10),
           decoration: BoxDecoration(
-            color: surface.withValues(alpha: .98),
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: border),
+            color: surface,
+            border: Border(top: BorderSide(color: border)),
             boxShadow: night
                 ? const []
                 : const [
                     BoxShadow(
-                      color: Color(0x18000000),
-                      blurRadius: 22,
-                      offset: Offset(0, 8),
+                      color: Color(0x14000000),
+                      blurRadius: 20,
+                      offset: Offset(0, -4),
                     ),
                   ],
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: List.generate(items.length, (index) {
               final item = items[index];
               final selected = selectedIndex == index;
-              final color = selected ? accent : inactive;
+              if (index == 1) {
+                return Expanded(
+                  child: Semantics(
+                    button: true,
+                    selected: selected,
+                    label: item.label,
+                    child: InkResponse(
+                      onTap: () => onChanged(index),
+                      radius: 38,
+                      child: Transform.translate(
+                        offset: const Offset(0, -15),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AnimatedContainer(
+                              duration: NumuwMotion.fast,
+                              width: 58,
+                              height: 58,
+                              decoration: BoxDecoration(
+                                color: accent,
+                                shape: BoxShape.circle,
+                                border: Border.all(color: surface, width: 4),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: accent.withValues(alpha: .32),
+                                    blurRadius: 22,
+                                    offset: const Offset(0, 8),
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                Icons.add_rounded,
+                                size: 32,
+                                color: night
+                                    ? AppColors.nightBackground
+                                    : AppColors.surface,
+                              ),
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              item.label,
+                              maxLines: 1,
+                              style: TextStyle(
+                                color: accent,
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }
 
               return Expanded(
                 child: Semantics(
                   selected: selected,
                   button: true,
                   label: item.label,
-                  child: Material(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(18),
-                    clipBehavior: Clip.antiAlias,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(18),
-                      onTap: () => onChanged(index),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 180),
-                        curve: Curves.easeOutCubic,
-                        padding: const EdgeInsetsDirectional.symmetric(
-                          horizontal: 4,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: selected
-                              ? activeBackground
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(18),
-                          border: selected
-                              ? Border.all(
-                                  color: accent.withValues(alpha: .22),
-                                )
-                              : null,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AnimatedScale(
-                              duration: const Duration(milliseconds: 180),
-                              scale: selected ? 1.06 : 1,
-                              child: Icon(item.icon, size: 21, color: color),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: () => onChanged(index),
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.symmetric(
+                        horizontal: 2,
+                        vertical: 2,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          AnimatedContainer(
+                            duration: NumuwMotion.fast,
+                            padding: const EdgeInsetsDirectional.symmetric(
+                              horizontal: 11,
+                              vertical: 5,
                             ),
-                            const SizedBox(height: 3),
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                item.label,
-                                maxLines: 1,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: color,
-                                  fontSize: 10.5,
-                                  height: 1.1,
-                                  fontWeight: selected
-                                      ? FontWeight.w800
-                                      : FontWeight.w600,
-                                ),
+                            decoration: BoxDecoration(
+                              color: selected
+                                  ? (night
+                                        ? accent.withValues(alpha: .14)
+                                        : AppColors.mintLight)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Icon(
+                              item.icon,
+                              size: 21,
+                              color: selected ? accent : inactive,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              item.label,
+                              maxLines: 1,
+                              style: TextStyle(
+                                color: selected ? accent : inactive,
+                                fontSize: 10,
+                                fontWeight: selected
+                                    ? FontWeight.w800
+                                    : FontWeight.w600,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

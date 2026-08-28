@@ -1,0 +1,26 @@
+name: Export redesign source
+
+on:
+  push:
+    branches:
+      - numuw-redesign
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package repository
+        run: zip -r numuw-redesign-source.zip . -x '.git/*' 'numuw-redesign-source.zip'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: numuw-redesign-source
+          path: numuw-redesign-source.zip
+          retention-days: 1

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 enum AiAssistantMode {
+  chat('chat'),
   dailySummary('daily_summary'),
   doctorSummary('doctor_summary'),
   parseCareEvent('parse_care_event');
@@ -136,6 +137,7 @@ class AiCareEventDraft {
     bool? needsReview,
     bool? timeNeedsReview,
     bool? dateNeedsReview,
+    Map<String, dynamic>? raw,
   }) => AiCareEventDraft(
     eventType: eventType ?? this.eventType,
     startedAt: clearStartedAt ? null : startedAt ?? this.startedAt,
@@ -162,7 +164,7 @@ class AiCareEventDraft {
     needsReview: needsReview ?? this.needsReview,
     timeNeedsReview: timeNeedsReview ?? this.timeNeedsReview,
     dateNeedsReview: dateNeedsReview ?? this.dateNeedsReview,
-    raw: raw,
+    raw: raw ?? this.raw,
   );
 
   factory AiCareEventDraft.fromJson(Map<String, dynamic> map) {
@@ -318,38 +320,39 @@ class AiAssistantResponse {
 
   bool get hasActions => actions.isNotEmpty;
 
-  factory AiAssistantResponse.fromJsonString(String body) {
-    final decoded = jsonDecode(body);
-    if (decoded is! Map<String, dynamic>) {
-      throw const FormatException('Expected a JSON object response.');
-    }
-    return AiAssistantResponse.fromJson(decoded);
-  }
-
   factory AiAssistantResponse.fromJson(Map<String, dynamic> map) {
-    final actions = _drafts(
-      map['actions'] ?? map['drafts'] ?? map['parsed_events'] ?? map['events'],
-    );
-    final sections = _sections(
-      map['sections'] ?? map['summary_sections'] ?? map['data'],
-    );
-    final message =
-        _string(
-          map['message'] ?? map['reply'] ?? map['text'] ?? map['summary'],
-        ) ??
-        '';
-    final requiresConfirmation =
-        _bool(map['requires_confirmation'] ?? map['requiresConfirmation']) ??
-        actions.isNotEmpty;
-
+    final sections =
+        (map['sections'] is List ? map['sections'] as List : const [])
+            .whereType<Map>()
+            .map(
+              (item) =>
+                  AiSummarySection.fromJson(Map<String, dynamic>.from(item)),
+            )
+            .toList(growable: false);
+    final actions = (map['actions'] is List ? map['actions'] as List : const [])
+        .whereType<Map>()
+        .map(
+          (item) => AiCareEventDraft.fromJson(Map<String, dynamic>.from(item)),
+        )
+        .toList(growable: false);
     return AiAssistantResponse(
-      message: message,
-      requiresConfirmation: requiresConfirmation,
+      message: _string(map['message'] ?? map['reply'] ?? map['summary']) ?? '',
+      requiresConfirmation:
+          _bool(map['requires_confirmation'] ?? map['requiresConfirmation']) ??
+          actions.isNotEmpty,
       sections: sections,
       actions: actions,
-      disclaimer: _string(map['disclaimer'] ?? map['note']),
+      disclaimer: _string(map['disclaimer']),
       raw: Map<String, dynamic>.from(map),
     );
+  }
+
+  factory AiAssistantResponse.fromJsonString(String source) {
+    final decoded = jsonDecode(source);
+    if (decoded is! Map) {
+      throw const FormatException('Assistant response must be a JSON object.');
+    }
+    return AiAssistantResponse.fromJson(Map<String, dynamic>.from(decoded));
   }
 
   Map<String, dynamic> toJson() => {
@@ -359,128 +362,8 @@ class AiAssistantResponse {
     'actions': actions.map((action) => action.toJson()).toList(),
     'disclaimer': disclaimer,
   };
-}
 
-String? _normalizeEventType(Object? value) {
-  final text = _string(value)?.toLowerCase();
-  if (text == null || text.isEmpty) return null;
-  const aliases = <String, String>{
-    'feeding': 'feeding',
-    'feed': 'feeding',
-    'رضاعة': 'feeding',
-    'sleep': 'sleep',
-    'نوم': 'sleep',
-    'diaper': 'diaper',
-    'حفاضة': 'diaper',
-    'food': 'food',
-    'طعام': 'food',
-    'medicine': 'medicine',
-    'دواء': 'medicine',
-    'temperature': 'temperature',
-    'حرارة': 'temperature',
-    'note': 'note',
-    'ملاحظة': 'note',
-    'pumping': 'pumping',
-    'شفط': 'pumping',
-  };
-  return aliases[text];
-}
-
-List<AiCareEventDraft> _drafts(Object? value) {
-  if (value == null) return const [];
-  final items = value is List ? value : [value];
-  final drafts = <AiCareEventDraft>[];
-  for (final item in items) {
-    if (item is! Map) continue;
-    drafts.add(AiCareEventDraft.fromJson(Map<String, dynamic>.from(item)));
-  }
-  return drafts;
-}
-
-List<AiSummarySection> _sections(Object? value) {
-  if (value == null) return const [];
-  final items = value is List ? value : [value];
-  final sections = <AiSummarySection>[];
-  for (final item in items) {
-    if (item is String) {
-      sections.add(AiSummarySection(title: '', items: [item]));
-    } else if (item is Map) {
-      sections.add(AiSummarySection.fromJson(Map<String, dynamic>.from(item)));
-    }
-  }
-  return sections
-      .where((section) => section.title.isNotEmpty || section.items.isNotEmpty)
-      .toList();
-}
-
-List<String> _normalizeMethods(Object? value) {
-  if (value == null) return const [];
-  final items = value is List ? value : [value];
-  final methods = <String>[];
-  for (final item in items) {
-    final normalized = _normalizeMethod(item);
-    if (normalized != null) methods.add(normalized);
-  }
-  return methods.toSet().toList(growable: false);
-}
-
-String? _normalizeMethod(Object? value) {
-  final text = _string(value)?.toLowerCase();
-  if (text == null || text.isEmpty) return null;
-  const aliases = <String, String>{
-    'breast': 'breast',
-    'natural': 'breast',
-    'natural_feeding': 'breast',
-    'طبيعي': 'breast',
-    'formula': 'formula',
-    'صناعي': 'formula',
-    'bottle': 'bottle',
-    'زجاجة': 'bottle',
-    'pumping': 'pumping',
-    'شفط': 'pumping',
-    'mixed': 'mixed',
-    'مختلطة': 'mixed',
-  };
-  return aliases[text] ?? text;
-}
-
-String? _normalizeSide(Object? value) {
-  final text = _string(value)?.toLowerCase();
-  if (text == null || text.isEmpty) return null;
-  const aliases = <String, String>{
-    'left': 'left',
-    'left_side': 'left',
-    'شمال': 'left',
-    'الشمال': 'left',
-    'right': 'right',
-    'يمين': 'right',
-    'اليمين': 'right',
-    'both': 'both',
-    'كلاهما': 'both',
-  };
-  return aliases[text] ?? text;
-}
-
-double? _double(Object? value) {
-  if (value == null) return null;
-  if (value is num) return value.toDouble();
-  final text = value.toString().trim().replaceAll(',', '.');
-  return double.tryParse(text);
-}
-
-bool? _bool(Object? value) {
-  if (value == null) return null;
-  if (value is bool) return value;
-  if (value is num) return value != 0;
-  final text = value.toString().trim().toLowerCase();
-  if (text.isEmpty) return null;
-  if (text == 'true' || text == 'yes' || text == '1' || text == 'نعم') {
-    return true;
-  }
-  if (text == 'false' || text == 'no' || text == '0' || text == 'لا') {
-    return false;
-  }
-  return null;
+  String encode() => jsonEncode(toJson());
 }
 
 String? _string(Object? value) {
@@ -489,19 +372,71 @@ String? _string(Object? value) {
   return text.isEmpty ? null : text;
 }
 
+List<String> _stringList(Object? value) {
+  if (value is! List) return const [];
+  return value.map(_string).whereType<String>().toList(growable: false);
+}
+
+bool? _bool(Object? value) {
+  if (value is bool) return value;
+  if (value is num) return value != 0;
+  final text = value?.toString().trim().toLowerCase();
+  if (text == 'true' || text == '1' || text == 'yes') return true;
+  if (text == 'false' || text == '0' || text == 'no') return false;
+  return null;
+}
+
+double? _double(Object? value) {
+  if (value is num) return value.toDouble();
+  return double.tryParse(value?.toString() ?? '');
+}
+
 DateTime? _dateTimeFromAny(Object? value) {
   final text = _string(value);
   if (text == null) return null;
-  return DateTime.tryParse(text);
+  return DateTime.tryParse(text)?.toLocal();
 }
 
-List<String> _stringList(Object? value) {
-  if (value == null) return const [];
-  final items = value is List ? value : [value];
-  final result = <String>[];
-  for (final item in items) {
-    final text = _string(item);
-    if (text != null) result.add(text);
-  }
-  return result;
+String? _normalizeEventType(Object? value) {
+  final text = _string(value)?.toLowerCase();
+  const allowed = <String>{
+    'feeding',
+    'sleep',
+    'diaper',
+    'food',
+    'medicine',
+    'temperature',
+    'note',
+    'pumping',
+  };
+  return allowed.contains(text) ? text : null;
+}
+
+List<String> _normalizeMethods(Object? value) {
+  final values = value is List ? value : [value];
+  const aliases = <String, String>{
+    'breast': 'breast',
+    'طبيعي': 'breast',
+    'رضاعة طبيعية': 'breast',
+    'formula': 'formula',
+    'صناعي': 'formula',
+    'رضاعة صناعية': 'formula',
+    'mixed': 'mixed',
+    'مختلط': 'mixed',
+    'رضاعة مختلطة': 'mixed',
+    'bottle': 'bottle',
+    'زجاجة': 'bottle',
+  };
+  return values
+      .map(_string)
+      .whereType<String>()
+      .map((item) => aliases[item.toLowerCase()])
+      .whereType<String>()
+      .toSet()
+      .toList(growable: false);
+}
+
+String? _normalizeSide(Object? value) {
+  final text = _string(value)?.toLowerCase();
+  return text == 'left' || text == 'right' ? text : null;
 }

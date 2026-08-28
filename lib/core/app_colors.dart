@@ -1,40 +1,54 @@
 import 'package:flutter/material.dart';
 
+/// Numuw semantic palette.
+///
+/// The visual identity is "Moonlight Nursery": warm daylight surfaces and a
+/// calm navy night theme. Existing aliases are intentionally preserved so the
+/// current feature screens inherit the redesign without losing functionality.
 class AppColors {
   const AppColors._();
 
-  static const Color webBackground = Color(0xFFF3EDE3);
-  static const Color background = Color(0xFFFBF8F1);
-  static const Color surface = Color(0xFFFFFDF9);
-  static const Color text = Color(0xFF37372F);
-  static const Color secondaryText = Color(0xFF7D7A70);
-  static const Color mutedText = Color(0xFF9A9589);
-  static const Color border = Color(0xFFE7DED2);
-  static const Color neutralSoft = Color(0xFFF6F0E7);
+  // Light mode — warm morning light, never clinical white.
+  static const Color webBackground = Color(0xFFEFE8DC);
+  static const Color background = Color(0xFFF7F3EA);
+  static const Color surface = Color(0xFFFFFDFC);
+  static const Color text = Color(0xFF18222D);
+  static const Color secondaryText = Color(0xFF607080);
+  static const Color mutedText = Color(0xFF87919A);
+  static const Color border = Color(0xFFDDD5C8);
+  static const Color neutralSoft = Color(0xFFEFE8DC);
 
-  static const Color mint = Color(0xFF74865B);
-  static const Color mintDark = Color(0xFF4F6242);
-  static const Color mintLight = Color(0xFFE5EAD9);
-  static const Color mintSoft = Color(0xFFDCE4CB);
+  // Legacy "mint" aliases now resolve to Numuw moon gold.
+  static const Color mint = Color(0xFFB98235);
+  static const Color mintDark = Color(0xFF8F6125);
+  static const Color mintLight = Color(0xFFF4E6CC);
+  static const Color mintSoft = Color(0xFFEAD5AE);
 
-  static const Color peach = Color(0xFFC98E6D);
-  static const Color peachLight = Color(0xFFF0DDD1);
-  static const Color danger = Color(0xFFBD6F68);
-  static const Color purple = Color(0xFFE7E1EF);
-  static const Color purpleLight = Color(0xFFF2EEF6);
-  static const Color yellow = Color(0xFFE7D7B2);
-  static const Color yellowLight = Color(0xFFF6EED5);
-  static const Color blue = Color(0xFFC9D7E4);
-  static const Color blueLight = Color(0xFFEAF0F6);
+  static const Color peach = Color(0xFFB96658);
+  static const Color peachLight = Color(0xFFF6E5E1);
+  static const Color danger = Color(0xFFB96658);
+  static const Color purple = Color(0xFF7C6A9A);
+  static const Color purpleLight = Color(0xFFEDE8F3);
+  static const Color yellow = Color(0xFFB98235);
+  static const Color yellowLight = Color(0xFFF4E6CC);
+  static const Color blue = Color(0xFF557F9A);
+  static const Color blueLight = Color(0xFFE5EEF3);
+  static const Color success = Color(0xFF4F8E73);
+  static const Color successLight = Color(0xFFE4F0E9);
 
-  static const Color nightBackground = Color(0xFF171B17);
-  static const Color nightSurface = Color(0xFF222820);
-  static const Color nightSurfaceSoft = Color(0xFF2A3128);
-  static const Color nightBorder = Color(0xFF394137);
-  static const Color nightText = Color(0xFFF5F1E8);
-  static const Color nightSecondaryText = Color(0xFFBDB8AC);
-  static const Color nightGold = Color(0xFFA8B58E);
-  static const Color nightGoldSoft = Color(0x332A3128);
+  // Dark mode — the signature Moonlight Nursery identity.
+  static const Color nightBackground = Color(0xFF0F1923);
+  static const Color nightSurface = Color(0xFF172130);
+  static const Color nightSurfaceSoft = Color(0xFF1D283A);
+  static const Color nightBorder = Color(0xFF263342);
+  static const Color nightText = Color(0xFFF7F3EA);
+  static const Color nightSecondaryText = Color(0xFFAAB4BE);
+  static const Color nightMutedText = Color(0xFF74808D);
+  static const Color nightGold = Color(0xFFE8B86D);
+  static const Color nightGoldSoft = Color(0x332E261A);
+  static const Color nightSuccess = Color(0xFF79B89C);
+  static const Color nightWarning = Color(0xFFD98C7C);
+  static const Color nightInfo = Color(0xFF7FA9C4);
 
   static const LinearGradient primaryGradient = LinearGradient(
     begin: AlignmentDirectional.topStart,
@@ -46,6 +60,14 @@ class AppColors {
     begin: AlignmentDirectional.topStart,
     end: AlignmentDirectional.bottomEnd,
     colors: [nightSurfaceSoft, nightBackground],
+  );
+
+  static LinearGradient heroGradient(bool night) => LinearGradient(
+    begin: AlignmentDirectional.topStart,
+    end: AlignmentDirectional.bottomEnd,
+    colors: night
+        ? const [Color(0xFF1D2B3C), Color(0xFF172130)]
+        : const [Color(0xFFFFFDFC), Color(0xFFF4E6CC)],
   );
 }
 

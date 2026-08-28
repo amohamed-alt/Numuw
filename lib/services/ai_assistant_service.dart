@@ -26,13 +26,14 @@ abstract class AiAssistantTransport {
 }
 
 class SupabaseAiAssistantTransport implements AiAssistantTransport {
-  SupabaseAiAssistantTransport({SupabaseClient? client})
-    : _client = client ?? Supabase.instance.client;
+  SupabaseAiAssistantTransport({SupabaseClient? client}) : _client = client;
 
-  final SupabaseClient _client;
+  final SupabaseClient? _client;
+
+  SupabaseClient get _resolvedClient => _client ?? Supabase.instance.client;
 
   @override
-  Session? get currentSession => _client.auth.currentSession;
+  Session? get currentSession => _resolvedClient.auth.currentSession;
 
   @override
   Future<Map<String, dynamic>> invoke({
@@ -44,11 +45,11 @@ class SupabaseAiAssistantTransport implements AiAssistantTransport {
     if (session == null || session.accessToken.isEmpty) {
       throw const InvalidSessionException();
     }
-    final response = await _client.functions
+    final response = await _resolvedClient.functions
         .invoke(
           functionId,
           body: body,
-          headers: {'Authorization': 'Bearer ${session.accessToken}'},
+          headers: {'Authorization': 'Bearer ' + session.accessToken},
         )
         .timeout(timeout);
     return _normalizeResponse(response.data);
@@ -60,9 +61,46 @@ class AiAssistantService {
     : _transport = transport ?? SupabaseAiAssistantTransport();
 
   static const functionId = 'ai-assistant';
+  static const chatFunctionId = 'ai-assistant-chat';
   static const defaultModel = 'gemini-3.5-flash';
 
   final AiAssistantTransport _transport;
+
+  Future<AiAssistantResponse> chat({
+    required ChildProfile child,
+    required List<CareEvent> events,
+    required String question,
+    required DateTime now,
+    required Locale locale,
+  }) {
+    final text = question.trim();
+    if (text.isEmpty) {
+      throw const LocalValidationException('اكتبي سؤالك أولًا.');
+    }
+    if (text.length > 700) {
+      throw const LocalValidationException(
+        'السؤال طويل جدًا. اختصريه وحاولي مرة أخرى.',
+      );
+    }
+    if (containsEmergencyKeyword(text)) {
+      throw const EmergencyDetectedException();
+    }
+    return _call(
+      mode: AiAssistantMode.chat,
+      childId: child.id,
+      targetFunctionId: chatFunctionId,
+      payload: {
+        ...AiContextBuilder.dailySummary(
+          child: child,
+          events: events,
+          now: now,
+          locale: _localeTag(locale),
+          timezoneOffsetMinutes: now.timeZoneOffset.inMinutes,
+        ),
+        'question': text,
+      },
+    );
+  }
 
   Future<AiAssistantResponse> dailySummary({
     required ChildProfile child,
@@ -138,10 +176,11 @@ class AiAssistantService {
     required AiAssistantMode mode,
     required String childId,
     required Map<String, dynamic> payload,
+    String? targetFunctionId,
   }) async {
     try {
       final response = await _transport.invoke(
-        functionId: functionId,
+        functionId: targetFunctionId ?? functionId,
         body: {'mode': mode.value, 'child_id': childId, 'payload': payload},
         timeout: aiAssistantTimeout,
       );

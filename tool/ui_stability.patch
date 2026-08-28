@@ -1,0 +1,150 @@
+diff --git a/lib/models/ai_assistant_response.dart b/lib/models/ai_assistant_response.dart
+index fd71edd..77b3285 100644
+--- a/lib/models/ai_assistant_response.dart
++++ b/lib/models/ai_assistant_response.dart
+@@ -316,6 +316,14 @@ class AiAssistantResponse {
+     );
+   }
+ 
++  factory AiAssistantResponse.fromJsonString(String source) {
++    final decoded = jsonDecode(source);
++    if (decoded is! Map) {
++      throw const FormatException('Assistant response must be a JSON object.');
++    }
++    return AiAssistantResponse.fromJson(Map<String, dynamic>.from(decoded));
++  }
++
+   Map<String, dynamic> toJson() => {
+         'message': message,
+         'requires_confirmation': requiresConfirmation,
+@@ -366,8 +374,26 @@ String? _normalizeEventType(Object? value) {
+ 
+ List<String> _normalizeMethods(Object? value) {
+   final values = value is List ? value : [value];
+-  const allowed = <String>{'breast', 'formula', 'mixed', 'bottle'};
+-  return values.map(_string).whereType<String>().map((item) => item.toLowerCase()).where(allowed.contains).toSet().toList(growable: false);
++  const aliases = <String, String>{
++    'breast': 'breast',
++    'طبيعي': 'breast',
++    'رضاعة طبيعية': 'breast',
++    'formula': 'formula',
++    'صناعي': 'formula',
++    'رضاعة صناعية': 'formula',
++    'mixed': 'mixed',
++    'مختلط': 'mixed',
++    'رضاعة مختلطة': 'mixed',
++    'bottle': 'bottle',
++    'زجاجة': 'bottle',
++  };
++  return values
++      .map(_string)
++      .whereType<String>()
++      .map((item) => aliases[item.toLowerCase()])
++      .whereType<String>()
++      .toSet()
++      .toList(growable: false);
+ }
+ 
+ String? _normalizeSide(Object? value) {
+ diff --git a/lib/screens/assistant_screen.dart b/lib/screens/assistant_screen.dart
+index da106a3..579e781 100644
+--- a/lib/screens/assistant_screen.dart
++++ b/lib/screens/assistant_screen.dart
+@@ -17,9 +17,16 @@ class AssistantScreen extends StatefulWidget {
+ }
+ 
+ class _AssistantScreenState extends State<AssistantScreen> {
+-  final _assistant = AiAssistantService();
+-  final _careRepo = CareEventRepository();
+-  final _questionRepo = DoctorQuestionRepository();
++  AiAssistantService? _assistantValue;
++  CareEventRepository? _careRepoValue;
++  DoctorQuestionRepository? _questionRepoValue;
++
++  AiAssistantService get _assistant =>
++      _assistantValue ??= AiAssistantService();
++  CareEventRepository get _careRepo =>
++      _careRepoValue ??= CareEventRepository();
++  DoctorQuestionRepository get _questionRepo =>
++      _questionRepoValue ??= DoctorQuestionRepository();
+   final _input = TextEditingController();
+   final List<_Message> _messages = [];
+   bool _loading = false;
+diff --git a/lib/screens/auth/sign_up_screen.dart b/lib/screens/auth/sign_up_screen.dart
+index aa55ebc..02e718f 100644
+--- a/lib/screens/auth/sign_up_screen.dart
++++ b/lib/screens/auth/sign_up_screen.dart
+@@ -189,7 +189,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
+                 ),
+               ),
+               const SizedBox(height: 10),
+-              CheckboxListTile(
++              Material(
++                color: Colors.transparent,
++                child: CheckboxListTile(
+                 contentPadding: EdgeInsets.zero,
+                 controlAffinity: ListTileControlAffinity.leading,
+                 value: _accepted,
+@@ -204,6 +206,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
+                   ),
+                 ),
+               ),
++              ),
+               if (_error != null) ...[
+                 ErrorMessageCard(message: _error!),
+                 const SizedBox(height: 12),
+diff --git a/lib/screens/quick_log_screen.dart b/lib/screens/quick_log_screen.dart
+index 22a9550..a270990 100644
+--- a/lib/screens/quick_log_screen.dart
++++ b/lib/screens/quick_log_screen.dart
+@@ -56,7 +56,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
+   @override
+   void initState() {
+     super.initState();
+-    _reload();
++    if (_mode == 'log') _reload();
+     ChildSession.instance.addListener(_onChildChanged);
+     AppEvents.instance.addListener(_onExternalChanged);
+     LogTimerState.instance.addListener(_onTimerChanged);
+diff --git a/lib/widgets/app_bottom_navigation.dart b/lib/widgets/app_bottom_navigation.dart
+index 983fec9..70fe62e 100644
+--- a/lib/widgets/app_bottom_navigation.dart
++++ b/lib/widgets/app_bottom_navigation.dart
+@@ -37,7 +37,7 @@ class AppBottomNavigation extends StatelessWidget {
+       child: SafeArea(
+         top: false,
+         child: Container(
+-          height: 78,
++          height: 96,
+           padding: const EdgeInsetsDirectional.fromSTEB(6, 8, 6, 10),
+           decoration: BoxDecoration(
+             color: surface,
+diff --git a/lib/widgets/quick_log_sheet.dart b/lib/widgets/quick_log_sheet.dart
+index 211a356..93e95f4 100644
+--- a/lib/widgets/quick_log_sheet.dart
++++ b/lib/widgets/quick_log_sheet.dart
+@@ -21,7 +21,7 @@ class QuickLogSheet extends StatelessWidget {
+ 
+     return Directionality(
+       textDirection: TextDirection.rtl,
+-      child: Padding(
++      child: SingleChildScrollView(
+         padding: const EdgeInsetsDirectional.fromSTEB(18, 6, 18, 22),
+         child: Column(
+           mainAxisSize: MainAxisSize.min,
+diff --git a/test/numuw_ui_smoke_test.dart b/test/numuw_ui_smoke_test.dart
+index 0c28cab..bd3655c 100644
+--- a/test/numuw_ui_smoke_test.dart
++++ b/test/numuw_ui_smoke_test.dart
+@@ -60,7 +60,10 @@ void main() {
+     expect(find.byType(WelcomeScreen), findsOneWidget);
+     expect(find.byType(PrimaryButton), findsOneWidget);
+     expect(find.text('التالي'), findsOneWidget);
+-    expect(find.text('تسجيل الدخول'), findsOneWidget);
++    expect(
++      find.textContaining('تسجيل الدخول', findRichText: true),
++      findsOneWidget,
++    );
+     expect(tester.takeException(), isNull);
+   });
+ 

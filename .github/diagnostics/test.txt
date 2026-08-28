@@ -1,0 +1,2600 @@
+Resolving dependencies...
+Downloading packages...
+  app_links 7.2.0 (7.2.1 available)
+  app_links_platform_interface 2.0.3 (2.0.4 available)
+  archive 4.0.9 (4.2.0 available)
+  code_assets 1.2.1 (2.0.0 available)
+  cross_file 0.3.5+4 (0.3.5+5 available)
+  dbus 0.7.13 (0.7.15 available)
+  equatable 2.0.8 (2.1.0 available)
+  flutter_local_notifications 22.0.1 (22.3.0 available)
+  flutter_local_notifications_platform_interface 12.0.0 (12.2.0 available)
+  functions_client 2.6.1 (2.7.1 available)
+  gotrue 2.22.0 (2.27.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  image 4.9.1 (4.9.2 available)
+  intl 0.20.2 (0.20.3 available)
+  jni 1.0.0 (1.0.3 available)
+  jni_flutter 1.0.1 (1.0.2 available)
+  matcher 0.12.19 (0.12.20 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  meta 1.18.0 (1.19.0 available)
+  objective_c 9.4.1 (9.6.0 available)
+  package_config 2.2.0 (3.0.0 available)
+  package_info_plus 10.2.0 (10.2.1 available)
+  passkeys 2.20.0 (2.22.3 available)
+  passkeys_android 2.12.0 (2.13.1 available)
+  passkeys_darwin 0.4.0 (0.4.3+3 available)
+  passkeys_doctor 1.4.1 (1.6.0 available)
+  passkeys_platform_interface 2.6.0 (2.9.0 available)
+  passkeys_web 2.9.0 (2.10.0 available)
+  passkeys_windows 0.1.1 (0.1.3+2 available)
+  posix 6.5.0 (6.5.2 available)
+  postgrest 2.7.2 (2.9.1 available)
+  qr 3.0.2 (4.0.0 available)
+  realtime_client 2.8.0 (2.13.0 available)
+  record_use 0.6.0 (1.1.1 available)
+  share_plus 13.2.0 (13.3.0 available)
+  share_plus_platform_interface 7.1.0 (7.2.0 available)
+  shared_preferences_android 2.4.26 (2.4.28 available)
+  shared_preferences_foundation 2.5.6 (2.5.7 available)
+  storage_client 2.5.7 (2.8.0 available)
+  supabase 2.13.0 (2.16.1 available)
+  supabase_flutter 2.15.0 (2.17.2 available)
+  test_api 0.7.11 (0.7.13 available)
+  url_launcher_android 6.3.32 (6.3.33 available)
+  url_launcher_ios 6.4.1 (6.4.2 available)
+  url_launcher_linux 3.2.2 (3.2.3 available)
+  url_launcher_macos 3.2.5 (3.2.6 available)
+  url_launcher_windows 3.1.5 (3.1.6 available)
+  uuid 4.5.3 (4.6.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+  vm_service 15.2.0 (15.3.0 available)
+  win32 6.3.0 (6.4.0 available)
+Got dependencies!
+51 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading /home/runner/work/Numuw/Numuw/test/health_content_test.dart
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/development_and_feeding_library.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/health_sources.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_records.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_schedule_catalog.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/who_growth_standards.dart'.
+test/health_content_test.dart:3:8: Error: Not found: 'package:flutter_application_1/content/development_and_feeding_library.dart'
+import 'package:flutter_application_1/content/development_and_feeding_library.dart';
+       ^
+test/health_content_test.dart:4:8: Error: Not found: 'package:flutter_application_1/content/health_sources.dart'
+import 'package:flutter_application_1/content/health_sources.dart';
+       ^
+test/health_content_test.dart:5:8: Error: Not found: 'package:flutter_application_1/content/vaccination_records.dart'
+import 'package:flutter_application_1/content/vaccination_records.dart';
+       ^
+test/health_content_test.dart:6:8: Error: Not found: 'package:flutter_application_1/content/vaccination_schedule_catalog.dart'
+import 'package:flutter_application_1/content/vaccination_schedule_catalog.dart';
+       ^
+test/health_content_test.dart:7:8: Error: Not found: 'package:flutter_application_1/content/who_growth_standards.dart'
+import 'package:flutter_application_1/content/who_growth_standards.dart';
+       ^
+test/health_content_test.dart:12:14: Error: Undefined name 'OfficialHealthSources'.
+      expect(OfficialHealthSources.all, hasLength(greaterThanOrEqualTo(6)));
+             ^^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:13:57: Error: Undefined name 'NumuwCountry'.
+      expect(OfficialHealthSources.vaccinationSourceFor(NumuwCountry.egypt).id, isNotEmpty);
+                                                        ^^^^^^^^^^^^
+test/health_content_test.dart:13:14: Error: Undefined name 'OfficialHealthSources'.
+      expect(OfficialHealthSources.vaccinationSourceFor(NumuwCountry.egypt).id, isNotEmpty);
+             ^^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:15:52: Error: Undefined name 'NumuwCountry'.
+        OfficialHealthSources.vaccinationSourceFor(NumuwCountry.saudiArabia).url,
+                                                   ^^^^^^^^^^^^
+test/health_content_test.dart:15:9: Error: Undefined name 'OfficialHealthSources'.
+        OfficialHealthSources.vaccinationSourceFor(NumuwCountry.saudiArabia).url,
+        ^^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:19:52: Error: Undefined name 'NumuwCountry'.
+        OfficialHealthSources.vaccinationSourceFor(NumuwCountry.unitedArabEmirates).url,
+                                                   ^^^^^^^^^^^^
+test/health_content_test.dart:19:9: Error: Undefined name 'OfficialHealthSources'.
+        OfficialHealthSources.vaccinationSourceFor(NumuwCountry.unitedArabEmirates).url,
+        ^^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:22:14: Error: Undefined name 'OfficialHealthSources'.
+      expect(OfficialHealthSources.whoGrowth.url, contains('who.int'));
+             ^^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:23:14: Error: Undefined name 'HealthDisclaimer'.
+      expect(HealthDisclaimer.medicalArabic, isNotEmpty);
+             ^^^^^^^^^^^^^^^^
+test/health_content_test.dart:29:29: Error: Undefined name 'NumuwCountry'.
+      for (final country in NumuwCountry.values) {
+                            ^^^^^^^^^^^^
+test/health_content_test.dart:30:26: Error: Undefined name 'VaccinationScheduleCatalog'.
+        final schedule = VaccinationScheduleCatalog.forCountry(country);
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:33:39: Error: Undefined name 'HealthContentStatus'.
+        expect(schedule.status, isNot(HealthContentStatus.verified));
+                                      ^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:34:24: Error: Undefined name 'NumuwCountry'.
+        if (country == NumuwCountry.egypt) {
+                       ^^^^^^^^^^^^
+test/health_content_test.dart:35:35: Error: Undefined name 'HealthContentStatus'.
+          expect(schedule.status, HealthContentStatus.needsClinicalReview);
+                                  ^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:38:59: Error: Undefined name 'HealthContentStatus'.
+            schedule.doses.every((dose) => dose.status == HealthContentStatus.needsClinicalReview),
+                                                          ^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:42:35: Error: Undefined name 'HealthContentStatus'.
+          expect(schedule.status, HealthContentStatus.needsSourceExtraction);
+                                  ^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:49:20: Error: Method not found: 'VaccineDoseDefinition'.
+      const dose = VaccineDoseDefinition(
+                   ^^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:58:18: Error: Undefined name 'NumuwCountry'.
+        country: NumuwCountry.egypt,
+                 ^^^^^^^^^^^^
+test/health_content_test.dart:59:17: Error: Undefined name 'OfficialHealthSources'.
+        source: OfficialHealthSources.egyptVaccination,
+                ^^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:57:24: Error: Method not found: 'VaccinationScheduleDefinition'.
+      final schedule = VaccinationScheduleDefinition(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:74:25: Error: Method not found: 'VaccineDoseDefinition'.
+      const firstDose = VaccineDoseDefinition(
+                        ^^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:81:26: Error: Method not found: 'VaccineDoseDefinition'.
+      const secondDose = VaccineDoseDefinition(
+                         ^^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:90:18: Error: Undefined name 'NumuwCountry'.
+        country: NumuwCountry.egypt,
+                 ^^^^^^^^^^^^
+test/health_content_test.dart:91:17: Error: Undefined name 'OfficialHealthSources'.
+        source: OfficialHealthSources.egyptVaccination,
+                ^^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:89:24: Error: Method not found: 'VaccinationScheduleDefinition'.
+      final schedule = VaccinationScheduleDefinition(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:100:11: Error: Method not found: 'VaccinationRecord'.
+          VaccinationRecord(doseId: 'dose-1', givenDate: DateTime(2026, 1, 1)),
+          ^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:95:20: Error: Method not found: 'VaccinationPlan'.
+      final plan = VaccinationPlan(
+                   ^^^^^^^^^^^^^^^
+test/health_content_test.dart:113:14: Error: Undefined name 'WhoGrowthStandards'.
+      expect(WhoGrowthStandards.metadata.source.id, 'who-child-growth-standards');
+             ^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:114:14: Error: Undefined name 'WhoGrowthStandards'.
+      expect(WhoGrowthStandards.metadata.indicators, contains(GrowthIndicator.weightForAge));
+             ^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:114:63: Error: Undefined name 'GrowthIndicator'.
+      expect(WhoGrowthStandards.metadata.indicators, contains(GrowthIndicator.weightForAge));
+                                                              ^^^^^^^^^^^^^^^
+test/health_content_test.dart:115:14: Error: Undefined name 'WhoGrowthStandards'.
+      expect(WhoGrowthStandards.metadata.indicators, contains(GrowthIndicator.lengthHeightForAge));
+             ^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:115:63: Error: Undefined name 'GrowthIndicator'.
+      expect(WhoGrowthStandards.metadata.indicators, contains(GrowthIndicator.lengthHeightForAge));
+                                                              ^^^^^^^^^^^^^^^
+test/health_content_test.dart:116:14: Error: Undefined name 'WhoGrowthStandards'.
+      expect(WhoGrowthStandards.metadata.indicators, contains(GrowthIndicator.headCircumferenceForAge));
+             ^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:116:63: Error: Undefined name 'GrowthIndicator'.
+      expect(WhoGrowthStandards.metadata.indicators, contains(GrowthIndicator.headCircumferenceForAge));
+                                                              ^^^^^^^^^^^^^^^
+test/health_content_test.dart:117:14: Error: Undefined name 'WhoGrowthStandards'.
+      expect(WhoGrowthStandards.metadata.canDisplayCharts, isFalse);
+             ^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:118:14: Error: Undefined name 'WhoGrowthStandards'.
+      expect(WhoGrowthStandards.lmsRows, isNotEmpty);
+             ^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:121:22: Error: Undefined name 'GrowthIndicator'.
+          indicator: GrowthIndicator.weightForAge,
+                     ^^^^^^^^^^^^^^^
+test/health_content_test.dart:122:16: Error: Undefined name 'ChildSex'.
+          sex: ChildSex.female,
+               ^^^^^^^^
+test/health_content_test.dart:120:9: Error: Undefined name 'WhoGrowthStandards'.
+        WhoGrowthStandards.rowFor(
+        ^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:132:14: Error: Undefined name 'DevelopmentLibrary'.
+      expect(DevelopmentLibrary.forAgeInMonths(1)?.id, '0-2m');
+             ^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:133:14: Error: Undefined name 'DevelopmentLibrary'.
+      expect(DevelopmentLibrary.forAgeInMonths(7)?.id, '6-8m');
+             ^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:134:14: Error: Undefined name 'DevelopmentLibrary'.
+      expect(DevelopmentLibrary.forAgeInMonths(18)?.id, '13-24m');
+             ^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:135:14: Error: Undefined name 'DevelopmentLibrary'.
+      expect(DevelopmentLibrary.forAgeInMonths(30), isNull);
+             ^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:139:14: Error: Method not found: 'ageInCompletedMonths'.
+      expect(ageInCompletedMonths(DateTime(2026, 1, 15), DateTime(2026, 2, 14)), 0);
+             ^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:140:14: Error: Method not found: 'ageInCompletedMonths'.
+      expect(ageInCompletedMonths(DateTime(2026, 1, 15), DateTime(2026, 2, 15)), 1);
+             ^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:141:14: Error: Method not found: 'ageInCompletedMonths'.
+      expect(ageInCompletedMonths(DateTime(2026, 1, 15), DateTime(2027, 1, 14)), 11);
+             ^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:145:14: Error: Undefined name 'ComplementaryFeedingLibrary'.
+      expect(ComplementaryFeedingLibrary.source.id, 'who-iycf');
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test/health_content_test.dart:146:14: Error: Undefined name 'ComplementaryFeedingLibrary'.
+      expect(ComplementaryFeedingLibrary.sixMonthsArabic, isNotEmpty);
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+00:00 +0 -1: loading /home/runner/work/Numuw/Numuw/test/health_content_test.dart [E]
+  Failed to load "/home/runner/work/Numuw/Numuw/test/health_content_test.dart":
+  Compilation failed for testPath=/home/runner/work/Numuw/Numuw/test/health_content_test.dart: Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/development_and_feeding_library.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/health_sources.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_records.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_schedule_catalog.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/who_growth_standards.dart'.
+  test/health_content_test.dart:3:8: Error: Not found: 'package:flutter_application_1/content/development_and_feeding_library.dart'
+  import 'package:flutter_application_1/content/development_and_feeding_library.dart';
+         ^
+  test/health_content_test.dart:4:8: Error: Not found: 'package:flutter_application_1/content/health_sources.dart'
+  import 'package:flutter_application_1/content/health_sources.dart';
+         ^
+  test/health_content_test.dart:5:8: Error: Not found: 'package:flutter_application_1/content/vaccination_records.dart'
+  import 'package:flutter_application_1/content/vaccination_records.dart';
+         ^
+  test/health_content_test.dart:6:8: Error: Not found: 'package:flutter_application_1/content/vaccination_schedule_catalog.dart'
+  import 'package:flutter_application_1/content/vaccination_schedule_catalog.dart';
+         ^
+  test/health_content_test.dart:7:8: Error: Not found: 'package:flutter_application_1/content/who_growth_standards.dart'
+  import 'package:flutter_application_1/content/who_growth_standards.dart';
+         ^
+  test/health_content_test.dart:12:14: Error: Undefined name 'OfficialHealthSources'.
+        expect(OfficialHealthSources.all, hasLength(greaterThanOrEqualTo(6)));
+               ^^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:13:57: Error: Undefined name 'NumuwCountry'.
+        expect(OfficialHealthSources.vaccinationSourceFor(NumuwCountry.egypt).id, isNotEmpty);
+                                                          ^^^^^^^^^^^^
+  test/health_content_test.dart:13:14: Error: Undefined name 'OfficialHealthSources'.
+        expect(OfficialHealthSources.vaccinationSourceFor(NumuwCountry.egypt).id, isNotEmpty);
+               ^^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:15:52: Error: Undefined name 'NumuwCountry'.
+          OfficialHealthSources.vaccinationSourceFor(NumuwCountry.saudiArabia).url,
+                                                     ^^^^^^^^^^^^
+  test/health_content_test.dart:15:9: Error: Undefined name 'OfficialHealthSources'.
+          OfficialHealthSources.vaccinationSourceFor(NumuwCountry.saudiArabia).url,
+          ^^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:19:52: Error: Undefined name 'NumuwCountry'.
+          OfficialHealthSources.vaccinationSourceFor(NumuwCountry.unitedArabEmirates).url,
+                                                     ^^^^^^^^^^^^
+  test/health_content_test.dart:19:9: Error: Undefined name 'OfficialHealthSources'.
+          OfficialHealthSources.vaccinationSourceFor(NumuwCountry.unitedArabEmirates).url,
+          ^^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:22:14: Error: Undefined name 'OfficialHealthSources'.
+        expect(OfficialHealthSources.whoGrowth.url, contains('who.int'));
+               ^^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:23:14: Error: Undefined name 'HealthDisclaimer'.
+        expect(HealthDisclaimer.medicalArabic, isNotEmpty);
+               ^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:29:29: Error: Undefined name 'NumuwCountry'.
+        for (final country in NumuwCountry.values) {
+                              ^^^^^^^^^^^^
+  test/health_content_test.dart:30:26: Error: Undefined name 'VaccinationScheduleCatalog'.
+          final schedule = VaccinationScheduleCatalog.forCountry(country);
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:33:39: Error: Undefined name 'HealthContentStatus'.
+          expect(schedule.status, isNot(HealthContentStatus.verified));
+                                        ^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:34:24: Error: Undefined name 'NumuwCountry'.
+          if (country == NumuwCountry.egypt) {
+                         ^^^^^^^^^^^^
+  test/health_content_test.dart:35:35: Error: Undefined name 'HealthContentStatus'.
+            expect(schedule.status, HealthContentStatus.needsClinicalReview);
+                                    ^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:38:59: Error: Undefined name 'HealthContentStatus'.
+              schedule.doses.every((dose) => dose.status == HealthContentStatus.needsClinicalReview),
+                                                            ^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:42:35: Error: Undefined name 'HealthContentStatus'.
+            expect(schedule.status, HealthContentStatus.needsSourceExtraction);
+                                    ^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:49:20: Error: Method not found: 'VaccineDoseDefinition'.
+        const dose = VaccineDoseDefinition(
+                     ^^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:58:18: Error: Undefined name 'NumuwCountry'.
+          country: NumuwCountry.egypt,
+                   ^^^^^^^^^^^^
+  test/health_content_test.dart:59:17: Error: Undefined name 'OfficialHealthSources'.
+          source: OfficialHealthSources.egyptVaccination,
+                  ^^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:57:24: Error: Method not found: 'VaccinationScheduleDefinition'.
+        final schedule = VaccinationScheduleDefinition(
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:74:25: Error: Method not found: 'VaccineDoseDefinition'.
+        const firstDose = VaccineDoseDefinition(
+                          ^^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:81:26: Error: Method not found: 'VaccineDoseDefinition'.
+        const secondDose = VaccineDoseDefinition(
+                           ^^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:90:18: Error: Undefined name 'NumuwCountry'.
+          country: NumuwCountry.egypt,
+                   ^^^^^^^^^^^^
+  test/health_content_test.dart:91:17: Error: Undefined name 'OfficialHealthSources'.
+          source: OfficialHealthSources.egyptVaccination,
+                  ^^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:89:24: Error: Method not found: 'VaccinationScheduleDefinition'.
+        final schedule = VaccinationScheduleDefinition(
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:100:11: Error: Method not found: 'VaccinationRecord'.
+            VaccinationRecord(doseId: 'dose-1', givenDate: DateTime(2026, 1, 1)),
+            ^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:95:20: Error: Method not found: 'VaccinationPlan'.
+        final plan = VaccinationPlan(
+                     ^^^^^^^^^^^^^^^
+  test/health_content_test.dart:113:14: Error: Undefined name 'WhoGrowthStandards'.
+        expect(WhoGrowthStandards.metadata.source.id, 'who-child-growth-standards');
+               ^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:114:14: Error: Undefined name 'WhoGrowthStandards'.
+        expect(WhoGrowthStandards.metadata.indicators, contains(GrowthIndicator.weightForAge));
+               ^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:114:63: Error: Undefined name 'GrowthIndicator'.
+        expect(WhoGrowthStandards.metadata.indicators, contains(GrowthIndicator.weightForAge));
+                                                                ^^^^^^^^^^^^^^^
+  test/health_content_test.dart:115:14: Error: Undefined name 'WhoGrowthStandards'.
+        expect(WhoGrowthStandards.metadata.indicators, contains(GrowthIndicator.lengthHeightForAge));
+               ^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:115:63: Error: Undefined name 'GrowthIndicator'.
+        expect(WhoGrowthStandards.metadata.indicators, contains(GrowthIndicator.lengthHeightForAge));
+                                                                ^^^^^^^^^^^^^^^
+  test/health_content_test.dart:116:14: Error: Undefined name 'WhoGrowthStandards'.
+        expect(WhoGrowthStandards.metadata.indicators, contains(GrowthIndicator.headCircumferenceForAge));
+               ^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:116:63: Error: Undefined name 'GrowthIndicator'.
+        expect(WhoGrowthStandards.metadata.indicators, contains(GrowthIndicator.headCircumferenceForAge));
+                                                                ^^^^^^^^^^^^^^^
+  test/health_content_test.dart:117:14: Error: Undefined name 'WhoGrowthStandards'.
+        expect(WhoGrowthStandards.metadata.canDisplayCharts, isFalse);
+               ^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:118:14: Error: Undefined name 'WhoGrowthStandards'.
+        expect(WhoGrowthStandards.lmsRows, isNotEmpty);
+               ^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:121:22: Error: Undefined name 'GrowthIndicator'.
+            indicator: GrowthIndicator.weightForAge,
+                       ^^^^^^^^^^^^^^^
+  test/health_content_test.dart:122:16: Error: Undefined name 'ChildSex'.
+            sex: ChildSex.female,
+                 ^^^^^^^^
+  test/health_content_test.dart:120:9: Error: Undefined name 'WhoGrowthStandards'.
+          WhoGrowthStandards.rowFor(
+          ^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:132:14: Error: Undefined name 'DevelopmentLibrary'.
+        expect(DevelopmentLibrary.forAgeInMonths(1)?.id, '0-2m');
+               ^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:133:14: Error: Undefined name 'DevelopmentLibrary'.
+        expect(DevelopmentLibrary.forAgeInMonths(7)?.id, '6-8m');
+               ^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:134:14: Error: Undefined name 'DevelopmentLibrary'.
+        expect(DevelopmentLibrary.forAgeInMonths(18)?.id, '13-24m');
+               ^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:135:14: Error: Undefined name 'DevelopmentLibrary'.
+        expect(DevelopmentLibrary.forAgeInMonths(30), isNull);
+               ^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:139:14: Error: Method not found: 'ageInCompletedMonths'.
+        expect(ageInCompletedMonths(DateTime(2026, 1, 15), DateTime(2026, 2, 14)), 0);
+               ^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:140:14: Error: Method not found: 'ageInCompletedMonths'.
+        expect(ageInCompletedMonths(DateTime(2026, 1, 15), DateTime(2026, 2, 15)), 1);
+               ^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:141:14: Error: Method not found: 'ageInCompletedMonths'.
+        expect(ageInCompletedMonths(DateTime(2026, 1, 15), DateTime(2027, 1, 14)), 11);
+               ^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:145:14: Error: Undefined name 'ComplementaryFeedingLibrary'.
+        expect(ComplementaryFeedingLibrary.source.id, 'who-iycf');
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  test/health_content_test.dart:146:14: Error: Undefined name 'ComplementaryFeedingLibrary'.
+        expect(ComplementaryFeedingLibrary.sixMonthsArabic, isNotEmpty);
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  .
+00:00 +0 -1: loading /home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart
+00:00 +0 -1: loading /home/runner/work/Numuw/Numuw/test/health_content_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1009:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 733:19                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 726:19                      _CustomZone.run
+  dart:async/zone.dart 625:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 666:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/child_profile.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/assistant_screen.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/state/child_session.dart'.
+test/assistant_screen_test.dart:4:8: Error: Not found: 'package:flutter_application_1/models/child_profile.dart'
+import 'package:flutter_application_1/models/child_profile.dart';
+       ^
+test/assistant_screen_test.dart:5:8: Error: Not found: 'package:flutter_application_1/screens/assistant_screen.dart'
+import 'package:flutter_application_1/screens/assistant_screen.dart';
+       ^
+test/assistant_screen_test.dart:6:8: Error: Not found: 'package:flutter_application_1/state/child_session.dart'
+import 'package:flutter_application_1/state/child_session.dart';
+       ^
+test/assistant_screen_test.dart:10:5: Error: Undefined name 'ChildSession'.
+    ChildSession.instance.setChildren([
+    ^^^^^^^^^^^^
+test/assistant_screen_test.dart:11:13: Error: Couldn't find constructor 'ChildProfile'.
+      const ChildProfile(
+            ^^^^^^^^^^^^
+test/assistant_screen_test.dart:22:12: Error: Undefined name 'ChildSession'.
+  tearDown(ChildSession.instance.clear);
+           ^^^^^^^^^^^^
+test/assistant_screen_test.dart:25:53: Error: Method not found: 'AssistantScreen'.
+    await tester.pumpWidget(const MaterialApp(home: AssistantScreen()));
+                                                    ^^^^^^^^^^^^^^^
+test/assistant_screen_test.dart:35:53: Error: Method not found: 'AssistantScreen'.
+    await tester.pumpWidget(const MaterialApp(home: AssistantScreen()));
+                                                    ^^^^^^^^^^^^^^^
+test/assistant_screen_test.dart:46:56: Error: Couldn't find constructor 'AssistantScreen'.
+      MaterialApp(theme: ThemeData.dark(), home: const AssistantScreen()),
+                                                       ^^^^^^^^^^^^^^^
+00:00 +0 -2: loading /home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart [E]
+  Failed to load "/home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart":
+  Compilation failed for testPath=/home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart: Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/child_profile.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/assistant_screen.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/state/child_session.dart'.
+  test/assistant_screen_test.dart:4:8: Error: Not found: 'package:flutter_application_1/models/child_profile.dart'
+  import 'package:flutter_application_1/models/child_profile.dart';
+         ^
+  test/assistant_screen_test.dart:5:8: Error: Not found: 'package:flutter_application_1/screens/assistant_screen.dart'
+  import 'package:flutter_application_1/screens/assistant_screen.dart';
+         ^
+  test/assistant_screen_test.dart:6:8: Error: Not found: 'package:flutter_application_1/state/child_session.dart'
+  import 'package:flutter_application_1/state/child_session.dart';
+         ^
+  test/assistant_screen_test.dart:10:5: Error: Undefined name 'ChildSession'.
+      ChildSession.instance.setChildren([
+      ^^^^^^^^^^^^
+  test/assistant_screen_test.dart:11:13: Error: Couldn't find constructor 'ChildProfile'.
+        const ChildProfile(
+              ^^^^^^^^^^^^
+  test/assistant_screen_test.dart:22:12: Error: Undefined name 'ChildSession'.
+    tearDown(ChildSession.instance.clear);
+             ^^^^^^^^^^^^
+  test/assistant_screen_test.dart:25:53: Error: Method not found: 'AssistantScreen'.
+      await tester.pumpWidget(const MaterialApp(home: AssistantScreen()));
+                                                      ^^^^^^^^^^^^^^^
+  test/assistant_screen_test.dart:35:53: Error: Method not found: 'AssistantScreen'.
+      await tester.pumpWidget(const MaterialApp(home: AssistantScreen()));
+                                                      ^^^^^^^^^^^^^^^
+  test/assistant_screen_test.dart:46:56: Error: Couldn't find constructor 'AssistantScreen'.
+        MaterialApp(theme: ThemeData.dark(), home: const AssistantScreen()),
+                                                         ^^^^^^^^^^^^^^^
+  .
+00:00 +0 -2: loading /home/runner/work/Numuw/Numuw/test/ai_assistant_service_test.dart
+00:00 +0 -2: loading /home/runner/work/Numuw/Numuw/test/health_content_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1009:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 733:19                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 726:19                      _CustomZone.run
+  dart:async/zone.dart 625:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 666:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/core/errors/app_error.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/care_event.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/child_profile.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/services/ai_assistant_service.dart'.
+test/ai_assistant_service_test.dart:7:8: Error: Not found: 'package:flutter_application_1/core/errors/app_error.dart'
+import 'package:flutter_application_1/core/errors/app_error.dart';
+       ^
+test/ai_assistant_service_test.dart:8:8: Error: Not found: 'package:flutter_application_1/models/care_event.dart'
+import 'package:flutter_application_1/models/care_event.dart';
+       ^
+test/ai_assistant_service_test.dart:9:8: Error: Not found: 'package:flutter_application_1/models/child_profile.dart'
+import 'package:flutter_application_1/models/child_profile.dart';
+       ^
+test/ai_assistant_service_test.dart:10:8: Error: Not found: 'package:flutter_application_1/services/ai_assistant_service.dart'
+import 'package:flutter_application_1/services/ai_assistant_service.dart';
+       ^
+test/ai_assistant_service_test.dart:12:33: Error: Type 'AiAssistantTransport' not found.
+class _FakeTransport implements AiAssistantTransport {
+                                ^^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:36:1: Error: Type 'ChildProfile' not found.
+ChildProfile _child() => const ChildProfile(
+^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:45:1: Error: Type 'CareEvent' not found.
+CareEvent _event({
+^^^^^^^^^
+test/ai_assistant_service_test.dart:29:19: Error: Not a constant expression.
+      throw const InvalidSessionException();
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:36:32: Error: Couldn't find constructor 'ChildProfile'.
+ChildProfile _child() => const ChildProfile(
+                               ^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:57:10: Error: Method not found: 'CareEvent'.
+  return CareEvent(
+         ^^^^^^^^^
+test/ai_assistant_service_test.dart:76:21: Error: Method not found: 'AiAssistantService'.
+    final service = AiAssistantService(
+                    ^^^^^^^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:87:19: Error: 'InvalidSessionException' isn't a type.
+      throwsA(isA<InvalidSessionException>()),
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:92:21: Error: Method not found: 'AiAssistantService'.
+    final service = AiAssistantService(
+                    ^^^^^^^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:103:19: Error: 'RequestTimeoutException' isn't a type.
+      throwsA(isA<RequestTimeoutException>()),
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:108:20: Error: Undefined name 'AiAssistantService'.
+    final mapped = AiAssistantService.mapAiAssistantError(
+                   ^^^^^^^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:111:24: Error: 'InvalidSessionException' isn't a type.
+    expect(mapped, isA<InvalidSessionException>());
+                       ^^^^^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:115:20: Error: Undefined name 'AiAssistantService'.
+    final mapped = AiAssistantService.mapAiAssistantError(
+                   ^^^^^^^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:118:24: Error: 'UnauthorizedChildException' isn't a type.
+    expect(mapped, isA<UnauthorizedChildException>());
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:122:20: Error: Undefined name 'AiAssistantService'.
+    final mapped = AiAssistantService.mapAiAssistantError(
+                   ^^^^^^^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:125:24: Error: 'RateLimitException' isn't a type.
+    expect(mapped, isA<RateLimitException>());
+                       ^^^^^^^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:129:21: Error: Method not found: 'AiAssistantService'.
+    final service = AiAssistantService(
+                    ^^^^^^^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:153:21: Error: Method not found: 'AiAssistantService'.
+    final service = AiAssistantService(
+                    ^^^^^^^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:176:20: Error: Undefined name 'AiAssistantService'.
+    final mapped = AiAssistantService.mapAiAssistantError(
+                   ^^^^^^^^^^^^^^^^^^
+test/ai_assistant_service_test.dart:179:24: Error: 'InvalidAiResponseException' isn't a type.
+    expect(mapped, isA<InvalidAiResponseException>());
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+00:00 +0 -3: loading /home/runner/work/Numuw/Numuw/test/ai_assistant_service_test.dart [E]
+  Failed to load "/home/runner/work/Numuw/Numuw/test/ai_assistant_service_test.dart":
+  Compilation failed for testPath=/home/runner/work/Numuw/Numuw/test/ai_assistant_service_test.dart: Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/core/errors/app_error.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/care_event.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/child_profile.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/services/ai_assistant_service.dart'.
+  test/ai_assistant_service_test.dart:7:8: Error: Not found: 'package:flutter_application_1/core/errors/app_error.dart'
+  import 'package:flutter_application_1/core/errors/app_error.dart';
+         ^
+  test/ai_assistant_service_test.dart:8:8: Error: Not found: 'package:flutter_application_1/models/care_event.dart'
+  import 'package:flutter_application_1/models/care_event.dart';
+         ^
+  test/ai_assistant_service_test.dart:9:8: Error: Not found: 'package:flutter_application_1/models/child_profile.dart'
+  import 'package:flutter_application_1/models/child_profile.dart';
+         ^
+  test/ai_assistant_service_test.dart:10:8: Error: Not found: 'package:flutter_application_1/services/ai_assistant_service.dart'
+  import 'package:flutter_application_1/services/ai_assistant_service.dart';
+         ^
+  test/ai_assistant_service_test.dart:12:33: Error: Type 'AiAssistantTransport' not found.
+  class _FakeTransport implements AiAssistantTransport {
+                                  ^^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:36:1: Error: Type 'ChildProfile' not found.
+  ChildProfile _child() => const ChildProfile(
+  ^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:45:1: Error: Type 'CareEvent' not found.
+  CareEvent _event({
+  ^^^^^^^^^
+  test/ai_assistant_service_test.dart:29:19: Error: Not a constant expression.
+        throw const InvalidSessionException();
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:36:32: Error: Couldn't find constructor 'ChildProfile'.
+  ChildProfile _child() => const ChildProfile(
+                                 ^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:57:10: Error: Method not found: 'CareEvent'.
+    return CareEvent(
+           ^^^^^^^^^
+  test/ai_assistant_service_test.dart:76:21: Error: Method not found: 'AiAssistantService'.
+      final service = AiAssistantService(
+                      ^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:87:19: Error: 'InvalidSessionException' isn't a type.
+        throwsA(isA<InvalidSessionException>()),
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:92:21: Error: Method not found: 'AiAssistantService'.
+      final service = AiAssistantService(
+                      ^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:103:19: Error: 'RequestTimeoutException' isn't a type.
+        throwsA(isA<RequestTimeoutException>()),
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:108:20: Error: Undefined name 'AiAssistantService'.
+      final mapped = AiAssistantService.mapAiAssistantError(
+                     ^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:111:24: Error: 'InvalidSessionException' isn't a type.
+      expect(mapped, isA<InvalidSessionException>());
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:115:20: Error: Undefined name 'AiAssistantService'.
+      final mapped = AiAssistantService.mapAiAssistantError(
+                     ^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:118:24: Error: 'UnauthorizedChildException' isn't a type.
+      expect(mapped, isA<UnauthorizedChildException>());
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:122:20: Error: Undefined name 'AiAssistantService'.
+      final mapped = AiAssistantService.mapAiAssistantError(
+                     ^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:125:24: Error: 'RateLimitException' isn't a type.
+      expect(mapped, isA<RateLimitException>());
+                         ^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:129:21: Error: Method not found: 'AiAssistantService'.
+      final service = AiAssistantService(
+                      ^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:153:21: Error: Method not found: 'AiAssistantService'.
+      final service = AiAssistantService(
+                      ^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:176:20: Error: Undefined name 'AiAssistantService'.
+      final mapped = AiAssistantService.mapAiAssistantError(
+                     ^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_service_test.dart:179:24: Error: 'InvalidAiResponseException' isn't a type.
+      expect(mapped, isA<InvalidAiResponseException>());
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  .
+00:00 +0 -3: loading /home/runner/work/Numuw/Numuw/test/health_sources_test.dart
+00:00 +0 -3: loading /home/runner/work/Numuw/Numuw/test/health_content_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1009:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 733:19                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 726:19                      _CustomZone.run
+  dart:async/zone.dart 625:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 666:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/health_sources.dart'.
+test/health_sources_test.dart:3:8: Error: Not found: 'package:flutter_application_1/content/health_sources.dart'
+import 'package:flutter_application_1/content/health_sources.dart';
+       ^
+test/health_sources_test.dart:8:14: Error: Undefined name 'NumuwCountry'.
+      expect(NumuwCountry.values.length, 19);
+             ^^^^^^^^^^^^
+test/health_sources_test.dart:9:14: Error: Undefined name 'NumuwCountry'.
+      expect(NumuwCountry.fromIsoCode('eg'), NumuwCountry.egypt);
+             ^^^^^^^^^^^^
+test/health_sources_test.dart:9:46: Error: Undefined name 'NumuwCountry'.
+      expect(NumuwCountry.fromIsoCode('eg'), NumuwCountry.egypt);
+                                             ^^^^^^^^^^^^
+test/health_sources_test.dart:10:14: Error: Undefined name 'NumuwCountry'.
+      expect(NumuwCountry.fromIsoCode('SA'), NumuwCountry.saudiArabia);
+             ^^^^^^^^^^^^
+test/health_sources_test.dart:10:46: Error: Undefined name 'NumuwCountry'.
+      expect(NumuwCountry.fromIsoCode('SA'), NumuwCountry.saudiArabia);
+                                             ^^^^^^^^^^^^
+test/health_sources_test.dart:11:14: Error: Undefined name 'NumuwCountry'.
+      expect(NumuwCountry.fromIsoCode('mr'), NumuwCountry.mauritania);
+             ^^^^^^^^^^^^
+test/health_sources_test.dart:11:46: Error: Undefined name 'NumuwCountry'.
+      expect(NumuwCountry.fromIsoCode('mr'), NumuwCountry.mauritania);
+                                             ^^^^^^^^^^^^
+test/health_sources_test.dart:12:14: Error: Undefined name 'NumuwCountry'.
+      expect(NumuwCountry.fromIsoCode(''), isNull);
+             ^^^^^^^^^^^^
+test/health_sources_test.dart:13:14: Error: Undefined name 'NumuwCountry'.
+      expect(NumuwCountry.fromIsoCode('XX'), isNull);
+             ^^^^^^^^^^^^
+test/health_sources_test.dart:17:29: Error: Undefined name 'NumuwCountry'.
+      for (final country in NumuwCountry.values) {
+                            ^^^^^^^^^^^^
+test/health_sources_test.dart:18:24: Error: Undefined name 'OfficialHealthSources'.
+        final source = OfficialHealthSources.vaccinationSourceFor(country);
+                       ^^^^^^^^^^^^^^^^^^^^^
+test/health_sources_test.dart:30:14: Error: Undefined name 'OfficialHealthSources'.
+      expect(OfficialHealthSources.whoGrowth.url, contains('who.int'));
+             ^^^^^^^^^^^^^^^^^^^^^
+test/health_sources_test.dart:31:14: Error: Undefined name 'OfficialHealthSources'.
+      expect(OfficialHealthSources.whoFeeding.url, contains('who.int'));
+             ^^^^^^^^^^^^^^^^^^^^^
+test/health_sources_test.dart:32:14: Error: Undefined name 'OfficialHealthSources'.
+      expect(OfficialHealthSources.cdcMilestones.url, contains('cdc.gov'));
+             ^^^^^^^^^^^^^^^^^^^^^
+00:00 +0 -4: loading /home/runner/work/Numuw/Numuw/test/health_sources_test.dart [E]
+  Failed to load "/home/runner/work/Numuw/Numuw/test/health_sources_test.dart":
+  Compilation failed for testPath=/home/runner/work/Numuw/Numuw/test/health_sources_test.dart: Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/health_sources.dart'.
+  test/health_sources_test.dart:3:8: Error: Not found: 'package:flutter_application_1/content/health_sources.dart'
+  import 'package:flutter_application_1/content/health_sources.dart';
+         ^
+  test/health_sources_test.dart:8:14: Error: Undefined name 'NumuwCountry'.
+        expect(NumuwCountry.values.length, 19);
+               ^^^^^^^^^^^^
+  test/health_sources_test.dart:9:14: Error: Undefined name 'NumuwCountry'.
+        expect(NumuwCountry.fromIsoCode('eg'), NumuwCountry.egypt);
+               ^^^^^^^^^^^^
+  test/health_sources_test.dart:9:46: Error: Undefined name 'NumuwCountry'.
+        expect(NumuwCountry.fromIsoCode('eg'), NumuwCountry.egypt);
+                                               ^^^^^^^^^^^^
+  test/health_sources_test.dart:10:14: Error: Undefined name 'NumuwCountry'.
+        expect(NumuwCountry.fromIsoCode('SA'), NumuwCountry.saudiArabia);
+               ^^^^^^^^^^^^
+  test/health_sources_test.dart:10:46: Error: Undefined name 'NumuwCountry'.
+        expect(NumuwCountry.fromIsoCode('SA'), NumuwCountry.saudiArabia);
+                                               ^^^^^^^^^^^^
+  test/health_sources_test.dart:11:14: Error: Undefined name 'NumuwCountry'.
+        expect(NumuwCountry.fromIsoCode('mr'), NumuwCountry.mauritania);
+               ^^^^^^^^^^^^
+  test/health_sources_test.dart:11:46: Error: Undefined name 'NumuwCountry'.
+        expect(NumuwCountry.fromIsoCode('mr'), NumuwCountry.mauritania);
+                                               ^^^^^^^^^^^^
+  test/health_sources_test.dart:12:14: Error: Undefined name 'NumuwCountry'.
+        expect(NumuwCountry.fromIsoCode(''), isNull);
+               ^^^^^^^^^^^^
+  test/health_sources_test.dart:13:14: Error: Undefined name 'NumuwCountry'.
+        expect(NumuwCountry.fromIsoCode('XX'), isNull);
+               ^^^^^^^^^^^^
+  test/health_sources_test.dart:17:29: Error: Undefined name 'NumuwCountry'.
+        for (final country in NumuwCountry.values) {
+                              ^^^^^^^^^^^^
+  test/health_sources_test.dart:18:24: Error: Undefined name 'OfficialHealthSources'.
+          final source = OfficialHealthSources.vaccinationSourceFor(country);
+                         ^^^^^^^^^^^^^^^^^^^^^
+  test/health_sources_test.dart:30:14: Error: Undefined name 'OfficialHealthSources'.
+        expect(OfficialHealthSources.whoGrowth.url, contains('who.int'));
+               ^^^^^^^^^^^^^^^^^^^^^
+  test/health_sources_test.dart:31:14: Error: Undefined name 'OfficialHealthSources'.
+        expect(OfficialHealthSources.whoFeeding.url, contains('who.int'));
+               ^^^^^^^^^^^^^^^^^^^^^
+  test/health_sources_test.dart:32:14: Error: Undefined name 'OfficialHealthSources'.
+        expect(OfficialHealthSources.cdcMilestones.url, contains('cdc.gov'));
+               ^^^^^^^^^^^^^^^^^^^^^
+  .
+00:00 +0 -4: loading /home/runner/work/Numuw/Numuw/test/vaccination_plan_summary_test.dart
+00:00 +0 -4: loading /home/runner/work/Numuw/Numuw/test/health_content_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1009:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 733:19                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 726:19                      _CustomZone.run
+  dart:async/zone.dart 625:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 666:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/health_sources.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_plan_summary.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_records.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_schedule_catalog.dart'.
+test/vaccination_plan_summary_test.dart:3:8: Error: Not found: 'package:flutter_application_1/content/health_sources.dart'
+import 'package:flutter_application_1/content/health_sources.dart';
+       ^
+test/vaccination_plan_summary_test.dart:4:8: Error: Not found: 'package:flutter_application_1/content/vaccination_plan_summary.dart'
+import 'package:flutter_application_1/content/vaccination_plan_summary.dart';
+       ^
+test/vaccination_plan_summary_test.dart:5:8: Error: Not found: 'package:flutter_application_1/content/vaccination_records.dart'
+import 'package:flutter_application_1/content/vaccination_records.dart';
+       ^
+test/vaccination_plan_summary_test.dart:6:8: Error: Not found: 'package:flutter_application_1/content/vaccination_schedule_catalog.dart'
+import 'package:flutter_application_1/content/vaccination_schedule_catalog.dart';
+       ^
+test/vaccination_plan_summary_test.dart:11:16: Error: Undefined name 'NumuwCountry'.
+      country: NumuwCountry.saudiArabia,
+               ^^^^^^^^^^^^
+test/vaccination_plan_summary_test.dart:12:15: Error: Undefined name 'OfficialHealthSources'.
+      source: OfficialHealthSources.saudiVaccination,
+              ^^^^^^^^^^^^^^^^^^^^^
+test/vaccination_plan_summary_test.dart:10:22: Error: Method not found: 'VaccinationScheduleDefinition'.
+    final schedule = VaccinationScheduleDefinition(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test/vaccination_plan_summary_test.dart:16:18: Error: Method not found: 'VaccinationPlan'.
+    final plan = VaccinationPlan(
+                 ^^^^^^^^^^^^^^^
+test/vaccination_plan_summary_test.dart:28:23: Error: Method not found: 'VaccineDoseDefinition'.
+    const firstDose = VaccineDoseDefinition(
+                      ^^^^^^^^^^^^^^^^^^^^^
+test/vaccination_plan_summary_test.dart:35:24: Error: Method not found: 'VaccineDoseDefinition'.
+    const secondDose = VaccineDoseDefinition(
+                       ^^^^^^^^^^^^^^^^^^^^^
+test/vaccination_plan_summary_test.dart:44:16: Error: Undefined name 'NumuwCountry'.
+      country: NumuwCountry.egypt,
+               ^^^^^^^^^^^^
+test/vaccination_plan_summary_test.dart:45:15: Error: Undefined name 'OfficialHealthSources'.
+      source: OfficialHealthSources.egyptVaccination,
+              ^^^^^^^^^^^^^^^^^^^^^
+test/vaccination_plan_summary_test.dart:43:22: Error: Method not found: 'VaccinationScheduleDefinition'.
+    final schedule = VaccinationScheduleDefinition(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test/vaccination_plan_summary_test.dart:54:9: Error: Method not found: 'VaccinationRecord'.
+        VaccinationRecord(doseId: 'dose-1', givenDate: DateTime(2026, 1, 1)),
+        ^^^^^^^^^^^^^^^^^
+test/vaccination_plan_summary_test.dart:49:25: Error: Method not found: 'VaccinationPlan'.
+    final overduePlan = VaccinationPlan(
+                        ^^^^^^^^^^^^^^^
+test/vaccination_plan_summary_test.dart:64:7: Error: Method not found: 'VaccinationRecord'.
+      VaccinationRecord(doseId: 'dose-2', givenDate: DateTime(2026, 2, 1)),
+      ^^^^^^^^^^^^^^^^^
+00:00 +0 -5: loading /home/runner/work/Numuw/Numuw/test/vaccination_plan_summary_test.dart [E]
+  Failed to load "/home/runner/work/Numuw/Numuw/test/vaccination_plan_summary_test.dart":
+  Compilation failed for testPath=/home/runner/work/Numuw/Numuw/test/vaccination_plan_summary_test.dart: Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/health_sources.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_plan_summary.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_records.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_schedule_catalog.dart'.
+  test/vaccination_plan_summary_test.dart:3:8: Error: Not found: 'package:flutter_application_1/content/health_sources.dart'
+  import 'package:flutter_application_1/content/health_sources.dart';
+         ^
+  test/vaccination_plan_summary_test.dart:4:8: Error: Not found: 'package:flutter_application_1/content/vaccination_plan_summary.dart'
+  import 'package:flutter_application_1/content/vaccination_plan_summary.dart';
+         ^
+  test/vaccination_plan_summary_test.dart:5:8: Error: Not found: 'package:flutter_application_1/content/vaccination_records.dart'
+  import 'package:flutter_application_1/content/vaccination_records.dart';
+         ^
+  test/vaccination_plan_summary_test.dart:6:8: Error: Not found: 'package:flutter_application_1/content/vaccination_schedule_catalog.dart'
+  import 'package:flutter_application_1/content/vaccination_schedule_catalog.dart';
+         ^
+  test/vaccination_plan_summary_test.dart:11:16: Error: Undefined name 'NumuwCountry'.
+        country: NumuwCountry.saudiArabia,
+                 ^^^^^^^^^^^^
+  test/vaccination_plan_summary_test.dart:12:15: Error: Undefined name 'OfficialHealthSources'.
+        source: OfficialHealthSources.saudiVaccination,
+                ^^^^^^^^^^^^^^^^^^^^^
+  test/vaccination_plan_summary_test.dart:10:22: Error: Method not found: 'VaccinationScheduleDefinition'.
+      final schedule = VaccinationScheduleDefinition(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  test/vaccination_plan_summary_test.dart:16:18: Error: Method not found: 'VaccinationPlan'.
+      final plan = VaccinationPlan(
+                   ^^^^^^^^^^^^^^^
+  test/vaccination_plan_summary_test.dart:28:23: Error: Method not found: 'VaccineDoseDefinition'.
+      const firstDose = VaccineDoseDefinition(
+                        ^^^^^^^^^^^^^^^^^^^^^
+  test/vaccination_plan_summary_test.dart:35:24: Error: Method not found: 'VaccineDoseDefinition'.
+      const secondDose = VaccineDoseDefinition(
+                         ^^^^^^^^^^^^^^^^^^^^^
+  test/vaccination_plan_summary_test.dart:44:16: Error: Undefined name 'NumuwCountry'.
+        country: NumuwCountry.egypt,
+                 ^^^^^^^^^^^^
+  test/vaccination_plan_summary_test.dart:45:15: Error: Undefined name 'OfficialHealthSources'.
+        source: OfficialHealthSources.egyptVaccination,
+                ^^^^^^^^^^^^^^^^^^^^^
+  test/vaccination_plan_summary_test.dart:43:22: Error: Method not found: 'VaccinationScheduleDefinition'.
+      final schedule = VaccinationScheduleDefinition(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  test/vaccination_plan_summary_test.dart:54:9: Error: Method not found: 'VaccinationRecord'.
+          VaccinationRecord(doseId: 'dose-1', givenDate: DateTime(2026, 1, 1)),
+          ^^^^^^^^^^^^^^^^^
+  test/vaccination_plan_summary_test.dart:49:25: Error: Method not found: 'VaccinationPlan'.
+      final overduePlan = VaccinationPlan(
+                          ^^^^^^^^^^^^^^^
+  test/vaccination_plan_summary_test.dart:64:7: Error: Method not found: 'VaccinationRecord'.
+        VaccinationRecord(doseId: 'dose-2', givenDate: DateTime(2026, 2, 1)),
+        ^^^^^^^^^^^^^^^^^
+  .
+00:00 +0 -5: loading /home/runner/work/Numuw/Numuw/test/weekly_summary_test.dart
+00:00 +0 -5: loading /home/runner/work/Numuw/Numuw/test/health_content_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1009:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 733:19                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 726:19                      _CustomZone.run
+  dart:async/zone.dart 625:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 666:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/care_event.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/growth_measurement.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/weekly_child_summary.dart'.
+test/weekly_summary_test.dart:1:8: Error: Not found: 'package:flutter_application_1/models/care_event.dart'
+import 'package:flutter_application_1/models/care_event.dart';
+       ^
+test/weekly_summary_test.dart:2:8: Error: Not found: 'package:flutter_application_1/models/growth_measurement.dart'
+import 'package:flutter_application_1/models/growth_measurement.dart';
+       ^
+test/weekly_summary_test.dart:3:8: Error: Not found: 'package:flutter_application_1/models/weekly_child_summary.dart'
+import 'package:flutter_application_1/models/weekly_child_summary.dart';
+       ^
+test/weekly_summary_test.dart:132:1: Error: Type 'CareEvent' not found.
+CareEvent _sleep(DateTime startedAt, int minutes) => CareEvent(
+^^^^^^^^^
+test/weekly_summary_test.dart:141:1: Error: Type 'CareEvent' not found.
+CareEvent _feeding(DateTime startedAt) => CareEvent(
+^^^^^^^^^
+test/weekly_summary_test.dart:149:1: Error: Type 'CareEvent' not found.
+CareEvent _pumping(DateTime startedAt, double amountMl) => CareEvent(
+^^^^^^^^^
+test/weekly_summary_test.dart:158:1: Error: Type 'CareEvent' not found.
+CareEvent _legacyPumping(DateTime startedAt, double amountMl) => CareEvent(
+^^^^^^^^^
+test/weekly_summary_test.dart:170:1: Error: Type 'GrowthMeasurement' not found.
+GrowthMeasurement _growth(DateTime measuredAt, {double? weightKg}) =>
+^^^^^^^^^^^^^^^^^
+test/weekly_summary_test.dart:8:24: Error: Method not found: 'WeeklySummaryCalculator'.
+    const calculator = WeeklySummaryCalculator();
+                       ^^^^^^^^^^^^^^^^^^^^^^^
+test/weekly_summary_test.dart:57:26: Error: Undefined name 'WeeklySummaryCalculator'.
+      final comparison = WeeklySummaryCalculator.compare(
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+test/weekly_summary_test.dart:65:32: Error: Undefined name 'WeeklyComparisonTrend'.
+      expect(comparison.trend, WeeklyComparisonTrend.insufficientData);
+                               ^^^^^^^^^^^^^^^^^^^^^
+test/weekly_summary_test.dart:70:26: Error: Undefined name 'WeeklySummaryCalculator'.
+      final comparison = WeeklySummaryCalculator.compare(
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+test/weekly_summary_test.dart:78:32: Error: Undefined name 'WeeklyComparisonTrend'.
+      expect(comparison.trend, WeeklyComparisonTrend.insufficientData);
+                               ^^^^^^^^^^^^^^^^^^^^^
+test/weekly_summary_test.dart:84:25: Error: Undefined name 'WeeklySummaryCalculator'.
+      final increased = WeeklySummaryCalculator.compare(
+                        ^^^^^^^^^^^^^^^^^^^^^^^
+test/weekly_summary_test.dart:91:25: Error: Undefined name 'WeeklySummaryCalculator'.
+      final decreased = WeeklySummaryCalculator.compare(
+                        ^^^^^^^^^^^^^^^^^^^^^^^
+test/weekly_summary_test.dart:98:22: Error: Undefined name 'WeeklySummaryCalculator'.
+      final stable = WeeklySummaryCalculator.compare(
+                     ^^^^^^^^^^^^^^^^^^^^^^^
+test/weekly_summary_test.dart:106:31: Error: Undefined name 'WeeklyComparisonTrend'.
+      expect(increased.trend, WeeklyComparisonTrend.increased);
+                              ^^^^^^^^^^^^^^^^^^^^^
+test/weekly_summary_test.dart:107:31: Error: Undefined name 'WeeklyComparisonTrend'.
+      expect(decreased.trend, WeeklyComparisonTrend.decreased);
+                              ^^^^^^^^^^^^^^^^^^^^^
+test/weekly_summary_test.dart:108:28: Error: Undefined name 'WeeklyComparisonTrend'.
+      expect(stable.trend, WeeklyComparisonTrend.stable);
+                           ^^^^^^^^^^^^^^^^^^^^^
+test/weekly_summary_test.dart:132:54: Error: Method not found: 'CareEvent'.
+CareEvent _sleep(DateTime startedAt, int minutes) => CareEvent(
+                                                     ^^^^^^^^^
+test/weekly_summary_test.dart:141:43: Error: Method not found: 'CareEvent'.
+CareEvent _feeding(DateTime startedAt) => CareEvent(
+                                          ^^^^^^^^^
+test/weekly_summary_test.dart:149:60: Error: Method not found: 'CareEvent'.
+CareEvent _pumping(DateTime startedAt, double amountMl) => CareEvent(
+                                                           ^^^^^^^^^
+test/weekly_summary_test.dart:158:66: Error: Method not found: 'CareEvent'.
+CareEvent _legacyPumping(DateTime startedAt, double amountMl) => CareEvent(
+                                                                 ^^^^^^^^^
+test/weekly_summary_test.dart:171:5: Error: Method not found: 'GrowthMeasurement'.
+    GrowthMeasurement(
+    ^^^^^^^^^^^^^^^^^
+00:00 +0 -6: loading /home/runner/work/Numuw/Numuw/test/weekly_summary_test.dart [E]
+  Failed to load "/home/runner/work/Numuw/Numuw/test/weekly_summary_test.dart":
+  Compilation failed for testPath=/home/runner/work/Numuw/Numuw/test/weekly_summary_test.dart: Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/care_event.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/growth_measurement.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/weekly_child_summary.dart'.
+  test/weekly_summary_test.dart:1:8: Error: Not found: 'package:flutter_application_1/models/care_event.dart'
+  import 'package:flutter_application_1/models/care_event.dart';
+         ^
+  test/weekly_summary_test.dart:2:8: Error: Not found: 'package:flutter_application_1/models/growth_measurement.dart'
+  import 'package:flutter_application_1/models/growth_measurement.dart';
+         ^
+  test/weekly_summary_test.dart:3:8: Error: Not found: 'package:flutter_application_1/models/weekly_child_summary.dart'
+  import 'package:flutter_application_1/models/weekly_child_summary.dart';
+         ^
+  test/weekly_summary_test.dart:132:1: Error: Type 'CareEvent' not found.
+  CareEvent _sleep(DateTime startedAt, int minutes) => CareEvent(
+  ^^^^^^^^^
+  test/weekly_summary_test.dart:141:1: Error: Type 'CareEvent' not found.
+  CareEvent _feeding(DateTime startedAt) => CareEvent(
+  ^^^^^^^^^
+  test/weekly_summary_test.dart:149:1: Error: Type 'CareEvent' not found.
+  CareEvent _pumping(DateTime startedAt, double amountMl) => CareEvent(
+  ^^^^^^^^^
+  test/weekly_summary_test.dart:158:1: Error: Type 'CareEvent' not found.
+  CareEvent _legacyPumping(DateTime startedAt, double amountMl) => CareEvent(
+  ^^^^^^^^^
+  test/weekly_summary_test.dart:170:1: Error: Type 'GrowthMeasurement' not found.
+  GrowthMeasurement _growth(DateTime measuredAt, {double? weightKg}) =>
+  ^^^^^^^^^^^^^^^^^
+  test/weekly_summary_test.dart:8:24: Error: Method not found: 'WeeklySummaryCalculator'.
+      const calculator = WeeklySummaryCalculator();
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+  test/weekly_summary_test.dart:57:26: Error: Undefined name 'WeeklySummaryCalculator'.
+        final comparison = WeeklySummaryCalculator.compare(
+                           ^^^^^^^^^^^^^^^^^^^^^^^
+  test/weekly_summary_test.dart:65:32: Error: Undefined name 'WeeklyComparisonTrend'.
+        expect(comparison.trend, WeeklyComparisonTrend.insufficientData);
+                                 ^^^^^^^^^^^^^^^^^^^^^
+  test/weekly_summary_test.dart:70:26: Error: Undefined name 'WeeklySummaryCalculator'.
+        final comparison = WeeklySummaryCalculator.compare(
+                           ^^^^^^^^^^^^^^^^^^^^^^^
+  test/weekly_summary_test.dart:78:32: Error: Undefined name 'WeeklyComparisonTrend'.
+        expect(comparison.trend, WeeklyComparisonTrend.insufficientData);
+                                 ^^^^^^^^^^^^^^^^^^^^^
+  test/weekly_summary_test.dart:84:25: Error: Undefined name 'WeeklySummaryCalculator'.
+        final increased = WeeklySummaryCalculator.compare(
+                          ^^^^^^^^^^^^^^^^^^^^^^^
+  test/weekly_summary_test.dart:91:25: Error: Undefined name 'WeeklySummaryCalculator'.
+        final decreased = WeeklySummaryCalculator.compare(
+                          ^^^^^^^^^^^^^^^^^^^^^^^
+  test/weekly_summary_test.dart:98:22: Error: Undefined name 'WeeklySummaryCalculator'.
+        final stable = WeeklySummaryCalculator.compare(
+                       ^^^^^^^^^^^^^^^^^^^^^^^
+  test/weekly_summary_test.dart:106:31: Error: Undefined name 'WeeklyComparisonTrend'.
+        expect(increased.trend, WeeklyComparisonTrend.increased);
+                                ^^^^^^^^^^^^^^^^^^^^^
+  test/weekly_summary_test.dart:107:31: Error: Undefined name 'WeeklyComparisonTrend'.
+        expect(decreased.trend, WeeklyComparisonTrend.decreased);
+                                ^^^^^^^^^^^^^^^^^^^^^
+  test/weekly_summary_test.dart:108:28: Error: Undefined name 'WeeklyComparisonTrend'.
+        expect(stable.trend, WeeklyComparisonTrend.stable);
+                             ^^^^^^^^^^^^^^^^^^^^^
+  test/weekly_summary_test.dart:132:54: Error: Method not found: 'CareEvent'.
+  CareEvent _sleep(DateTime startedAt, int minutes) => CareEvent(
+                                                       ^^^^^^^^^
+  test/weekly_summary_test.dart:141:43: Error: Method not found: 'CareEvent'.
+  CareEvent _feeding(DateTime startedAt) => CareEvent(
+                                            ^^^^^^^^^
+  test/weekly_summary_test.dart:149:60: Error: Method not found: 'CareEvent'.
+  CareEvent _pumping(DateTime startedAt, double amountMl) => CareEvent(
+                                                             ^^^^^^^^^
+  test/weekly_summary_test.dart:158:66: Error: Method not found: 'CareEvent'.
+  CareEvent _legacyPumping(DateTime startedAt, double amountMl) => CareEvent(
+                                                                   ^^^^^^^^^
+  test/weekly_summary_test.dart:171:5: Error: Method not found: 'GrowthMeasurement'.
+      GrowthMeasurement(
+      ^^^^^^^^^^^^^^^^^
+  .
+00:00 +0 -6: loading /home/runner/work/Numuw/Numuw/test/numuw_ui_smoke_test.dart
+00:00 +0 -6: loading /home/runner/work/Numuw/Numuw/test/health_content_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1009:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 733:19                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 726:19                      _CustomZone.run
+  dart:async/zone.dart 625:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 666:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/core/theme/numuw_theme.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/child_profile.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/quick_log_screen.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/welcome_screen.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/state/app_preferences.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/state/child_session.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/state/log_timer_state.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/widgets/app_bottom_navigation.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/widgets/app_widgets.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/widgets/quick_log_sheet.dart'.
+test/numuw_ui_smoke_test.dart:5:8: Error: Not found: 'package:flutter_application_1/core/theme/numuw_theme.dart'
+import 'package:flutter_application_1/core/theme/numuw_theme.dart';
+       ^
+test/numuw_ui_smoke_test.dart:6:8: Error: Not found: 'package:flutter_application_1/models/child_profile.dart'
+import 'package:flutter_application_1/models/child_profile.dart';
+       ^
+test/numuw_ui_smoke_test.dart:7:8: Error: Not found: 'package:flutter_application_1/screens/quick_log_screen.dart'
+import 'package:flutter_application_1/screens/quick_log_screen.dart';
+       ^
+test/numuw_ui_smoke_test.dart:8:8: Error: Not found: 'package:flutter_application_1/screens/welcome_screen.dart'
+import 'package:flutter_application_1/screens/welcome_screen.dart';
+       ^
+test/numuw_ui_smoke_test.dart:9:8: Error: Not found: 'package:flutter_application_1/state/app_preferences.dart'
+import 'package:flutter_application_1/state/app_preferences.dart';
+       ^
+test/numuw_ui_smoke_test.dart:10:8: Error: Not found: 'package:flutter_application_1/state/child_session.dart'
+import 'package:flutter_application_1/state/child_session.dart';
+       ^
+test/numuw_ui_smoke_test.dart:11:8: Error: Not found: 'package:flutter_application_1/state/log_timer_state.dart'
+import 'package:flutter_application_1/state/log_timer_state.dart';
+       ^
+test/numuw_ui_smoke_test.dart:12:8: Error: Not found: 'package:flutter_application_1/widgets/app_bottom_navigation.dart'
+import 'package:flutter_application_1/widgets/app_bottom_navigation.dart';
+       ^
+test/numuw_ui_smoke_test.dart:13:8: Error: Not found: 'package:flutter_application_1/widgets/app_widgets.dart'
+import 'package:flutter_application_1/widgets/app_widgets.dart';
+       ^
+test/numuw_ui_smoke_test.dart:14:8: Error: Not found: 'package:flutter_application_1/widgets/quick_log_sheet.dart'
+import 'package:flutter_application_1/widgets/quick_log_sheet.dart';
+       ^
+test/numuw_ui_smoke_test.dart:16:1: Error: Type 'ChildProfile' not found.
+ChildProfile _child() => const ChildProfile(
+^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:16:32: Error: Couldn't find constructor 'ChildProfile'.
+ChildProfile _child() => const ChildProfile(
+                               ^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:26:10: Error: Method not found: 'buildNumuwTheme'.
+  theme: buildNumuwTheme(night: night),
+         ^^^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:27:9: Error: Method not found: 'WelcomeScreen'.
+  home: WelcomeScreen(onSignIn: () {}, onSignUp: () {}),
+        ^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:34:14: Error: Method not found: 'QuickLogScreen'.
+      child: QuickLogScreen(initialMode: mode),
+             ^^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:42:5: Error: Undefined name 'ChildSession'.
+    ChildSession.instance.clear();
+    ^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:43:11: Error: Undefined name 'LogTimerState'.
+    await LogTimerState.instance.cancelFeeding();
+          ^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:44:11: Error: Undefined name 'LogTimerState'.
+    await LogTimerState.instance.cancelSleep();
+          ^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:45:11: Error: Undefined name 'LogTimerState'.
+    await LogTimerState.instance.cancelPumping();
+          ^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:46:11: Error: Undefined name 'AppPreferences'.
+    await AppPreferences.instance.setNightMode(false);
+          ^^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:50:11: Error: Undefined name 'AppPreferences'.
+    await AppPreferences.instance.setNightMode(false);
+          ^^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:51:5: Error: Undefined name 'ChildSession'.
+    ChildSession.instance.clear();
+    ^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:52:11: Error: Undefined name 'LogTimerState'.
+    await LogTimerState.instance.cancelFeeding();
+          ^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:53:11: Error: Undefined name 'LogTimerState'.
+    await LogTimerState.instance.cancelSleep();
+          ^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:54:11: Error: Undefined name 'LogTimerState'.
+    await LogTimerState.instance.cancelPumping();
+          ^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:62:24: Error: Undefined name 'WelcomeScreen'.
+    expect(find.byType(WelcomeScreen), findsOneWidget);
+                       ^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:63:24: Error: Undefined name 'PrimaryButton'.
+    expect(find.byType(PrimaryButton), findsOneWidget);
+                       ^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:79:34: Error: Method not found: 'AppBottomNavigation'.
+            bottomNavigationBar: AppBottomNavigation(
+                                 ^^^^^^^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:105:43: Error: Couldn't find constructor 'QuickLogSheet'.
+                    builder: (_) => const QuickLogSheet(),
+                                          ^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:128:5: Error: Undefined name 'ChildSession'.
+    ChildSession.instance.setChildren([child], notify: false);
+    ^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:129:11: Error: Undefined name 'LogTimerState'.
+    await LogTimerState.instance.startFeeding(
+          ^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:143:5: Error: Undefined name 'ChildSession'.
+    ChildSession.instance.setChildren([child], notify: false);
+    ^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:144:11: Error: Undefined name 'LogTimerState'.
+    await LogTimerState.instance.startSleep(
+          ^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:158:5: Error: Undefined name 'ChildSession'.
+    ChildSession.instance.setChildren([child], notify: false);
+    ^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:171:24: Error: Undefined name 'WelcomeScreen'.
+    expect(find.byType(WelcomeScreen), findsOneWidget);
+                       ^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:173:11: Error: Undefined name 'AppPreferences'.
+    await AppPreferences.instance.setNightMode(true);
+          ^^^^^^^^^^^^^^
+test/numuw_ui_smoke_test.dart:175:24: Error: Undefined name 'WelcomeScreen'.
+    expect(find.byType(WelcomeScreen), findsOneWidget);
+                       ^^^^^^^^^^^^^
+00:00 +0 -7: loading /home/runner/work/Numuw/Numuw/test/numuw_ui_smoke_test.dart [E]
+  Failed to load "/home/runner/work/Numuw/Numuw/test/numuw_ui_smoke_test.dart":
+  Compilation failed for testPath=/home/runner/work/Numuw/Numuw/test/numuw_ui_smoke_test.dart: Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/core/theme/numuw_theme.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/child_profile.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/quick_log_screen.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/welcome_screen.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/state/app_preferences.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/state/child_session.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/state/log_timer_state.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/widgets/app_bottom_navigation.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/widgets/app_widgets.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/widgets/quick_log_sheet.dart'.
+  test/numuw_ui_smoke_test.dart:5:8: Error: Not found: 'package:flutter_application_1/core/theme/numuw_theme.dart'
+  import 'package:flutter_application_1/core/theme/numuw_theme.dart';
+         ^
+  test/numuw_ui_smoke_test.dart:6:8: Error: Not found: 'package:flutter_application_1/models/child_profile.dart'
+  import 'package:flutter_application_1/models/child_profile.dart';
+         ^
+  test/numuw_ui_smoke_test.dart:7:8: Error: Not found: 'package:flutter_application_1/screens/quick_log_screen.dart'
+  import 'package:flutter_application_1/screens/quick_log_screen.dart';
+         ^
+  test/numuw_ui_smoke_test.dart:8:8: Error: Not found: 'package:flutter_application_1/screens/welcome_screen.dart'
+  import 'package:flutter_application_1/screens/welcome_screen.dart';
+         ^
+  test/numuw_ui_smoke_test.dart:9:8: Error: Not found: 'package:flutter_application_1/state/app_preferences.dart'
+  import 'package:flutter_application_1/state/app_preferences.dart';
+         ^
+  test/numuw_ui_smoke_test.dart:10:8: Error: Not found: 'package:flutter_application_1/state/child_session.dart'
+  import 'package:flutter_application_1/state/child_session.dart';
+         ^
+  test/numuw_ui_smoke_test.dart:11:8: Error: Not found: 'package:flutter_application_1/state/log_timer_state.dart'
+  import 'package:flutter_application_1/state/log_timer_state.dart';
+         ^
+  test/numuw_ui_smoke_test.dart:12:8: Error: Not found: 'package:flutter_application_1/widgets/app_bottom_navigation.dart'
+  import 'package:flutter_application_1/widgets/app_bottom_navigation.dart';
+         ^
+  test/numuw_ui_smoke_test.dart:13:8: Error: Not found: 'package:flutter_application_1/widgets/app_widgets.dart'
+  import 'package:flutter_application_1/widgets/app_widgets.dart';
+         ^
+  test/numuw_ui_smoke_test.dart:14:8: Error: Not found: 'package:flutter_application_1/widgets/quick_log_sheet.dart'
+  import 'package:flutter_application_1/widgets/quick_log_sheet.dart';
+         ^
+  test/numuw_ui_smoke_test.dart:16:1: Error: Type 'ChildProfile' not found.
+  ChildProfile _child() => const ChildProfile(
+  ^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:16:32: Error: Couldn't find constructor 'ChildProfile'.
+  ChildProfile _child() => const ChildProfile(
+                                 ^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:26:10: Error: Method not found: 'buildNumuwTheme'.
+    theme: buildNumuwTheme(night: night),
+           ^^^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:27:9: Error: Method not found: 'WelcomeScreen'.
+    home: WelcomeScreen(onSignIn: () {}, onSignUp: () {}),
+          ^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:34:14: Error: Method not found: 'QuickLogScreen'.
+        child: QuickLogScreen(initialMode: mode),
+               ^^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:42:5: Error: Undefined name 'ChildSession'.
+      ChildSession.instance.clear();
+      ^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:43:11: Error: Undefined name 'LogTimerState'.
+      await LogTimerState.instance.cancelFeeding();
+            ^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:44:11: Error: Undefined name 'LogTimerState'.
+      await LogTimerState.instance.cancelSleep();
+            ^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:45:11: Error: Undefined name 'LogTimerState'.
+      await LogTimerState.instance.cancelPumping();
+            ^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:46:11: Error: Undefined name 'AppPreferences'.
+      await AppPreferences.instance.setNightMode(false);
+            ^^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:50:11: Error: Undefined name 'AppPreferences'.
+      await AppPreferences.instance.setNightMode(false);
+            ^^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:51:5: Error: Undefined name 'ChildSession'.
+      ChildSession.instance.clear();
+      ^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:52:11: Error: Undefined name 'LogTimerState'.
+      await LogTimerState.instance.cancelFeeding();
+            ^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:53:11: Error: Undefined name 'LogTimerState'.
+      await LogTimerState.instance.cancelSleep();
+            ^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:54:11: Error: Undefined name 'LogTimerState'.
+      await LogTimerState.instance.cancelPumping();
+            ^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:62:24: Error: Undefined name 'WelcomeScreen'.
+      expect(find.byType(WelcomeScreen), findsOneWidget);
+                         ^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:63:24: Error: Undefined name 'PrimaryButton'.
+      expect(find.byType(PrimaryButton), findsOneWidget);
+                         ^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:79:34: Error: Method not found: 'AppBottomNavigation'.
+              bottomNavigationBar: AppBottomNavigation(
+                                   ^^^^^^^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:105:43: Error: Couldn't find constructor 'QuickLogSheet'.
+                      builder: (_) => const QuickLogSheet(),
+                                            ^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:128:5: Error: Undefined name 'ChildSession'.
+      ChildSession.instance.setChildren([child], notify: false);
+      ^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:129:11: Error: Undefined name 'LogTimerState'.
+      await LogTimerState.instance.startFeeding(
+            ^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:143:5: Error: Undefined name 'ChildSession'.
+      ChildSession.instance.setChildren([child], notify: false);
+      ^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:144:11: Error: Undefined name 'LogTimerState'.
+      await LogTimerState.instance.startSleep(
+            ^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:158:5: Error: Undefined name 'ChildSession'.
+      ChildSession.instance.setChildren([child], notify: false);
+      ^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:171:24: Error: Undefined name 'WelcomeScreen'.
+      expect(find.byType(WelcomeScreen), findsOneWidget);
+                         ^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:173:11: Error: Undefined name 'AppPreferences'.
+      await AppPreferences.instance.setNightMode(true);
+            ^^^^^^^^^^^^^^
+  test/numuw_ui_smoke_test.dart:175:24: Error: Undefined name 'WelcomeScreen'.
+      expect(find.byType(WelcomeScreen), findsOneWidget);
+                         ^^^^^^^^^^^^^
+  .
+00:00 +0 -7: loading /home/runner/work/Numuw/Numuw/test/offline_care_event_queue_test.dart
+00:00 +0 -7: loading /home/runner/work/Numuw/Numuw/test/health_content_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1009:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 733:19                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 726:19                      _CustomZone.run
+  dart:async/zone.dart 625:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 666:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/services/offline_care_event_queue.dart'.
+test/offline_care_event_queue_test.dart:1:8: Error: Not found: 'package:flutter_application_1/services/offline_care_event_queue.dart'
+import 'package:flutter_application_1/services/offline_care_event_queue.dart';
+       ^
+test/offline_care_event_queue_test.dart:12:21: Error: Undefined name 'OfflineCareEventQueue'.
+      final queue = OfflineCareEventQueue.instance;
+                    ^^^^^^^^^^^^^^^^^^^^^
+test/offline_care_event_queue_test.dart:32:23: Error: Undefined name 'OfflineCareEventQueue'.
+        final queue = OfflineCareEventQueue.instance;
+                      ^^^^^^^^^^^^^^^^^^^^^
+00:00 +0 -8: loading /home/runner/work/Numuw/Numuw/test/offline_care_event_queue_test.dart [E]
+  Failed to load "/home/runner/work/Numuw/Numuw/test/offline_care_event_queue_test.dart":
+  Compilation failed for testPath=/home/runner/work/Numuw/Numuw/test/offline_care_event_queue_test.dart: Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/services/offline_care_event_queue.dart'.
+  test/offline_care_event_queue_test.dart:1:8: Error: Not found: 'package:flutter_application_1/services/offline_care_event_queue.dart'
+  import 'package:flutter_application_1/services/offline_care_event_queue.dart';
+         ^
+  test/offline_care_event_queue_test.dart:12:21: Error: Undefined name 'OfflineCareEventQueue'.
+        final queue = OfflineCareEventQueue.instance;
+                      ^^^^^^^^^^^^^^^^^^^^^
+  test/offline_care_event_queue_test.dart:32:23: Error: Undefined name 'OfflineCareEventQueue'.
+          final queue = OfflineCareEventQueue.instance;
+                        ^^^^^^^^^^^^^^^^^^^^^
+  .
+00:00 +0 -8: loading /home/runner/work/Numuw/Numuw/test/vaccination_plan_mapper_test.dart
+00:00 +0 -8: loading /home/runner/work/Numuw/Numuw/test/health_content_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1009:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 733:19                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 726:19                      _CustomZone.run
+  dart:async/zone.dart 625:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 666:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/health_sources.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_plan_mapper.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_plan_summary.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_schedule_catalog.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/vaccination.dart'.
+test/vaccination_plan_mapper_test.dart:3:8: Error: Not found: 'package:flutter_application_1/content/health_sources.dart'
+import 'package:flutter_application_1/content/health_sources.dart';
+       ^
+test/vaccination_plan_mapper_test.dart:4:8: Error: Not found: 'package:flutter_application_1/content/vaccination_plan_mapper.dart'
+import 'package:flutter_application_1/content/vaccination_plan_mapper.dart';
+       ^
+test/vaccination_plan_mapper_test.dart:5:8: Error: Not found: 'package:flutter_application_1/content/vaccination_plan_summary.dart'
+import 'package:flutter_application_1/content/vaccination_plan_summary.dart';
+       ^
+test/vaccination_plan_mapper_test.dart:6:8: Error: Not found: 'package:flutter_application_1/content/vaccination_schedule_catalog.dart'
+import 'package:flutter_application_1/content/vaccination_schedule_catalog.dart';
+       ^
+test/vaccination_plan_mapper_test.dart:7:8: Error: Not found: 'package:flutter_application_1/models/vaccination.dart'
+import 'package:flutter_application_1/models/vaccination.dart';
+       ^
+test/vaccination_plan_mapper_test.dart:10:21: Error: Method not found: 'VaccineDoseDefinition'.
+  const firstDose = VaccineDoseDefinition(
+                    ^^^^^^^^^^^^^^^^^^^^^
+test/vaccination_plan_mapper_test.dart:17:22: Error: Method not found: 'VaccineDoseDefinition'.
+  const secondDose = VaccineDoseDefinition(
+                     ^^^^^^^^^^^^^^^^^^^^^
+test/vaccination_plan_mapper_test.dart:25:3: Error: 'VaccinationScheduleDefinition' isn't a type.
+  VaccinationScheduleDefinition schedule() => VaccinationScheduleDefinition(
+  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test/vaccination_plan_mapper_test.dart:26:18: Error: Undefined name 'NumuwCountry'.
+        country: NumuwCountry.egypt,
+                 ^^^^^^^^^^^^
+test/vaccination_plan_mapper_test.dart:27:17: Error: Undefined name 'OfficialHealthSources'.
+        source: OfficialHealthSources.egyptVaccination,
+                ^^^^^^^^^^^^^^^^^^^^^
+test/vaccination_plan_mapper_test.dart:25:47: Error: Method not found: 'VaccinationScheduleDefinition'.
+  VaccinationScheduleDefinition schedule() => VaccinationScheduleDefinition(
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test/vaccination_plan_mapper_test.dart:37:9: Error: Method not found: 'Vaccination'.
+        Vaccination(
+        ^^^^^^^^^^^
+test/vaccination_plan_mapper_test.dart:32:18: Error: Undefined name 'VaccinationPlanMapper'.
+    final plan = VaccinationPlanMapper.buildPlan(
+                 ^^^^^^^^^^^^^^^^^^^^^
+test/vaccination_plan_mapper_test.dart:61:9: Error: Method not found: 'Vaccination'.
+        Vaccination(
+        ^^^^^^^^^^^
+test/vaccination_plan_mapper_test.dart:56:18: Error: Undefined name 'VaccinationPlanMapper'.
+    final plan = VaccinationPlanMapper.buildPlan(
+                 ^^^^^^^^^^^^^^^^^^^^^
+00:00 +0 -9: loading /home/runner/work/Numuw/Numuw/test/vaccination_plan_mapper_test.dart [E]
+  Failed to load "/home/runner/work/Numuw/Numuw/test/vaccination_plan_mapper_test.dart":
+  Compilation failed for testPath=/home/runner/work/Numuw/Numuw/test/vaccination_plan_mapper_test.dart: Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/health_sources.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_plan_mapper.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_plan_summary.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/vaccination_schedule_catalog.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/vaccination.dart'.
+  test/vaccination_plan_mapper_test.dart:3:8: Error: Not found: 'package:flutter_application_1/content/health_sources.dart'
+  import 'package:flutter_application_1/content/health_sources.dart';
+         ^
+  test/vaccination_plan_mapper_test.dart:4:8: Error: Not found: 'package:flutter_application_1/content/vaccination_plan_mapper.dart'
+  import 'package:flutter_application_1/content/vaccination_plan_mapper.dart';
+         ^
+  test/vaccination_plan_mapper_test.dart:5:8: Error: Not found: 'package:flutter_application_1/content/vaccination_plan_summary.dart'
+  import 'package:flutter_application_1/content/vaccination_plan_summary.dart';
+         ^
+  test/vaccination_plan_mapper_test.dart:6:8: Error: Not found: 'package:flutter_application_1/content/vaccination_schedule_catalog.dart'
+  import 'package:flutter_application_1/content/vaccination_schedule_catalog.dart';
+         ^
+  test/vaccination_plan_mapper_test.dart:7:8: Error: Not found: 'package:flutter_application_1/models/vaccination.dart'
+  import 'package:flutter_application_1/models/vaccination.dart';
+         ^
+  test/vaccination_plan_mapper_test.dart:10:21: Error: Method not found: 'VaccineDoseDefinition'.
+    const firstDose = VaccineDoseDefinition(
+                      ^^^^^^^^^^^^^^^^^^^^^
+  test/vaccination_plan_mapper_test.dart:17:22: Error: Method not found: 'VaccineDoseDefinition'.
+    const secondDose = VaccineDoseDefinition(
+                       ^^^^^^^^^^^^^^^^^^^^^
+  test/vaccination_plan_mapper_test.dart:25:3: Error: 'VaccinationScheduleDefinition' isn't a type.
+    VaccinationScheduleDefinition schedule() => VaccinationScheduleDefinition(
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  test/vaccination_plan_mapper_test.dart:26:18: Error: Undefined name 'NumuwCountry'.
+          country: NumuwCountry.egypt,
+                   ^^^^^^^^^^^^
+  test/vaccination_plan_mapper_test.dart:27:17: Error: Undefined name 'OfficialHealthSources'.
+          source: OfficialHealthSources.egyptVaccination,
+                  ^^^^^^^^^^^^^^^^^^^^^
+  test/vaccination_plan_mapper_test.dart:25:47: Error: Method not found: 'VaccinationScheduleDefinition'.
+    VaccinationScheduleDefinition schedule() => VaccinationScheduleDefinition(
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  test/vaccination_plan_mapper_test.dart:37:9: Error: Method not found: 'Vaccination'.
+          Vaccination(
+          ^^^^^^^^^^^
+  test/vaccination_plan_mapper_test.dart:32:18: Error: Undefined name 'VaccinationPlanMapper'.
+      final plan = VaccinationPlanMapper.buildPlan(
+                   ^^^^^^^^^^^^^^^^^^^^^
+  test/vaccination_plan_mapper_test.dart:61:9: Error: Method not found: 'Vaccination'.
+          Vaccination(
+          ^^^^^^^^^^^
+  test/vaccination_plan_mapper_test.dart:56:18: Error: Undefined name 'VaccinationPlanMapper'.
+      final plan = VaccinationPlanMapper.buildPlan(
+                   ^^^^^^^^^^^^^^^^^^^^^
+  .
+00:00 +0 -9: loading /home/runner/work/Numuw/Numuw/test/growth_chart_series_test.dart
+00:00 +0 -9: loading /home/runner/work/Numuw/Numuw/test/health_content_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1009:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 733:19                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 726:19                      _CustomZone.run
+  dart:async/zone.dart 625:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 666:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/growth_chart_series.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/growth_math.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/who_growth_standards.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/growth_measurement.dart'.
+test/growth_chart_series_test.dart:3:8: Error: Not found: 'package:flutter_application_1/content/growth_chart_series.dart'
+import 'package:flutter_application_1/content/growth_chart_series.dart';
+       ^
+test/growth_chart_series_test.dart:4:8: Error: Not found: 'package:flutter_application_1/content/growth_math.dart'
+import 'package:flutter_application_1/content/growth_math.dart';
+       ^
+test/growth_chart_series_test.dart:5:8: Error: Not found: 'package:flutter_application_1/content/who_growth_standards.dart'
+import 'package:flutter_application_1/content/who_growth_standards.dart';
+       ^
+test/growth_chart_series_test.dart:6:8: Error: Not found: 'package:flutter_application_1/models/growth_measurement.dart'
+import 'package:flutter_application_1/models/growth_measurement.dart';
+       ^
+test/growth_chart_series_test.dart:10:12: Error: Undefined name 'WhoGrowthStandards'.
+    expect(WhoGrowthStandards.lmsRows, isNotEmpty);
+           ^^^^^^^^^^^^^^^^^^
+test/growth_chart_series_test.dart:11:12: Error: Undefined name 'WhoGrowthStandards'.
+    expect(WhoGrowthStandards.metadata.canDisplayCharts, isFalse);
+           ^^^^^^^^^^^^^^^^^^
+test/growth_chart_series_test.dart:16:18: Error: Undefined name 'GrowthIndicator'.
+      indicator: GrowthIndicator.weightForAge,
+                 ^^^^^^^^^^^^^^^
+test/growth_chart_series_test.dart:17:12: Error: Undefined name 'ChildSex'.
+      sex: ChildSex.female,
+           ^^^^^^^^
+test/growth_chart_series_test.dart:20:9: Error: Method not found: 'GrowthMeasurement'.
+        GrowthMeasurement(
+        ^^^^^^^^^^^^^^^^^
+test/growth_chart_series_test.dart:15:20: Error: Undefined name 'GrowthChartSeriesBuilder'.
+    final points = GrowthChartSeriesBuilder.build(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^
+test/growth_chart_series_test.dart:32:39: Error: Undefined name 'GrowthRangeBand'.
+    expect(points.single.result.band, GrowthRangeBand.typical);
+                                      ^^^^^^^^^^^^^^^
+00:00 +0 -10: loading /home/runner/work/Numuw/Numuw/test/growth_chart_series_test.dart [E]
+  Failed to load "/home/runner/work/Numuw/Numuw/test/growth_chart_series_test.dart":
+  Compilation failed for testPath=/home/runner/work/Numuw/Numuw/test/growth_chart_series_test.dart: Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/growth_chart_series.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/growth_math.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/who_growth_standards.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/growth_measurement.dart'.
+  test/growth_chart_series_test.dart:3:8: Error: Not found: 'package:flutter_application_1/content/growth_chart_series.dart'
+  import 'package:flutter_application_1/content/growth_chart_series.dart';
+         ^
+  test/growth_chart_series_test.dart:4:8: Error: Not found: 'package:flutter_application_1/content/growth_math.dart'
+  import 'package:flutter_application_1/content/growth_math.dart';
+         ^
+  test/growth_chart_series_test.dart:5:8: Error: Not found: 'package:flutter_application_1/content/who_growth_standards.dart'
+  import 'package:flutter_application_1/content/who_growth_standards.dart';
+         ^
+  test/growth_chart_series_test.dart:6:8: Error: Not found: 'package:flutter_application_1/models/growth_measurement.dart'
+  import 'package:flutter_application_1/models/growth_measurement.dart';
+         ^
+  test/growth_chart_series_test.dart:10:12: Error: Undefined name 'WhoGrowthStandards'.
+      expect(WhoGrowthStandards.lmsRows, isNotEmpty);
+             ^^^^^^^^^^^^^^^^^^
+  test/growth_chart_series_test.dart:11:12: Error: Undefined name 'WhoGrowthStandards'.
+      expect(WhoGrowthStandards.metadata.canDisplayCharts, isFalse);
+             ^^^^^^^^^^^^^^^^^^
+  test/growth_chart_series_test.dart:16:18: Error: Undefined name 'GrowthIndicator'.
+        indicator: GrowthIndicator.weightForAge,
+                   ^^^^^^^^^^^^^^^
+  test/growth_chart_series_test.dart:17:12: Error: Undefined name 'ChildSex'.
+        sex: ChildSex.female,
+             ^^^^^^^^
+  test/growth_chart_series_test.dart:20:9: Error: Method not found: 'GrowthMeasurement'.
+          GrowthMeasurement(
+          ^^^^^^^^^^^^^^^^^
+  test/growth_chart_series_test.dart:15:20: Error: Undefined name 'GrowthChartSeriesBuilder'.
+      final points = GrowthChartSeriesBuilder.build(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  test/growth_chart_series_test.dart:32:39: Error: Undefined name 'GrowthRangeBand'.
+      expect(points.single.result.band, GrowthRangeBand.typical);
+                                        ^^^^^^^^^^^^^^^
+  .
+00:00 +0 -10: loading /home/runner/work/Numuw/Numuw/test/ai_assistant_response_test.dart
+00:00 +0 -10: loading /home/runner/work/Numuw/Numuw/test/health_content_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1009:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 733:19                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 726:19                      _CustomZone.run
+  dart:async/zone.dart 625:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 666:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/ai_assistant_response.dart'.
+test/ai_assistant_response_test.dart:3:8: Error: Not found: 'package:flutter_application_1/models/ai_assistant_response.dart'
+import 'package:flutter_application_1/models/ai_assistant_response.dart';
+       ^
+test/ai_assistant_response_test.dart:7:22: Error: Undefined name 'AiAssistantResponse'.
+    final response = AiAssistantResponse.fromJsonString('''
+                     ^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_response_test.dart:26:22: Error: Undefined name 'AiAssistantResponse'.
+    final response = AiAssistantResponse.fromJsonString('''
+                     ^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_response_test.dart:43:22: Error: Undefined name 'AiAssistantResponse'.
+    final response = AiAssistantResponse.fromJsonString('''
+                     ^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_response_test.dart:68:22: Error: Undefined name 'AiAssistantResponse'.
+    final response = AiAssistantResponse.fromJsonString('''
+                     ^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_response_test.dart:98:13: Error: Undefined name 'AiAssistantResponse'.
+      () => AiAssistantResponse.fromJsonString('''
+            ^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_response_test.dart:112:22: Error: Undefined name 'AiAssistantResponse'.
+    final response = AiAssistantResponse.fromJsonString('''
+                     ^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_response_test.dart:131:13: Error: Undefined name 'AiAssistantResponse'.
+      () => AiAssistantResponse.fromJsonString('{'),
+            ^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_response_test.dart:137:22: Error: Undefined name 'AiAssistantResponse'.
+    final response = AiAssistantResponse.fromJsonString('''
+                     ^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_response_test.dart:158:22: Error: Undefined name 'AiAssistantResponse'.
+    final response = AiAssistantResponse.fromJsonString('''
+                     ^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_response_test.dart:184:22: Error: Undefined name 'AiAssistantResponse'.
+    final response = AiAssistantResponse.fromJsonString('''
+                     ^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_response_test.dart:207:22: Error: Undefined name 'AiAssistantResponse'.
+    final response = AiAssistantResponse.fromJsonString('''
+                     ^^^^^^^^^^^^^^^^^^^
+test/ai_assistant_response_test.dart:228:22: Error: Undefined name 'AiAssistantResponse'.
+    final response = AiAssistantResponse.fromJsonString('''
+                     ^^^^^^^^^^^^^^^^^^^
+00:00 +0 -11: loading /home/runner/work/Numuw/Numuw/test/ai_assistant_response_test.dart [E]
+  Failed to load "/home/runner/work/Numuw/Numuw/test/ai_assistant_response_test.dart":
+  Compilation failed for testPath=/home/runner/work/Numuw/Numuw/test/ai_assistant_response_test.dart: Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/ai_assistant_response.dart'.
+  test/ai_assistant_response_test.dart:3:8: Error: Not found: 'package:flutter_application_1/models/ai_assistant_response.dart'
+  import 'package:flutter_application_1/models/ai_assistant_response.dart';
+         ^
+  test/ai_assistant_response_test.dart:7:22: Error: Undefined name 'AiAssistantResponse'.
+      final response = AiAssistantResponse.fromJsonString('''
+                       ^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_response_test.dart:26:22: Error: Undefined name 'AiAssistantResponse'.
+      final response = AiAssistantResponse.fromJsonString('''
+                       ^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_response_test.dart:43:22: Error: Undefined name 'AiAssistantResponse'.
+      final response = AiAssistantResponse.fromJsonString('''
+                       ^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_response_test.dart:68:22: Error: Undefined name 'AiAssistantResponse'.
+      final response = AiAssistantResponse.fromJsonString('''
+                       ^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_response_test.dart:98:13: Error: Undefined name 'AiAssistantResponse'.
+        () => AiAssistantResponse.fromJsonString('''
+              ^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_response_test.dart:112:22: Error: Undefined name 'AiAssistantResponse'.
+      final response = AiAssistantResponse.fromJsonString('''
+                       ^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_response_test.dart:131:13: Error: Undefined name 'AiAssistantResponse'.
+        () => AiAssistantResponse.fromJsonString('{'),
+              ^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_response_test.dart:137:22: Error: Undefined name 'AiAssistantResponse'.
+      final response = AiAssistantResponse.fromJsonString('''
+                       ^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_response_test.dart:158:22: Error: Undefined name 'AiAssistantResponse'.
+      final response = AiAssistantResponse.fromJsonString('''
+                       ^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_response_test.dart:184:22: Error: Undefined name 'AiAssistantResponse'.
+      final response = AiAssistantResponse.fromJsonString('''
+                       ^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_response_test.dart:207:22: Error: Undefined name 'AiAssistantResponse'.
+      final response = AiAssistantResponse.fromJsonString('''
+                       ^^^^^^^^^^^^^^^^^^^
+  test/ai_assistant_response_test.dart:228:22: Error: Undefined name 'AiAssistantResponse'.
+      final response = AiAssistantResponse.fromJsonString('''
+                       ^^^^^^^^^^^^^^^^^^^
+  .
+00:00 +0 -11: loading /home/runner/work/Numuw/Numuw/test/growth_math_test.dart
+00:00 +0 -11: loading /home/runner/work/Numuw/Numuw/test/health_content_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1009:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 733:19                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 726:19                      _CustomZone.run
+  dart:async/zone.dart 625:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 666:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/growth_math.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/who_growth_standards.dart'.
+test/growth_math_test.dart:3:8: Error: Not found: 'package:flutter_application_1/content/growth_math.dart'
+import 'package:flutter_application_1/content/growth_math.dart';
+       ^
+test/growth_math_test.dart:4:8: Error: Not found: 'package:flutter_application_1/content/who_growth_standards.dart'
+import 'package:flutter_application_1/content/who_growth_standards.dart';
+       ^
+test/growth_math_test.dart:8:16: Error: Undefined name 'GrowthIndicator'.
+    indicator: GrowthIndicator.weightForAge,
+               ^^^^^^^^^^^^^^^
+test/growth_math_test.dart:9:10: Error: Undefined name 'ChildSex'.
+    sex: ChildSex.female,
+         ^^^^^^^^
+test/growth_math_test.dart:7:15: Error: Method not found: 'LmsGrowthRow'.
+  const row = LmsGrowthRow(
+              ^^^^^^^^^^^^
+test/growth_math_test.dart:17:12: Error: Undefined name 'GrowthMath'.
+    expect(GrowthMath.zScore(row, 7.3), closeTo(0, 0.0001));
+           ^^^^^^^^^^
+test/growth_math_test.dart:22:18: Error: Undefined name 'GrowthIndicator'.
+      indicator: GrowthIndicator.lengthHeightForAge,
+                 ^^^^^^^^^^^^^^^
+test/growth_math_test.dart:23:12: Error: Undefined name 'ChildSex'.
+      sex: ChildSex.male,
+           ^^^^^^^^
+test/growth_math_test.dart:21:20: Error: Method not found: 'LmsGrowthRow'.
+    const logRow = LmsGrowthRow(
+                   ^^^^^^^^^^^^
+test/growth_math_test.dart:30:12: Error: Undefined name 'GrowthMath'.
+    expect(GrowthMath.zScore(logRow, 75), closeTo(0, 0.0001));
+           ^^^^^^^^^^
+test/growth_math_test.dart:35:18: Error: Undefined name 'GrowthIndicator'.
+      indicator: GrowthIndicator.headCircumferenceForAge,
+                 ^^^^^^^^^^^^^^^
+test/growth_math_test.dart:36:12: Error: Undefined name 'ChildSex'.
+      sex: ChildSex.male,
+           ^^^^^^^^
+test/growth_math_test.dart:34:20: Error: Undefined name 'GrowthMath'.
+    final result = GrowthMath.assess(
+                   ^^^^^^^^^^
+test/growth_math_test.dart:43:25: Error: Undefined name 'GrowthRangeBand'.
+    expect(result.band, GrowthRangeBand.unavailable);
+                        ^^^^^^^^^^^^^^^
+test/growth_math_test.dart:48:18: Error: Undefined name 'GrowthIndicator'.
+      indicator: GrowthIndicator.weightForAge,
+                 ^^^^^^^^^^^^^^^
+test/growth_math_test.dart:49:12: Error: Undefined name 'ChildSex'.
+      sex: ChildSex.female,
+           ^^^^^^^^
+test/growth_math_test.dart:47:20: Error: Undefined name 'GrowthMath'.
+    final result = GrowthMath.assess(
+                   ^^^^^^^^^^
+test/growth_math_test.dart:56:25: Error: Undefined name 'GrowthRangeBand'.
+    expect(result.band, GrowthRangeBand.typical);
+                        ^^^^^^^^^^^^^^^
+test/growth_math_test.dart:57:12: Error: Undefined name 'GrowthMath'.
+    expect(GrowthMath.bandFor(-3.2), GrowthRangeBand.veryLow);
+           ^^^^^^^^^^
+test/growth_math_test.dart:57:38: Error: Undefined name 'GrowthRangeBand'.
+    expect(GrowthMath.bandFor(-3.2), GrowthRangeBand.veryLow);
+                                     ^^^^^^^^^^^^^^^
+test/growth_math_test.dart:58:12: Error: Undefined name 'GrowthMath'.
+    expect(GrowthMath.bandFor(-2.5), GrowthRangeBand.low);
+           ^^^^^^^^^^
+test/growth_math_test.dart:58:38: Error: Undefined name 'GrowthRangeBand'.
+    expect(GrowthMath.bandFor(-2.5), GrowthRangeBand.low);
+                                     ^^^^^^^^^^^^^^^
+test/growth_math_test.dart:59:12: Error: Undefined name 'GrowthMath'.
+    expect(GrowthMath.bandFor(2.5), GrowthRangeBand.high);
+           ^^^^^^^^^^
+test/growth_math_test.dart:59:37: Error: Undefined name 'GrowthRangeBand'.
+    expect(GrowthMath.bandFor(2.5), GrowthRangeBand.high);
+                                    ^^^^^^^^^^^^^^^
+test/growth_math_test.dart:60:12: Error: Undefined name 'GrowthMath'.
+    expect(GrowthMath.bandFor(3.2), GrowthRangeBand.veryHigh);
+           ^^^^^^^^^^
+test/growth_math_test.dart:60:37: Error: Undefined name 'GrowthRangeBand'.
+    expect(GrowthMath.bandFor(3.2), GrowthRangeBand.veryHigh);
+                                    ^^^^^^^^^^^^^^^
+00:00 +0 -12: loading /home/runner/work/Numuw/Numuw/test/growth_math_test.dart [E]
+  Failed to load "/home/runner/work/Numuw/Numuw/test/growth_math_test.dart":
+  Compilation failed for testPath=/home/runner/work/Numuw/Numuw/test/growth_math_test.dart: Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/growth_math.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/content/who_growth_standards.dart'.
+  test/growth_math_test.dart:3:8: Error: Not found: 'package:flutter_application_1/content/growth_math.dart'
+  import 'package:flutter_application_1/content/growth_math.dart';
+         ^
+  test/growth_math_test.dart:4:8: Error: Not found: 'package:flutter_application_1/content/who_growth_standards.dart'
+  import 'package:flutter_application_1/content/who_growth_standards.dart';
+         ^
+  test/growth_math_test.dart:8:16: Error: Undefined name 'GrowthIndicator'.
+      indicator: GrowthIndicator.weightForAge,
+                 ^^^^^^^^^^^^^^^
+  test/growth_math_test.dart:9:10: Error: Undefined name 'ChildSex'.
+      sex: ChildSex.female,
+           ^^^^^^^^
+  test/growth_math_test.dart:7:15: Error: Method not found: 'LmsGrowthRow'.
+    const row = LmsGrowthRow(
+                ^^^^^^^^^^^^
+  test/growth_math_test.dart:17:12: Error: Undefined name 'GrowthMath'.
+      expect(GrowthMath.zScore(row, 7.3), closeTo(0, 0.0001));
+             ^^^^^^^^^^
+  test/growth_math_test.dart:22:18: Error: Undefined name 'GrowthIndicator'.
+        indicator: GrowthIndicator.lengthHeightForAge,
+                   ^^^^^^^^^^^^^^^
+  test/growth_math_test.dart:23:12: Error: Undefined name 'ChildSex'.
+        sex: ChildSex.male,
+             ^^^^^^^^
+  test/growth_math_test.dart:21:20: Error: Method not found: 'LmsGrowthRow'.
+      const logRow = LmsGrowthRow(
+                     ^^^^^^^^^^^^
+  test/growth_math_test.dart:30:12: Error: Undefined name 'GrowthMath'.
+      expect(GrowthMath.zScore(logRow, 75), closeTo(0, 0.0001));
+             ^^^^^^^^^^
+  test/growth_math_test.dart:35:18: Error: Undefined name 'GrowthIndicator'.
+        indicator: GrowthIndicator.headCircumferenceForAge,
+                   ^^^^^^^^^^^^^^^
+  test/growth_math_test.dart:36:12: Error: Undefined name 'ChildSex'.
+        sex: ChildSex.male,
+             ^^^^^^^^
+  test/growth_math_test.dart:34:20: Error: Undefined name 'GrowthMath'.
+      final result = GrowthMath.assess(
+                     ^^^^^^^^^^
+  test/growth_math_test.dart:43:25: Error: Undefined name 'GrowthRangeBand'.
+      expect(result.band, GrowthRangeBand.unavailable);
+                          ^^^^^^^^^^^^^^^
+  test/growth_math_test.dart:48:18: Error: Undefined name 'GrowthIndicator'.
+        indicator: GrowthIndicator.weightForAge,
+                   ^^^^^^^^^^^^^^^
+  test/growth_math_test.dart:49:12: Error: Undefined name 'ChildSex'.
+        sex: ChildSex.female,
+             ^^^^^^^^
+  test/growth_math_test.dart:47:20: Error: Undefined name 'GrowthMath'.
+      final result = GrowthMath.assess(
+                     ^^^^^^^^^^
+  test/growth_math_test.dart:56:25: Error: Undefined name 'GrowthRangeBand'.
+      expect(result.band, GrowthRangeBand.typical);
+                          ^^^^^^^^^^^^^^^
+  test/growth_math_test.dart:57:12: Error: Undefined name 'GrowthMath'.
+      expect(GrowthMath.bandFor(-3.2), GrowthRangeBand.veryLow);
+             ^^^^^^^^^^
+  test/growth_math_test.dart:57:38: Error: Undefined name 'GrowthRangeBand'.
+      expect(GrowthMath.bandFor(-3.2), GrowthRangeBand.veryLow);
+                                       ^^^^^^^^^^^^^^^
+  test/growth_math_test.dart:58:12: Error: Undefined name 'GrowthMath'.
+      expect(GrowthMath.bandFor(-2.5), GrowthRangeBand.low);
+             ^^^^^^^^^^
+  test/growth_math_test.dart:58:38: Error: Undefined name 'GrowthRangeBand'.
+      expect(GrowthMath.bandFor(-2.5), GrowthRangeBand.low);
+                                       ^^^^^^^^^^^^^^^
+  test/growth_math_test.dart:59:12: Error: Undefined name 'GrowthMath'.
+      expect(GrowthMath.bandFor(2.5), GrowthRangeBand.high);
+             ^^^^^^^^^^
+  test/growth_math_test.dart:59:37: Error: Undefined name 'GrowthRangeBand'.
+      expect(GrowthMath.bandFor(2.5), GrowthRangeBand.high);
+                                      ^^^^^^^^^^^^^^^
+  test/growth_math_test.dart:60:12: Error: Undefined name 'GrowthMath'.
+      expect(GrowthMath.bandFor(3.2), GrowthRangeBand.veryHigh);
+             ^^^^^^^^^^
+  test/growth_math_test.dart:60:37: Error: Undefined name 'GrowthRangeBand'.
+      expect(GrowthMath.bandFor(3.2), GrowthRangeBand.veryHigh);
+                                      ^^^^^^^^^^^^^^^
+  .
+00:00 +0 -12: loading /home/runner/work/Numuw/Numuw/test/widget_test.dart
+00:00 +0 -12: loading /home/runner/work/Numuw/Numuw/test/health_content_test.dart [E]
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1009:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 733:19                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 726:19                      _CustomZone.run
+  dart:async/zone.dart 625:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 666:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/core/formatters/arabic_formatters.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/core/errors/app_error.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/core/numuw_app.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/data/egypt_vaccination_schedule.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/care_event.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/child_guardian.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/child_profile.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/pumping_analytics.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/vaccination.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/repositories/dashboard_repository.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/repositories/family_task_repository.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/auth/sign_in_screen.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/auth/sign_up_screen.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/home_screen.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/main_shell.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/pumping_screen.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/quick_log_screen.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/services/notification_service.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/state/child_session.dart'.
+Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/state/log_timer_state.dart'.
+test/widget_test.dart:5:8: Error: Not found: 'package:flutter_application_1/core/formatters/arabic_formatters.dart'
+import 'package:flutter_application_1/core/formatters/arabic_formatters.dart';
+       ^
+test/widget_test.dart:6:8: Error: Not found: 'package:flutter_application_1/core/errors/app_error.dart'
+import 'package:flutter_application_1/core/errors/app_error.dart';
+       ^
+test/widget_test.dart:7:8: Error: Not found: 'package:flutter_application_1/core/numuw_app.dart'
+import 'package:flutter_application_1/core/numuw_app.dart';
+       ^
+test/widget_test.dart:8:8: Error: Not found: 'package:flutter_application_1/data/egypt_vaccination_schedule.dart'
+import 'package:flutter_application_1/data/egypt_vaccination_schedule.dart';
+       ^
+test/widget_test.dart:9:8: Error: Not found: 'package:flutter_application_1/models/care_event.dart'
+import 'package:flutter_application_1/models/care_event.dart';
+       ^
+test/widget_test.dart:10:8: Error: Not found: 'package:flutter_application_1/models/child_guardian.dart'
+import 'package:flutter_application_1/models/child_guardian.dart';
+       ^
+test/widget_test.dart:11:8: Error: Not found: 'package:flutter_application_1/models/child_profile.dart'
+import 'package:flutter_application_1/models/child_profile.dart';
+       ^
+test/widget_test.dart:12:8: Error: Not found: 'package:flutter_application_1/models/pumping_analytics.dart'
+import 'package:flutter_application_1/models/pumping_analytics.dart';
+       ^
+test/widget_test.dart:13:8: Error: Not found: 'package:flutter_application_1/models/vaccination.dart'
+import 'package:flutter_application_1/models/vaccination.dart';
+       ^
+test/widget_test.dart:14:8: Error: Not found: 'package:flutter_application_1/repositories/dashboard_repository.dart'
+import 'package:flutter_application_1/repositories/dashboard_repository.dart';
+       ^
+test/widget_test.dart:15:8: Error: Not found: 'package:flutter_application_1/repositories/family_task_repository.dart'
+import 'package:flutter_application_1/repositories/family_task_repository.dart';
+       ^
+test/widget_test.dart:16:8: Error: Not found: 'package:flutter_application_1/screens/auth/sign_in_screen.dart'
+import 'package:flutter_application_1/screens/auth/sign_in_screen.dart';
+       ^
+test/widget_test.dart:17:8: Error: Not found: 'package:flutter_application_1/screens/auth/sign_up_screen.dart'
+import 'package:flutter_application_1/screens/auth/sign_up_screen.dart';
+       ^
+test/widget_test.dart:18:8: Error: Not found: 'package:flutter_application_1/screens/home_screen.dart'
+import 'package:flutter_application_1/screens/home_screen.dart';
+       ^
+test/widget_test.dart:19:8: Error: Not found: 'package:flutter_application_1/screens/main_shell.dart'
+import 'package:flutter_application_1/screens/main_shell.dart';
+       ^
+test/widget_test.dart:20:8: Error: Not found: 'package:flutter_application_1/screens/pumping_screen.dart'
+import 'package:flutter_application_1/screens/pumping_screen.dart';
+       ^
+test/widget_test.dart:21:8: Error: Not found: 'package:flutter_application_1/screens/quick_log_screen.dart'
+import 'package:flutter_application_1/screens/quick_log_screen.dart';
+       ^
+test/widget_test.dart:22:8: Error: Not found: 'package:flutter_application_1/services/notification_service.dart'
+import 'package:flutter_application_1/services/notification_service.dart';
+       ^
+test/widget_test.dart:23:8: Error: Not found: 'package:flutter_application_1/state/child_session.dart'
+import 'package:flutter_application_1/state/child_session.dart';
+       ^
+test/widget_test.dart:24:8: Error: Not found: 'package:flutter_application_1/state/log_timer_state.dart'
+import 'package:flutter_application_1/state/log_timer_state.dart';
+       ^
+test/widget_test.dart:719:1: Error: Type 'CareEvent' not found.
+CareEvent _sleep(String id, DateTime startedAt, DateTime? endedAt) => CareEvent(
+^^^^^^^^^
+test/widget_test.dart:728:1: Error: Type 'CareEvent' not found.
+CareEvent _feeding(String id, DateTime startedAt) => CareEvent(
+^^^^^^^^^
+test/widget_test.dart:740:1: Error: Type 'ChildProfile' not found.
+ChildProfile _child(String id) => ChildProfile(
+^^^^^^^^^^^^
+test/widget_test.dart:749:1: Error: Type 'CareEvent' not found.
+CareEvent _pumping(
+^^^^^^^^^
+test/widget_test.dart:28:19: Error: Method not found: 'ChildProfile'.
+    final child = ChildProfile(
+                  ^^^^^^^^^^^^
+test/widget_test.dart:38:7: Error: Undefined name 'ArabicFormatters'.
+      ArabicFormatters.age(child, DateTime(2026, 1, 17)),
+      ^^^^^^^^^^^^^^^^
+test/widget_test.dart:44:19: Error: Undefined name 'ChildProfile'.
+    final child = ChildProfile.fromMap({
+                  ^^^^^^^^^^^^
+test/widget_test.dart:62:22: Error: Undefined name 'ChildGuardian'.
+    final guardian = ChildGuardian.fromMap({
+                     ^^^^^^^^^^^^^
+test/widget_test.dart:77:19: Error: Undefined name 'CareEvent'.
+    final event = CareEvent.fromMap({
+                  ^^^^^^^^^
+test/widget_test.dart:146:19: Error: Method not found: 'CareEvent'.
+    final event = CareEvent(
+                  ^^^^^^^^^
+test/widget_test.dart:163:19: Error: Method not found: 'CareEvent'.
+    final event = CareEvent(
+                  ^^^^^^^^^
+test/widget_test.dart:183:26: Error: Undefined name 'PumpingComparison'.
+      final comparison = PumpingComparison.fromEvents(
+                         ^^^^^^^^^^^^^^^^^
+test/widget_test.dart:201:24: Error: Undefined name 'PumpingComparison'.
+    final comparison = PumpingComparison.fromEvents(
+                       ^^^^^^^^^^^^^^^^^
+test/widget_test.dart:211:30: Error: Undefined name 'PumpingTrend'.
+    expect(comparison.trend, PumpingTrend.increased);
+                             ^^^^^^^^^^^^
+test/widget_test.dart:216:24: Error: Undefined name 'PumpingComparison'.
+    final comparison = PumpingComparison.fromEvents(
+                       ^^^^^^^^^^^^^^^^^
+test/widget_test.dart:226:30: Error: Undefined name 'PumpingTrend'.
+    expect(comparison.trend, PumpingTrend.decreased);
+                             ^^^^^^^^^^^^
+test/widget_test.dart:231:24: Error: Undefined name 'PumpingComparison'.
+    final comparison = PumpingComparison.fromEvents(
+                       ^^^^^^^^^^^^^^^^^
+test/widget_test.dart:240:30: Error: Undefined name 'PumpingTrend'.
+    expect(comparison.trend, PumpingTrend.stable);
+                             ^^^^^^^^^^^^
+test/widget_test.dart:245:24: Error: Undefined name 'PumpingComparison'.
+    final comparison = PumpingComparison.fromEvents(
+                       ^^^^^^^^^^^^^^^^^
+test/widget_test.dart:255:30: Error: Undefined name 'PumpingTrend'.
+    expect(comparison.trend, PumpingTrend.insufficientData);
+                             ^^^^^^^^^^^^
+test/widget_test.dart:259:24: Error: Undefined name 'PumpingComparison'.
+    final comparison = PumpingComparison.fromEvents(
+                       ^^^^^^^^^^^^^^^^^
+test/widget_test.dart:265:30: Error: Undefined name 'PumpingTrend'.
+    expect(comparison.trend, PumpingTrend.insufficientData);
+                             ^^^^^^^^^^^^
+test/widget_test.dart:272:24: Error: Undefined name 'PumpingComparison'.
+    final comparison = PumpingComparison.fromEvents(
+                       ^^^^^^^^^^^^^^^^^
+test/widget_test.dart:288:24: Error: Undefined name 'PumpingComparison'.
+    final comparison = PumpingComparison.fromEvents(
+                       ^^^^^^^^^^^^^^^^^
+test/widget_test.dart:304:24: Error: Undefined name 'PumpingComparison'.
+    final comparison = PumpingComparison.fromEvents(
+                       ^^^^^^^^^^^^^^^^^
+test/widget_test.dart:320:24: Error: Undefined name 'PumpingComparison'.
+    final comparison = PumpingComparison.fromEvents(
+                       ^^^^^^^^^^^^^^^^^
+test/widget_test.dart:339:18: Error: Undefined name 'ReminderPlanner'.
+    final plan = ReminderPlanner.feeding(
+                 ^^^^^^^^^^^^^^^
+test/widget_test.dart:356:19: Error: Method not found: 'CareEvent'.
+    final event = CareEvent(
+                  ^^^^^^^^^
+test/widget_test.dart:364:18: Error: Undefined name 'ReminderPlanner'.
+    final plan = ReminderPlanner.medicine(
+                 ^^^^^^^^^^^^^^^
+test/widget_test.dart:379:13: Error: Method not found: 'Vaccination'.
+      next: Vaccination(
+            ^^^^^^^^^^^
+test/widget_test.dart:376:18: Error: Undefined name 'ReminderPlanner'.
+    final plan = ReminderPlanner.vaccination(
+                 ^^^^^^^^^^^^^^^
+test/widget_test.dart:395:12: Error: Undefined name 'EgyptVaccinationSchedule'.
+    expect(EgyptVaccinationSchedule.items, hasLength(18));
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+test/widget_test.dart:397:7: Error: Undefined name 'EgyptVaccinationSchedule'.
+      EgyptVaccinationSchedule.sourceName,
+      ^^^^^^^^^^^^^^^^^^^^^^^^
+test/widget_test.dart:400:12: Error: Undefined name 'EgyptVaccinationSchedule'.
+    expect(EgyptVaccinationSchedule.sourceUrl, contains('ehc.gov.eg'));
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+test/widget_test.dart:409:9: Error: Undefined name 'EgyptVaccinationSchedule'.
+        EgyptVaccinationSchedule.scheduledDate(birth, 0),
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+test/widget_test.dart:413:9: Error: Undefined name 'EgyptVaccinationSchedule'.
+        EgyptVaccinationSchedule.scheduledDate(birth, 60),
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+test/widget_test.dart:417:9: Error: Undefined name 'EgyptVaccinationSchedule'.
+        EgyptVaccinationSchedule.scheduledDate(birth, 548),
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+test/widget_test.dart:424:19: Error: Undefined name 'CareEvent'.
+    final event = CareEvent.fromMap({
+                  ^^^^^^^^^
+test/widget_test.dart:438:19: Error: Undefined name 'CareEvent'.
+    final event = CareEvent.fromMap({
+                  ^^^^^^^^^
+test/widget_test.dart:456:27: Error: Couldn't find constructor 'RequestTimeoutException'.
+      readableError(const RequestTimeoutException()),
+                          ^^^^^^^^^^^^^^^^^^^^^^^
+test/widget_test.dart:456:7: Error: Method not found: 'readableError'.
+      readableError(const RequestTimeoutException()),
+      ^^^^^^^^^^^^^
+test/widget_test.dart:460:7: Error: Method not found: 'readableError'.
+      readableError(Exception('Request timed out')),
+      ^^^^^^^^^^^^^
+test/widget_test.dart:468:21: Error: Undefined name 'CareEvent'.
+      final event = CareEvent.fromMap({
+                    ^^^^^^^^^
+test/widget_test.dart:492:7: Error: Undefined name 'DashboardRepository'.
+      DashboardRepository.calculateSleepToday(events, start, end, now),
+      ^^^^^^^^^^^^^^^^^^^
+test/widget_test.dart:506:7: Error: Undefined name 'DashboardRepository'.
+      DashboardRepository.calculateSleepToday(events, start, end, now),
+      ^^^^^^^^^^^^^^^^^^^
+test/widget_test.dart:516:7: Error: Undefined name 'DashboardRepository'.
+      DashboardRepository.calculateSleepToday(
+      ^^^^^^^^^^^^^^^^^^^
+test/widget_test.dart:533:7: Error: Undefined name 'DashboardRepository'.
+      DashboardRepository.calculateSleepToday(
+      ^^^^^^^^^^^^^^^^^^^
+test/widget_test.dart:553:19: Error: Undefined name 'DashboardRepository'.
+    final total = DashboardRepository.calculateSleepToday(
+                  ^^^^^^^^^^^^^^^^^^^
+test/widget_test.dart:563:12: Error: Method not found: 'isValidTaskTitle'.
+    expect(isValidTaskTitle(null), isFalse);
+           ^^^^^^^^^^^^^^^^
+test/widget_test.dart:564:12: Error: Method not found: 'isValidTaskTitle'.
+    expect(isValidTaskTitle(''), isFalse);
+           ^^^^^^^^^^^^^^^^
+test/widget_test.dart:565:12: Error: Method not found: 'isValidTaskTitle'.
+    expect(isValidTaskTitle('   '), isFalse);
+           ^^^^^^^^^^^^^^^^
+test/widget_test.dart:566:12: Error: Method not found: 'isValidTaskTitle'.
+    expect(isValidTaskTitle('.'), isFalse);
+           ^^^^^^^^^^^^^^^^
+test/widget_test.dart:567:12: Error: Method not found: 'isValidTaskTitle'.
+    expect(isValidTaskTitle('..'), isFalse);
+           ^^^^^^^^^^^^^^^^
+test/widget_test.dart:568:12: Error: Method not found: 'isValidTaskTitle'.
+    expect(isValidTaskTitle('...'), isFalse);
+           ^^^^^^^^^^^^^^^^
+test/widget_test.dart:569:12: Error: Method not found: 'isValidTaskTitle'.
+    expect(isValidTaskTitle('!!!'), isFalse);
+           ^^^^^^^^^^^^^^^^
+test/widget_test.dart:570:12: Error: Method not found: 'isValidTaskTitle'.
+    expect(isValidTaskTitle('موعد الطبيب'), isTrue);
+           ^^^^^^^^^^^^^^^^
+test/widget_test.dart:578:5: Error: Undefined name 'ChildSession'.
+    ChildSession.instance.addListener(listener);
+    ^^^^^^^^^^^^
+test/widget_test.dart:580:7: Error: Undefined name 'ChildSession'.
+      ChildSession.instance.removeListener(listener);
+      ^^^^^^^^^^^^
+test/widget_test.dart:581:7: Error: Undefined name 'ChildSession'.
+      ChildSession.instance.clear();
+      ^^^^^^^^^^^^
+test/widget_test.dart:584:5: Error: Undefined name 'ChildSession'.
+    ChildSession.instance.setChildren([child1, child2]);
+    ^^^^^^^^^^^^
+test/widget_test.dart:585:5: Error: Undefined name 'ChildSession'.
+    ChildSession.instance.selectChild(child2);
+    ^^^^^^^^^^^^
+test/widget_test.dart:587:12: Error: Undefined name 'ChildSession'.
+    expect(ChildSession.instance.selectedChild?.id, 'c2');
+           ^^^^^^^^^^^^
+test/widget_test.dart:595:13: Error: Undefined name 'LogTimerState'.
+      await LogTimerState.instance.load();
+            ^^^^^^^^^^^^^
+test/widget_test.dart:598:13: Error: Undefined name 'LogTimerState'.
+      await LogTimerState.instance.startSleep('c1', start);
+            ^^^^^^^^^^^^^
+test/widget_test.dart:599:14: Error: Undefined name 'LogTimerState'.
+      expect(LogTimerState.instance.pendingSleepStart('c1'), start);
+             ^^^^^^^^^^^^^
+test/widget_test.dart:601:13: Error: Undefined name 'LogTimerState'.
+      await LogTimerState.instance.finishSleep('c1');
+            ^^^^^^^^^^^^^
+test/widget_test.dart:602:14: Error: Undefined name 'LogTimerState'.
+      expect(LogTimerState.instance.pendingSleepStart('c1'), isNull);
+             ^^^^^^^^^^^^^
+test/widget_test.dart:608:11: Error: Undefined name 'LogTimerState'.
+    await LogTimerState.instance.load();
+          ^^^^^^^^^^^^^
+test/widget_test.dart:611:11: Error: Undefined name 'LogTimerState'.
+    await LogTimerState.instance.startPumping('c1', start);
+          ^^^^^^^^^^^^^
+test/widget_test.dart:613:12: Error: Undefined name 'LogTimerState'.
+    expect(LogTimerState.instance.pendingPumpingStart('c1'), start);
+           ^^^^^^^^^^^^^
+test/widget_test.dart:614:12: Error: Undefined name 'LogTimerState'.
+    expect(LogTimerState.instance.pendingPumpingStart('c2'), isNull);
+           ^^^^^^^^^^^^^
+test/widget_test.dart:616:11: Error: Undefined name 'LogTimerState'.
+    await LogTimerState.instance.finishPumping('c2');
+          ^^^^^^^^^^^^^
+test/widget_test.dart:617:12: Error: Undefined name 'LogTimerState'.
+    expect(LogTimerState.instance.pendingPumpingStart('c1'), start);
+           ^^^^^^^^^^^^^
+test/widget_test.dart:619:11: Error: Undefined name 'LogTimerState'.
+    await LogTimerState.instance.finishPumping('c1');
+          ^^^^^^^^^^^^^
+test/widget_test.dart:620:12: Error: Undefined name 'LogTimerState'.
+    expect(LogTimerState.instance.pendingPumpingStart('c1'), isNull);
+           ^^^^^^^^^^^^^
+test/widget_test.dart:626:37: Error: Couldn't find constructor 'NumuwApp'.
+      await tester.pumpWidget(const NumuwApp(startupError: 'missing config'));
+                                    ^^^^^^^^
+test/widget_test.dart:637:18: Error: Method not found: 'MainShell'.
+          child: MainShell(),
+                 ^^^^^^^^^
+test/widget_test.dart:641:24: Error: Undefined name 'HomeScreen'.
+    expect(find.byType(HomeScreen), findsOneWidget);
+                       ^^^^^^^^^^
+test/widget_test.dart:642:24: Error: Undefined name 'QuickLogScreen'.
+    expect(find.byType(QuickLogScreen), findsNothing);
+                       ^^^^^^^^^^^^^^
+test/widget_test.dart:646:35: Error: Couldn't find constructor 'NumuwApp'.
+    await tester.pumpWidget(const NumuwApp(startupError: 'missing config'));
+                                  ^^^^^^^^
+test/widget_test.dart:660:18: Error: Method not found: 'SignInScreen'.
+          child: SignInScreen(),
+                 ^^^^^^^^^^^^
+test/widget_test.dart:682:18: Error: Method not found: 'SignUpScreen'.
+          child: SignUpScreen(),
+                 ^^^^^^^^^^^^
+test/widget_test.dart:706:48: Error: Method not found: 'PumpingLogPane'.
+            body: SingleChildScrollView(child: PumpingLogPane(onBack: () {})),
+                                               ^^^^^^^^^^^^^^
+test/widget_test.dart:719:71: Error: Method not found: 'CareEvent'.
+CareEvent _sleep(String id, DateTime startedAt, DateTime? endedAt) => CareEvent(
+                                                                      ^^^^^^^^^
+test/widget_test.dart:728:54: Error: Method not found: 'CareEvent'.
+CareEvent _feeding(String id, DateTime startedAt) => CareEvent(
+                                                     ^^^^^^^^^
+test/widget_test.dart:740:35: Error: Method not found: 'ChildProfile'.
+ChildProfile _child(String id) => ChildProfile(
+                                  ^^^^^^^^^^^^
+test/widget_test.dart:755:7: Error: Method not found: 'CareEvent'.
+}) => CareEvent(
+      ^^^^^^^^^
+00:00 +0 -13: loading /home/runner/work/Numuw/Numuw/test/widget_test.dart [E]
+  Failed to load "/home/runner/work/Numuw/Numuw/test/widget_test.dart":
+  Compilation failed for testPath=/home/runner/work/Numuw/Numuw/test/widget_test.dart: Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/core/formatters/arabic_formatters.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/core/errors/app_error.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/core/numuw_app.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/data/egypt_vaccination_schedule.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/care_event.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/child_guardian.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/child_profile.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/pumping_analytics.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/models/vaccination.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/repositories/dashboard_repository.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/repositories/family_task_repository.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/auth/sign_in_screen.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/auth/sign_up_screen.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/home_screen.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/main_shell.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/pumping_screen.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/screens/quick_log_screen.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/services/notification_service.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/state/child_session.dart'.
+  Error: Couldn't resolve the package 'flutter_application_1' in 'package:flutter_application_1/state/log_timer_state.dart'.
+  test/widget_test.dart:5:8: Error: Not found: 'package:flutter_application_1/core/formatters/arabic_formatters.dart'
+  import 'package:flutter_application_1/core/formatters/arabic_formatters.dart';
+         ^
+  test/widget_test.dart:6:8: Error: Not found: 'package:flutter_application_1/core/errors/app_error.dart'
+  import 'package:flutter_application_1/core/errors/app_error.dart';
+         ^
+  test/widget_test.dart:7:8: Error: Not found: 'package:flutter_application_1/core/numuw_app.dart'
+  import 'package:flutter_application_1/core/numuw_app.dart';
+         ^
+  test/widget_test.dart:8:8: Error: Not found: 'package:flutter_application_1/data/egypt_vaccination_schedule.dart'
+  import 'package:flutter_application_1/data/egypt_vaccination_schedule.dart';
+         ^
+  test/widget_test.dart:9:8: Error: Not found: 'package:flutter_application_1/models/care_event.dart'
+  import 'package:flutter_application_1/models/care_event.dart';
+         ^
+  test/widget_test.dart:10:8: Error: Not found: 'package:flutter_application_1/models/child_guardian.dart'
+  import 'package:flutter_application_1/models/child_guardian.dart';
+         ^
+  test/widget_test.dart:11:8: Error: Not found: 'package:flutter_application_1/models/child_profile.dart'
+  import 'package:flutter_application_1/models/child_profile.dart';
+         ^
+  test/widget_test.dart:12:8: Error: Not found: 'package:flutter_application_1/models/pumping_analytics.dart'
+  import 'package:flutter_application_1/models/pumping_analytics.dart';
+         ^
+  test/widget_test.dart:13:8: Error: Not found: 'package:flutter_application_1/models/vaccination.dart'
+  import 'package:flutter_application_1/models/vaccination.dart';
+         ^
+  test/widget_test.dart:14:8: Error: Not found: 'package:flutter_application_1/repositories/dashboard_repository.dart'
+  import 'package:flutter_application_1/repositories/dashboard_repository.dart';
+         ^
+  test/widget_test.dart:15:8: Error: Not found: 'package:flutter_application_1/repositories/family_task_repository.dart'
+  import 'package:flutter_application_1/repositories/family_task_repository.dart';
+         ^
+  test/widget_test.dart:16:8: Error: Not found: 'package:flutter_application_1/screens/auth/sign_in_screen.dart'
+  import 'package:flutter_application_1/screens/auth/sign_in_screen.dart';
+         ^
+  test/widget_test.dart:17:8: Error: Not found: 'package:flutter_application_1/screens/auth/sign_up_screen.dart'
+  import 'package:flutter_application_1/screens/auth/sign_up_screen.dart';
+         ^
+  test/widget_test.dart:18:8: Error: Not found: 'package:flutter_application_1/screens/home_screen.dart'
+  import 'package:flutter_application_1/screens/home_screen.dart';
+         ^
+  test/widget_test.dart:19:8: Error: Not found: 'package:flutter_application_1/screens/main_shell.dart'
+  import 'package:flutter_application_1/screens/main_shell.dart';
+         ^
+  test/widget_test.dart:20:8: Error: Not found: 'package:flutter_application_1/screens/pumping_screen.dart'
+  import 'package:flutter_application_1/screens/pumping_screen.dart';
+         ^
+  test/widget_test.dart:21:8: Error: Not found: 'package:flutter_application_1/screens/quick_log_screen.dart'
+  import 'package:flutter_application_1/screens/quick_log_screen.dart';
+         ^
+  test/widget_test.dart:22:8: Error: Not found: 'package:flutter_application_1/services/notification_service.dart'
+  import 'package:flutter_application_1/services/notification_service.dart';
+         ^
+  test/widget_test.dart:23:8: Error: Not found: 'package:flutter_application_1/state/child_session.dart'
+  import 'package:flutter_application_1/state/child_session.dart';
+         ^
+  test/widget_test.dart:24:8: Error: Not found: 'package:flutter_application_1/state/log_timer_state.dart'
+  import 'package:flutter_application_1/state/log_timer_state.dart';
+         ^
+  test/widget_test.dart:719:1: Error: Type 'CareEvent' not found.
+  CareEvent _sleep(String id, DateTime startedAt, DateTime? endedAt) => CareEvent(
+  ^^^^^^^^^
+  test/widget_test.dart:728:1: Error: Type 'CareEvent' not found.
+  CareEvent _feeding(String id, DateTime startedAt) => CareEvent(
+  ^^^^^^^^^
+  test/widget_test.dart:740:1: Error: Type 'ChildProfile' not found.
+  ChildProfile _child(String id) => ChildProfile(
+  ^^^^^^^^^^^^
+  test/widget_test.dart:749:1: Error: Type 'CareEvent' not found.
+  CareEvent _pumping(
+  ^^^^^^^^^
+  test/widget_test.dart:28:19: Error: Method not found: 'ChildProfile'.
+      final child = ChildProfile(
+                    ^^^^^^^^^^^^
+  test/widget_test.dart:38:7: Error: Undefined name 'ArabicFormatters'.
+        ArabicFormatters.age(child, DateTime(2026, 1, 17)),
+        ^^^^^^^^^^^^^^^^
+  test/widget_test.dart:44:19: Error: Undefined name 'ChildProfile'.
+      final child = ChildProfile.fromMap({
+                    ^^^^^^^^^^^^
+  test/widget_test.dart:62:22: Error: Undefined name 'ChildGuardian'.
+      final guardian = ChildGuardian.fromMap({
+                       ^^^^^^^^^^^^^
+  test/widget_test.dart:77:19: Error: Undefined name 'CareEvent'.
+      final event = CareEvent.fromMap({
+                    ^^^^^^^^^
+  test/widget_test.dart:146:19: Error: Method not found: 'CareEvent'.
+      final event = CareEvent(
+                    ^^^^^^^^^
+  test/widget_test.dart:163:19: Error: Method not found: 'CareEvent'.
+      final event = CareEvent(
+                    ^^^^^^^^^
+  test/widget_test.dart:183:26: Error: Undefined name 'PumpingComparison'.
+        final comparison = PumpingComparison.fromEvents(
+                           ^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:201:24: Error: Undefined name 'PumpingComparison'.
+      final comparison = PumpingComparison.fromEvents(
+                         ^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:211:30: Error: Undefined name 'PumpingTrend'.
+      expect(comparison.trend, PumpingTrend.increased);
+                               ^^^^^^^^^^^^
+  test/widget_test.dart:216:24: Error: Undefined name 'PumpingComparison'.
+      final comparison = PumpingComparison.fromEvents(
+                         ^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:226:30: Error: Undefined name 'PumpingTrend'.
+      expect(comparison.trend, PumpingTrend.decreased);
+                               ^^^^^^^^^^^^
+  test/widget_test.dart:231:24: Error: Undefined name 'PumpingComparison'.
+      final comparison = PumpingComparison.fromEvents(
+                         ^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:240:30: Error: Undefined name 'PumpingTrend'.
+      expect(comparison.trend, PumpingTrend.stable);
+                               ^^^^^^^^^^^^
+  test/widget_test.dart:245:24: Error: Undefined name 'PumpingComparison'.
+      final comparison = PumpingComparison.fromEvents(
+                         ^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:255:30: Error: Undefined name 'PumpingTrend'.
+      expect(comparison.trend, PumpingTrend.insufficientData);
+                               ^^^^^^^^^^^^
+  test/widget_test.dart:259:24: Error: Undefined name 'PumpingComparison'.
+      final comparison = PumpingComparison.fromEvents(
+                         ^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:265:30: Error: Undefined name 'PumpingTrend'.
+      expect(comparison.trend, PumpingTrend.insufficientData);
+                               ^^^^^^^^^^^^
+  test/widget_test.dart:272:24: Error: Undefined name 'PumpingComparison'.
+      final comparison = PumpingComparison.fromEvents(
+                         ^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:288:24: Error: Undefined name 'PumpingComparison'.
+      final comparison = PumpingComparison.fromEvents(
+                         ^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:304:24: Error: Undefined name 'PumpingComparison'.
+      final comparison = PumpingComparison.fromEvents(
+                         ^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:320:24: Error: Undefined name 'PumpingComparison'.
+      final comparison = PumpingComparison.fromEvents(
+                         ^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:339:18: Error: Undefined name 'ReminderPlanner'.
+      final plan = ReminderPlanner.feeding(
+                   ^^^^^^^^^^^^^^^
+  test/widget_test.dart:356:19: Error: Method not found: 'CareEvent'.
+      final event = CareEvent(
+                    ^^^^^^^^^
+  test/widget_test.dart:364:18: Error: Undefined name 'ReminderPlanner'.
+      final plan = ReminderPlanner.medicine(
+                   ^^^^^^^^^^^^^^^
+  test/widget_test.dart:379:13: Error: Method not found: 'Vaccination'.
+        next: Vaccination(
+              ^^^^^^^^^^^
+  test/widget_test.dart:376:18: Error: Undefined name 'ReminderPlanner'.
+      final plan = ReminderPlanner.vaccination(
+                   ^^^^^^^^^^^^^^^
+  test/widget_test.dart:395:12: Error: Undefined name 'EgyptVaccinationSchedule'.
+      expect(EgyptVaccinationSchedule.items, hasLength(18));
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:397:7: Error: Undefined name 'EgyptVaccinationSchedule'.
+        EgyptVaccinationSchedule.sourceName,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:400:12: Error: Undefined name 'EgyptVaccinationSchedule'.
+      expect(EgyptVaccinationSchedule.sourceUrl, contains('ehc.gov.eg'));
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:409:9: Error: Undefined name 'EgyptVaccinationSchedule'.
+          EgyptVaccinationSchedule.scheduledDate(birth, 0),
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:413:9: Error: Undefined name 'EgyptVaccinationSchedule'.
+          EgyptVaccinationSchedule.scheduledDate(birth, 60),
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:417:9: Error: Undefined name 'EgyptVaccinationSchedule'.
+          EgyptVaccinationSchedule.scheduledDate(birth, 548),
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:424:19: Error: Undefined name 'CareEvent'.
+      final event = CareEvent.fromMap({
+                    ^^^^^^^^^
+  test/widget_test.dart:438:19: Error: Undefined name 'CareEvent'.
+      final event = CareEvent.fromMap({
+                    ^^^^^^^^^
+  test/widget_test.dart:456:27: Error: Couldn't find constructor 'RequestTimeoutException'.
+        readableError(const RequestTimeoutException()),
+                            ^^^^^^^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:456:7: Error: Method not found: 'readableError'.
+        readableError(const RequestTimeoutException()),
+        ^^^^^^^^^^^^^
+  test/widget_test.dart:460:7: Error: Method not found: 'readableError'.
+        readableError(Exception('Request timed out')),
+        ^^^^^^^^^^^^^
+  test/widget_test.dart:468:21: Error: Undefined name 'CareEvent'.
+        final event = CareEvent.fromMap({
+                      ^^^^^^^^^
+  test/widget_test.dart:492:7: Error: Undefined name 'DashboardRepository'.
+        DashboardRepository.calculateSleepToday(events, start, end, now),
+        ^^^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:506:7: Error: Undefined name 'DashboardRepository'.
+        DashboardRepository.calculateSleepToday(events, start, end, now),
+        ^^^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:516:7: Error: Undefined name 'DashboardRepository'.
+        DashboardRepository.calculateSleepToday(
+        ^^^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:533:7: Error: Undefined name 'DashboardRepository'.
+        DashboardRepository.calculateSleepToday(
+        ^^^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:553:19: Error: Undefined name 'DashboardRepository'.
+      final total = DashboardRepository.calculateSleepToday(
+                    ^^^^^^^^^^^^^^^^^^^
+  test/widget_test.dart:563:12: Error: Method not found: 'isValidTaskTitle'.
+      expect(isValidTaskTitle(null), isFalse);
+             ^^^^^^^^^^^^^^^^
+  test/widget_test.dart:564:12: Error: Method not found: 'isValidTaskTitle'.
+      expect(isValidTaskTitle(''), isFalse);
+             ^^^^^^^^^^^^^^^^
+  test/widget_test.dart:565:12: Error: Method not found: 'isValidTaskTitle'.
+      expect(isValidTaskTitle('   '), isFalse);
+             ^^^^^^^^^^^^^^^^
+  test/widget_test.dart:566:12: Error: Method not found: 'isValidTaskTitle'.
+      expect(isValidTaskTitle('.'), isFalse);
+             ^^^^^^^^^^^^^^^^
+  test/widget_test.dart:567:12: Error: Method not found: 'isValidTaskTitle'.
+      expect(isValidTaskTitle('..'), isFalse);
+             ^^^^^^^^^^^^^^^^
+  test/widget_test.dart:568:12: Error: Method not found: 'isValidTaskTitle'.
+      expect(isValidTaskTitle('...'), isFalse);
+             ^^^^^^^^^^^^^^^^
+  test/widget_test.dart:569:12: Error: Method not found: 'isValidTaskTitle'.
+      expect(isValidTaskTitle('!!!'), isFalse);
+             ^^^^^^^^^^^^^^^^
+  test/widget_test.dart:570:12: Error: Method not found: 'isValidTaskTitle'.
+      expect(isValidTaskTitle('موعد الطبيب'), isTrue);
+             ^^^^^^^^^^^^^^^^
+  test/widget_test.dart:578:5: Error: Undefined name 'ChildSession'.
+      ChildSession.instance.addListener(listener);
+      ^^^^^^^^^^^^
+  test/widget_test.dart:580:7: Error: Undefined name 'ChildSession'.
+        ChildSession.instance.removeListener(listener);
+        ^^^^^^^^^^^^
+  test/widget_test.dart:581:7: Error: Undefined name 'ChildSession'.
+        ChildSession.instance.clear();
+        ^^^^^^^^^^^^
+  test/widget_test.dart:584:5: Error: Undefined name 'ChildSession'.
+      ChildSession.instance.setChildren([child1, child2]);
+      ^^^^^^^^^^^^
+  test/widget_test.dart:585:5: Error: Undefined name 'ChildSession'.
+      ChildSession.instance.selectChild(child2);
+      ^^^^^^^^^^^^
+  test/widget_test.dart:587:12: Error: Undefined name 'ChildSession'.
+      expect(ChildSession.instance.selectedChild?.id, 'c2');
+             ^^^^^^^^^^^^
+  test/widget_test.dart:595:13: Error: Undefined name 'LogTimerState'.
+        await LogTimerState.instance.load();
+              ^^^^^^^^^^^^^
+  test/widget_test.dart:598:13: Error: Undefined name 'LogTimerState'.
+        await LogTimerState.instance.startSleep('c1', start);
+              ^^^^^^^^^^^^^
+  test/widget_test.dart:599:14: Error: Undefined name 'LogTimerState'.
+        expect(LogTimerState.instance.pendingSleepStart('c1'), start);
+               ^^^^^^^^^^^^^
+  test/widget_test.dart:601:13: Error: Undefined name 'LogTimerState'.
+        await LogTimerState.instance.finishSleep('c1');
+              ^^^^^^^^^^^^^
+  test/widget_test.dart:602:14: Error: Undefined name 'LogTimerState'.
+        expect(LogTimerState.instance.pendingSleepStart('c1'), isNull);
+               ^^^^^^^^^^^^^
+  test/widget_test.dart:608:11: Error: Undefined name 'LogTimerState'.
+      await LogTimerState.instance.load();
+            ^^^^^^^^^^^^^
+  test/widget_test.dart:611:11: Error: Undefined name 'LogTimerState'.
+      await LogTimerState.instance.startPumping('c1', start);
+            ^^^^^^^^^^^^^
+  test/widget_test.dart:613:12: Error: Undefined name 'LogTimerState'.
+      expect(LogTimerState.instance.pendingPumpingStart('c1'), start);
+             ^^^^^^^^^^^^^
+  test/widget_test.dart:614:12: Error: Undefined name 'LogTimerState'.
+      expect(LogTimerState.instance.pendingPumpingStart('c2'), isNull);
+             ^^^^^^^^^^^^^
+  test/widget_test.dart:616:11: Error: Undefined name 'LogTimerState'.
+      await LogTimerState.instance.finishPumping('c2');
+            ^^^^^^^^^^^^^
+  test/widget_test.dart:617:12: Error: Undefined name 'LogTimerState'.
+      expect(LogTimerState.instance.pendingPumpingStart('c1'), start);
+             ^^^^^^^^^^^^^
+  test/widget_test.dart:619:11: Error: Undefined name 'LogTimerState'.
+      await LogTimerState.instance.finishPumping('c1');
+            ^^^^^^^^^^^^^
+  test/widget_test.dart:620:12: Error: Undefined name 'LogTimerState'.
+      expect(LogTimerState.instance.pendingPumpingStart('c1'), isNull);
+             ^^^^^^^^^^^^^
+  test/widget_test.dart:626:37: Error: Couldn't find constructor 'NumuwApp'.
+        await tester.pumpWidget(const NumuwApp(startupError: 'missing config'));
+                                      ^^^^^^^^
+  test/widget_test.dart:637:18: Error: Method not found: 'MainShell'.
+            child: MainShell(),
+                   ^^^^^^^^^
+  test/widget_test.dart:641:24: Error: Undefined name 'HomeScreen'.
+      expect(find.byType(HomeScreen), findsOneWidget);
+                         ^^^^^^^^^^
+  test/widget_test.dart:642:24: Error: Undefined name 'QuickLogScreen'.
+      expect(find.byType(QuickLogScreen), findsNothing);
+                         ^^^^^^^^^^^^^^
+  test/widget_test.dart:646:35: Error: Couldn't find constructor 'NumuwApp'.
+      await tester.pumpWidget(const NumuwApp(startupError: 'missing config'));
+                                    ^^^^^^^^
+  test/widget_test.dart:660:18: Error: Method not found: 'SignInScreen'.
+            child: SignInScreen(),
+                   ^^^^^^^^^^^^
+  test/widget_test.dart:682:18: Error: Method not found: 'SignUpScreen'.
+            child: SignUpScreen(),
+                   ^^^^^^^^^^^^
+  test/widget_test.dart:706:48: Error: Method not found: 'PumpingLogPane'.
+              body: SingleChildScrollView(child: PumpingLogPane(onBack: () {})),
+                                                 ^^^^^^^^^^^^^^
+  test/widget_test.dart:719:71: Error: Method not found: 'CareEvent'.
+  CareEvent _sleep(String id, DateTime startedAt, DateTime? endedAt) => CareEvent(
+                                                                        ^^^^^^^^^
+  test/widget_test.dart:728:54: Error: Method not found: 'CareEvent'.
+  CareEvent _feeding(String id, DateTime startedAt) => CareEvent(
+                                                       ^^^^^^^^^
+  test/widget_test.dart:740:35: Error: Method not found: 'ChildProfile'.
+  ChildProfile _child(String id) => ChildProfile(
+                                    ^^^^^^^^^^^^
+  test/widget_test.dart:755:7: Error: Method not found: 'CareEvent'.
+  }) => CareEvent(
+        ^^^^^^^^^
+  .
+00:00 +0 -13: Some tests failed.
+
+Failing tests:
+  /home/runner/work/Numuw/Numuw/test/ai_assistant_response_test.dart: loading /home/runner/work/Numuw/Numuw/test/ai_assistant_response_test.dart
+  /home/runner/work/Numuw/Numuw/test/ai_assistant_service_test.dart: loading /home/runner/work/Numuw/Numuw/test/ai_assistant_service_test.dart
+  /home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart: loading /home/runner/work/Numuw/Numuw/test/assistant_screen_test.dart
+  /home/runner/work/Numuw/Numuw/test/growth_chart_series_test.dart: loading /home/runner/work/Numuw/Numuw/test/growth_chart_series_test.dart
+  ... and 9 more

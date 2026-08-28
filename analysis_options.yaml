@@ -1,7 +1,9 @@
-﻿include: package:flutter_lints/flutter.yaml
+include: package:flutter_lints/flutter.yaml
 
 linter:
   rules:
     avoid_print: false
     curly_braces_in_flow_control_structures: false
+    prefer_initializing_formals: false
+    prefer_interpolation_to_compose_strings: false
     use_null_aware_elements: false

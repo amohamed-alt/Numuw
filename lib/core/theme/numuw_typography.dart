@@ -27,20 +27,20 @@ class NumuwTypography {
           bodySmall: TextStyle(fontSize: 12, height: 1.45, color: secondary),
           titleLarge: TextStyle(
             fontSize: 24,
-            fontWeight: FontWeight.w900,
-            height: 1.2,
+            fontWeight: FontWeight.w700,
+            height: 1.25,
             color: primary,
           ),
           titleMedium: TextStyle(
             fontSize: 18,
-            fontWeight: FontWeight.w800,
-            height: 1.25,
+            fontWeight: FontWeight.w700,
+            height: 1.3,
             color: primary,
           ),
           titleSmall: TextStyle(
             fontSize: 14,
-            fontWeight: FontWeight.w800,
-            height: 1.3,
+            fontWeight: FontWeight.w600,
+            height: 1.35,
             color: primary,
           ),
         );

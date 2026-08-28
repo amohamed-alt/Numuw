@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../core/app_colors.dart';
 import '../core/errors/app_error.dart';
 import '../models/child_profile.dart';
 import '../repositories/child_repository.dart';
@@ -37,6 +36,7 @@ class _AuthGateState extends State<AuthGate> {
   String _authScreen = 'auto';
   String? _pendingEmail;
   String? _lastAppliedChildrenSignature;
+  bool _clearScheduled = false;
 
   AuthService get _auth => widget.authService ?? AuthService();
   ChildRepository get _children => widget.childRepository ?? ChildRepository();
@@ -112,9 +112,10 @@ class _AuthGateState extends State<AuthGate> {
   }
 
   Widget _signedOutFlow() {
-    ChildSession.instance.clear();
     _loadedUserId = null;
     _childrenFuture = null;
+    _lastAppliedChildrenSignature = null;
+    _scheduleSignedOutClear();
     if (_authScreen == 'confirm' && _pendingEmail != null) {
       return EmailConfirmationScreen(
         email: _pendingEmail!,
@@ -147,6 +148,15 @@ class _AuthGateState extends State<AuthGate> {
         if (mounted) setState(() => _authScreen = 'signup');
       },
     );
+  }
+
+  void _scheduleSignedOutClear() {
+    if (_clearScheduled) return;
+    _clearScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _clearScheduled = false;
+      ChildSession.instance.clear();
+    });
   }
 
   void _ensureChildren(String userId) {
@@ -197,7 +207,7 @@ class EmailConfirmationScreen extends StatelessWidget {
           children: [
             const IconBadge(
               icon: '📧',
-              background: AppColors.mintLight,
+              background: Color(0xFFDFF5EF),
               size: 96,
             ),
             const SizedBox(height: 24),
@@ -207,7 +217,7 @@ class EmailConfirmationScreen extends StatelessWidget {
               style: TextStyle(
                 color: numuwTextColor(),
                 fontSize: 24,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: 12),
@@ -220,17 +230,8 @@ class EmailConfirmationScreen extends StatelessWidget {
                 height: 1.7,
               ),
             ),
-            const SizedBox(height: 32),
-            PrimaryButton(
-              label: 'العودة إلى تسجيل الدخول',
-              onPressed: () => onSignOut(),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'لم يصلكِ البريد؟ يمكنك طلب رابط جديد من شاشة تسجيل الدخول.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: numuwSecondaryTextColor(), fontSize: 14),
-            ),
+            const SizedBox(height: 24),
+            PrimaryButton(label: 'تسجيل الخروج', onPressed: onSignOut),
           ],
         ),
       ),
@@ -257,37 +258,42 @@ class _StateScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: AppPage(
-        child: Column(
-          children: [
-            AppHeader(title: title, subtitle: message, showNotification: false),
-            const SizedBox(height: 24),
-            SoftCard(
-              padding: const EdgeInsetsDirectional.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (loading)
-                    const CircularProgressIndicator()
-                  else
-                    Icon(icon, color: numuwAccentColor(), size: 46),
-                  const SizedBox(height: 16),
-                  Text(
-                    message,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: numuwTextColor(),
-                      fontWeight: FontWeight.w800,
-                      height: 1.6,
-                    ),
+        padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 24),
+        child: Center(
+          child: SoftCard(
+            padding: const EdgeInsetsDirectional.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (loading)
+                  const CircularProgressIndicator()
+                else
+                  Icon(icon, color: numuwAccentColor(), size: 40),
+                const SizedBox(height: 16),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 22,
                   ),
-                  if (onRetry != null) ...[
-                    const SizedBox(height: 16),
-                    PrimaryButton(label: 'إعادة المحاولة', onPressed: onRetry),
-                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: numuwSecondaryTextColor(),
+                    height: 1.6,
+                  ),
+                ),
+                if (onRetry != null) ...[
+                  const SizedBox(height: 16),
+                  PrimaryButton(label: 'إعادة المحاولة', onPressed: onRetry),
                 ],
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
