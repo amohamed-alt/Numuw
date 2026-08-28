@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/app_colors.dart';
+import '../../../widgets/app_bottom_navigation.dart';
 import '../../../widgets/classy/classy_home_view.dart';
-import '../../../widgets/numuw_classy_components.dart';
 import 'preview_shared.dart';
 
 class PreviewHomeScreen extends StatelessWidget {
@@ -13,10 +13,11 @@ class PreviewHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => PreviewScreenScaffold(
     black: black,
-    showBack: true,
-    bottom: const Padding(
-      padding: EdgeInsets.zero,
-      child: NumuwBottomBarPreview(selectedIndex: 0),
+    showBack: false,
+    padding: const EdgeInsetsDirectional.fromSTEB(20, 4, 20, 18),
+    bottom: AppBottomNavigation(
+      selectedIndex: 0,
+      onChanged: (_) {},
     ),
     child: ClassyHomeView(
       data: const ClassyHomeViewData(
