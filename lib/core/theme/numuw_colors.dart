@@ -13,6 +13,8 @@ class NumuwColorTokens {
   static const lightBackgroundDeep = Color(0xFFEFE8DC);
   static const lightSurface = Color(0xFFFFFDFC);
   static const lightSurfaceElevated = Color(0xFFFFFFFF);
+  // Compatibility alias used by the existing ThemeData builder.
+  static const lightSurfaceSoft = lightSurfaceElevated;
   static const lightPrimary = Color(0xFFB98235);
   static const lightPrimaryDark = Color(0xFF8F6125);
   static const lightPrimarySoft = Color(0xFFF4E6CC);
