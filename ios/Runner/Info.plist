@@ -26,6 +26,14 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>يستخدم نُمُوّ الميكروفون فقط عندما تختارين الإدخال الصوتي لتحويل كلامك إلى نص.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>يستخدم نُمُوّ التعرف على الكلام لتحويل التسجيل الصوتي القصير الذي تبدأينه بنفسك إلى نص.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>يسمح نُمُوّ باختيار صورة من مكتبتك فقط عندما تقررين إرفاق مستند أو صورة مرتبطة بسجل الطفل.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>يستخدم نُمُوّ الكاميرا فقط عندما تختارين تصوير مستند أو بطاقة لإرفاقها بالسجل.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
