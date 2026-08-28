@@ -116,11 +116,17 @@ jobs:
               print('No bootstrap data-error was captured.')
           PY
 
+            echo "--- Generated web plugin registrants ---"
+            find .dart_tool build -type f \( -iname '*plugin*registrant*.dart' -o -iname '*web_plugin*.dart' \) -print -exec sh -c 'echo "### $1"; sed -n "1,320p" "$1"' _ {} \; 2>/dev/null || true
+
             if [ -s /tmp/numuw-js-position ] && [ -f build/web/main.dart.js.map ]; then
               read STACK_LINE STACK_COL < /tmp/numuw-js-position
               echo "--- Source-map resolution for main.dart.js:${STACK_LINE}:${STACK_COL} ---"
-              npm install --silent --no-save --prefix /tmp/numuw-sourcemap source-map@0.7.4
-              STACK_LINE="$STACK_LINE" STACK_COL="$STACK_COL" NODE_PATH=/tmp/numuw-sourcemap/node_modules node <<'NODE'
+              set +e
+              npm install --no-save --prefix /tmp/numuw-sourcemap source-map@0.7.4
+              NPM_EXIT=$?
+              if [ "$NPM_EXIT" -eq 0 ]; then
+                STACK_LINE="$STACK_LINE" STACK_COL="$STACK_COL" NODE_PATH=/tmp/numuw-sourcemap/node_modules node <<'NODE'
           const fs = require('fs');
           const { SourceMapConsumer } = require('source-map');
           const raw = JSON.parse(fs.readFileSync('build/web/main.dart.js.map', 'utf8'));
@@ -138,10 +144,12 @@ jobs:
             }
           });
           NODE
+              else
+                echo "source-map helper install failed; continuing with registrant diagnostics."
+              fi
+              set -e
             fi
 
-            echo "--- Generated web plugin registrants ---"
-            find .dart_tool build -type f \( -iname '*plugin*registrant*.dart' -o -iname '*web_plugin*.dart' \) -print -exec sh -c 'echo "### $1"; sed -n "1,260p" "$1"' _ {} \; 2>/dev/null || true
             echo "--- Chrome log ---"
             tail -200 /tmp/numuw-chrome.log || true
             echo "--- HTTP log ---"
