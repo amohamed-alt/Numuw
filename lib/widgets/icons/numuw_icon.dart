@@ -47,6 +47,8 @@ class NumuwIcons {
   static const assistant = '$_root/assistant.svg';
   static const more = '$_root/more.svg';
   static const feeding = '$_root/feeding.svg';
+  static const feedingRight = '$_root/feeding_right.svg';
+  static const feedingLeft = '$_root/feeding_left.svg';
   static const pumping = '$_root/pumping.svg';
   static const sleep = '$_root/sleep.svg';
   static const diaper = '$_root/diaper.svg';
