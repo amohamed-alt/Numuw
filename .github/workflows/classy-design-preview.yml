@@ -35,7 +35,7 @@ jobs:
 
       - name: Build design lab
         run: |
-          flutter build web --release \
+          flutter build web --debug \
             --dart-define=DESIGN_PREVIEW=true
 
       - name: Capture preview screenshot
