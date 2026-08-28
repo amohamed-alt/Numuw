@@ -16,9 +16,9 @@ concurrency:
 
 jobs:
   quality:
-    name: Analyze, test, web
+    name: Analyze, test, reference previews
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 40
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -48,28 +48,16 @@ jobs:
           --dart-define=HOME_PREVIEW=true
           --dart-define=DARK_PREVIEW=false
 
-      - name: Capture Morning phone preview
+      - name: Capture Morning home
         shell: bash
         run: |
           set -euo pipefail
           CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
-          if [ -z "$CHROME" ]; then
-            echo "Chrome/Chromium not found; skipping screenshot."
-            exit 0
-          fi
-          python3 -m http.server 8765 --directory build/web >/tmp/numuw-home-http.log 2>&1 &
-          SERVER_PID=$!
+          [ -n "$CHROME" ] || exit 0
+          python3 -m http.server 8765 --directory build/web >/tmp/numuw-home-http.log 2>&1 & SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           sleep 2
-          "$CHROME" \
-            --headless=new \
-            --no-sandbox \
-            --disable-dev-shm-usage \
-            --hide-scrollbars \
-            --window-size=430,1200 \
-            --virtual-time-budget=7000 \
-            --screenshot="$GITHUB_WORKSPACE/numuw-production-home-morning.png" \
-            http://127.0.0.1:8765/
+          "$CHROME" --headless=new --no-sandbox --disable-dev-shm-usage --hide-scrollbars --window-size=430,1200 --virtual-time-budget=7000 --screenshot="$GITHUB_WORKSPACE/numuw-home-morning.png" http://127.0.0.1:8765/
 
       - name: Build Evening home preview
         run: >-
@@ -78,36 +66,62 @@ jobs:
           --dart-define=HOME_PREVIEW=true
           --dart-define=DARK_PREVIEW=true
 
-      - name: Capture Evening phone preview
+      - name: Capture Evening home
         shell: bash
         run: |
           set -euo pipefail
           CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
-          if [ -z "$CHROME" ]; then
-            echo "Chrome/Chromium not found; skipping screenshot."
-            exit 0
-          fi
-          python3 -m http.server 8766 --directory build/web >/tmp/numuw-home-dark-http.log 2>&1 &
-          SERVER_PID=$!
+          [ -n "$CHROME" ] || exit 0
+          python3 -m http.server 8766 --directory build/web >/tmp/numuw-home-dark-http.log 2>&1 & SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           sleep 2
-          "$CHROME" \
-            --headless=new \
-            --no-sandbox \
-            --disable-dev-shm-usage \
-            --hide-scrollbars \
-            --window-size=430,1200 \
-            --virtual-time-budget=7000 \
-            --screenshot="$GITHUB_WORKSPACE/numuw-production-home-evening.png" \
-            http://127.0.0.1:8766/
+          "$CHROME" --headless=new --no-sandbox --disable-dev-shm-usage --hide-scrollbars --window-size=430,1200 --virtual-time-budget=7000 --screenshot="$GITHUB_WORKSPACE/numuw-home-evening.png" http://127.0.0.1:8766/
+
+      - name: Build Morning feeding preview
+        run: >-
+          flutter build web --release
+          --dart-define=DESIGN_PREVIEW=true
+          --dart-define=FEEDING_PREVIEW=true
+          --dart-define=DARK_PREVIEW=false
+
+      - name: Capture Morning feeding
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          [ -n "$CHROME" ] || exit 0
+          python3 -m http.server 8767 --directory build/web >/tmp/numuw-feeding-http.log 2>&1 & SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 2
+          "$CHROME" --headless=new --no-sandbox --disable-dev-shm-usage --hide-scrollbars --window-size=430,900 --virtual-time-budget=7000 --screenshot="$GITHUB_WORKSPACE/numuw-feeding-morning.png" http://127.0.0.1:8767/
+
+      - name: Build Evening feeding preview
+        run: >-
+          flutter build web --release
+          --dart-define=DESIGN_PREVIEW=true
+          --dart-define=FEEDING_PREVIEW=true
+          --dart-define=DARK_PREVIEW=true
+
+      - name: Capture Evening feeding
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          [ -n "$CHROME" ] || exit 0
+          python3 -m http.server 8768 --directory build/web >/tmp/numuw-feeding-dark-http.log 2>&1 & SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 2
+          "$CHROME" --headless=new --no-sandbox --disable-dev-shm-usage --hide-scrollbars --window-size=430,900 --virtual-time-budget=7000 --screenshot="$GITHUB_WORKSPACE/numuw-feeding-evening.png" http://127.0.0.1:8768/
 
       - name: Upload visual previews
         uses: actions/upload-artifact@v4
         with:
-          name: numuw-production-home-previews
+          name: numuw-production-reference-previews
           path: |
-            numuw-production-home-morning.png
-            numuw-production-home-evening.png
+            numuw-home-morning.png
+            numuw-home-evening.png
+            numuw-feeding-morning.png
+            numuw-feeding-evening.png
           if-no-files-found: warn
           retention-days: 14
 
