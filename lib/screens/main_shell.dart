@@ -59,11 +59,11 @@ class _MainShellState extends State<MainShell> {
       PageRouteBuilder<void>(
         transitionDuration: NumuwMotion.screen,
         reverseTransitionDuration: NumuwMotion.fast,
-        pageBuilder: (_, animation, __) => Scaffold(
+        pageBuilder: (context, animation, secondaryAnimation) => Scaffold(
           backgroundColor: numuwPageColor(),
           body: QuickLogScreen(initialMode: mode),
         ),
-        transitionsBuilder: (_, animation, __, child) {
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
           final curved = CurvedAnimation(
             parent: animation,
             curve: Curves.easeOutCubic,
