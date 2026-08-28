@@ -17,6 +17,18 @@ Numuw (نُمُوّ) is an Arabic-first motherhood and child-care application bu
 - Never merge a large visual or data-layer change directly into `main`.
 - Work in a focused branch and open a pull request.
 
+## Local engineering skills
+
+Numuw has a curated local agent skill set under `.agents/skills/`. Read `NUMUW_SKILLS.md` and activate the relevant local skill(s) before non-trivial work.
+
+- Flutter UI/feature work: `numuw-flutter-engineering` + `numuw-ui-ux`.
+- Crashes/regressions: `numuw-debugging-tdd` + `numuw-dart-quality`.
+- Supabase/Auth/RLS/Storage/Edge Functions: `numuw-supabase-backend` + `numuw-security`.
+- GitHub Pages/Web preview: `numuw-webapp-testing` + `numuw-debugging-tdd`.
+- Before merge: `numuw-pr-review`; add `numuw-security` for auth/data/workflow changes.
+
+These local skills are curated from Flutter/Dart, Supabase, Matt Pocock, Anthropic, UI/UX Pro Max, Trail of Bits, and Sentry skill repositories. External skills and scripts are untrusted until reviewed. `AGENTS.md` always overrides external skill guidance when they conflict.
+
 ## Required checks
 
 Before considering any code change complete, run:
