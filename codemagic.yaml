@@ -1,0 +1,131 @@
+workflows:
+  numuw-android-build:
+    name: Numuw Android signed build
+    max_build_duration: 60
+    environment:
+      groups:
+        - numuw_backend
+      android_signing:
+        - numuw-upload-keystore
+      vars:
+        PACKAGE_NAME: "com.numuw.app"
+      flutter: 3.44.4
+    cache:
+      cache_paths:
+        - ~/.pub-cache
+    scripts:
+      - name: Set up Android local.properties
+        script: |
+          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Resolve Flutter packages
+        script: flutter pub get
+      - name: Analyze
+        script: flutter analyze --no-fatal-infos
+      - name: Test
+        script: flutter test -r expanded
+      - name: Build signed Android App Bundle
+        script: |
+          flutter build appbundle --release \
+            --build-number="$PROJECT_BUILD_NUMBER" \
+            --dart-define=SUPABASE_URL="$SUPABASE_URL" \
+            --dart-define=SUPABASE_PUBLISHABLE_KEY="$SUPABASE_PUBLISHABLE_KEY"
+      - name: Build signed release APK
+        script: |
+          flutter build apk --release \
+            --build-number="$PROJECT_BUILD_NUMBER" \
+            --dart-define=SUPABASE_URL="$SUPABASE_URL" \
+            --dart-define=SUPABASE_PUBLISHABLE_KEY="$SUPABASE_PUBLISHABLE_KEY"
+    artifacts:
+      - build/**/outputs/**/*.aab
+      - build/app/outputs/flutter-apk/*.apk
+      - build/**/outputs/**/mapping.txt
+
+  numuw-android-play-internal:
+    name: Numuw Android to Play Internal
+    max_build_duration: 60
+    environment:
+      groups:
+        - numuw_backend
+        - google_play
+      android_signing:
+        - numuw-upload-keystore
+      vars:
+        PACKAGE_NAME: "com.numuw.app"
+        GOOGLE_PLAY_TRACK: "internal"
+      flutter: 3.44.4
+    cache:
+      cache_paths:
+        - ~/.pub-cache
+    scripts:
+      - name: Set up Android local.properties
+        script: |
+          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Resolve Flutter packages
+        script: flutter pub get
+      - name: Analyze
+        script: flutter analyze --no-fatal-infos
+      - name: Test
+        script: flutter test -r expanded
+      - name: Build signed Android App Bundle
+        script: |
+          flutter build appbundle --release \
+            --build-number="$PROJECT_BUILD_NUMBER" \
+            --dart-define=SUPABASE_URL="$SUPABASE_URL" \
+            --dart-define=SUPABASE_PUBLISHABLE_KEY="$SUPABASE_PUBLISHABLE_KEY"
+    artifacts:
+      - build/**/outputs/**/*.aab
+      - build/**/outputs/**/mapping.txt
+    publishing:
+      google_play:
+        credentials: $GOOGLE_PLAY_SERVICE_ACCOUNT_CREDENTIALS
+        track: $GOOGLE_PLAY_TRACK
+        submit_as_draft: true
+
+  numuw-ios-testflight:
+    name: Numuw iOS to TestFlight
+    instance_type: mac_mini_m2
+    max_build_duration: 90
+    environment:
+      groups:
+        - numuw_backend
+        - appstore_credentials
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.numuw.app
+      flutter: 3.44.4
+      xcode: latest
+      cocoapods: default
+    cache:
+      cache_paths:
+        - ~/.pub-cache
+        - ~/Library/Caches/CocoaPods
+    scripts:
+      - name: Normalize release identifiers
+        script: python3 tool/prepare_release_identifiers.py
+      - name: Resolve Flutter packages
+        script: flutter pub get
+      - name: Install CocoaPods
+        script: find . -name "Podfile" -execdir pod install \;
+      - name: Apply iOS signing profiles
+        script: xcode-project use-profiles
+      - name: Analyze
+        script: flutter analyze --no-fatal-infos
+      - name: Test
+        script: flutter test -r expanded
+      - name: Build signed IPA
+        script: |
+          flutter build ipa --release \
+            --build-number="$PROJECT_BUILD_NUMBER" \
+            --dart-define=SUPABASE_URL="$SUPABASE_URL" \
+            --dart-define=SUPABASE_PUBLISHABLE_KEY="$SUPABASE_PUBLISHABLE_KEY" \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        submit_to_testflight: true
+        submit_to_app_store: false

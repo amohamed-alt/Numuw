@@ -44,5 +44,24 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Local Supabase config
+# Local Supabase/environment config
 config/dev.json
+config/staging.json
+config/prod.json
+.env
+.env.*
+!.env.example
+
+# Signing material and private credentials
+android/key.properties
+*.jks
+*.keystore
+*.p12
+*.p8
+*.mobileprovision
+service-account*.json
+GoogleService-Info.plist
+google-services.json
+
+# CI/local overrides
+codemagic.local.yaml

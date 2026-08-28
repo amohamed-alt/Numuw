@@ -6,7 +6,8 @@ plugins {
 
 android {
     namespace = "com.numuw.app"
-    compileSdk = flutter.compileSdkVersion
+    // Google Play requires API 36 for new apps and updates starting 2026-08-31.
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -15,19 +16,33 @@ android {
         isCoreLibraryDesugaringEnabled = true
     }
 
+    signingConfigs {
+        create("release") {
+            val keystorePath = System.getenv("CM_KEYSTORE_PATH")
+            if (!keystorePath.isNullOrBlank()) {
+                storeFile = file(keystorePath)
+                storePassword = System.getenv("CM_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("CM_KEY_ALIAS")
+                keyPassword = System.getenv("CM_KEY_PASSWORD")
+            }
+        }
+    }
+
     defaultConfig {
         applicationId = "com.numuw.app"
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
     buildTypes {
         release {
-            // TODO: Replace this with a private release signing config before Play Store upload.
-            // Keep debug signing only to allow internal release smoke builds from this draft PR.
-            signingConfig = signingConfigs.getByName("debug")
+            // Codemagic injects CM_KEYSTORE_* securely. Local release builds remain unsigned
+            // unless a CI keystore is provided; never fall back to debug signing for production.
+            if (!System.getenv("CM_KEYSTORE_PATH").isNullOrBlank()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 }

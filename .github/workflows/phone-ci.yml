@@ -1,0 +1,68 @@
+name: Phone-first quality gate
+
+on:
+  pull_request:
+    branches:
+      - main
+      - numuw-redesign
+  push:
+    branches:
+      - numuw-redesign
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phone-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.4'
+          channel: stable
+          cache: true
+
+      - name: Resolve packages
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: Run tests
+        run: flutter test -r expanded
+
+      - name: Build web smoke artifact
+        run: |
+          flutter build web --release \
+            --dart-define=SUPABASE_URL=https://example.supabase.co \
+            --dart-define=SUPABASE_PUBLISHABLE_KEY=sb_publishable_ci_placeholder
+
+      - name: Build Android debug APK
+        run: |
+          flutter build apk --debug \
+            --dart-define=SUPABASE_URL=https://example.supabase.co \
+            --dart-define=SUPABASE_PUBLISHABLE_KEY=sb_publishable_ci_placeholder
+
+      - name: Upload web build
+        uses: actions/upload-artifact@v4
+        with:
+          name: numuw-web-${{ github.run_number }}
+          path: build/web
+          retention-days: 7
+
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: numuw-android-debug-${{ github.run_number }}
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          retention-days: 7

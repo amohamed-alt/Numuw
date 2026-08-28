@@ -1,11 +1,11 @@
 {
-    "name": "flutter_application_1",
-    "short_name": "flutter_application_1",
+    "name": "نُمُوّ | Numuw",
+    "short_name": "نُمُوّ",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#F7F3EA",
+    "theme_color": "#B98235",
+    "description": "تطبيق نُمُوّ لمتابعة الأمومة ورعاية الطفل باللغة العربية.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
