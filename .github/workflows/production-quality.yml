@@ -39,8 +39,44 @@ jobs:
       - name: Test
         run: flutter test
 
-      - name: Build web preview
-        run: flutter build web --release --dart-define=DESIGN_PREVIEW=true
+      - name: Build shared home preview
+        run: >-
+          flutter build web --release
+          --dart-define=DESIGN_PREVIEW=true
+          --dart-define=HOME_PREVIEW=true
+
+      - name: Capture phone preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [ -z "$CHROME" ]; then
+            echo "Chrome/Chromium not found; skipping screenshot."
+            exit 0
+          fi
+
+          python3 -m http.server 8765 --directory build/web >/tmp/numuw-home-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 2
+
+          "$CHROME" \
+            --headless=new \
+            --no-sandbox \
+            --disable-dev-shm-usage \
+            --hide-scrollbars \
+            --window-size=430,1200 \
+            --virtual-time-budget=7000 \
+            --screenshot="$GITHUB_WORKSPACE/numuw-production-home.png" \
+            http://127.0.0.1:8765/
+
+      - name: Upload visual preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: numuw-production-home-preview
+          path: numuw-production-home.png
+          if-no-files-found: warn
+          retention-days: 14
 
   android:
     name: Android compile check
