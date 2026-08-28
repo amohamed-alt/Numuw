@@ -50,6 +50,7 @@ jobs:
           SUPABASE_PUBLISHABLE_KEY: sb_publishable_bb3Pg8su9rFSfnkDqNftuQ_GE4r05nL
         run: |
           flutter build web --release \
+            --source-maps \
             --base-href "/Numuw/" \
             --dart-define=SUPABASE_URL="$SUPABASE_URL" \
             --dart-define=SUPABASE_PUBLISHABLE_KEY="$SUPABASE_PUBLISHABLE_KEY"
@@ -90,14 +91,63 @@ jobs:
           CHROME_EXIT=$?
           set -e
 
-          if [ "$CHROME_EXIT" -ne 0 ] || grep -q 'id="numuw-boot-status"[^>]*class="is-error"' /tmp/numuw-dom.html || ! grep -q "flt-glass-pane" /tmp/numuw-dom.html; then
+          RUNTIME_FAILED=0
+          if [ "$CHROME_EXIT" -ne 0 ] || grep -q 'id="numuw-boot-status"[^>]*data-error=' /tmp/numuw-dom.html || ! grep -q "flt-glass-pane" /tmp/numuw-dom.html; then
+            RUNTIME_FAILED=1
+          fi
+
+          if [ "$RUNTIME_FAILED" -eq 1 ]; then
             echo "Flutter did not attach a rendered view during the Pages smoke test."
+            echo "--- Runtime exception ---"
+            python3 - <<'PY'
+          import html
+          import re
+          from pathlib import Path
+
+          dom = Path('/tmp/numuw-dom.html').read_text(errors='replace')
+          match = re.search(r'data-error="([^"]*)"', dom, flags=re.S)
+          if match:
+              error = html.unescape(match.group(1))
+              print(error)
+              pos = re.search(r'main\.dart\.js:(\d+):(\d+)', error)
+              if pos:
+                  Path('/tmp/numuw-js-position').write_text(f'{pos.group(1)} {pos.group(2)}')
+          else:
+              print('No bootstrap data-error was captured.')
+          PY
+
+            if [ -s /tmp/numuw-js-position ] && [ -f build/web/main.dart.js.map ]; then
+              read STACK_LINE STACK_COL < /tmp/numuw-js-position
+              echo "--- Source-map resolution for main.dart.js:${STACK_LINE}:${STACK_COL} ---"
+              npm install --silent --no-save --prefix /tmp/numuw-sourcemap source-map@0.7.4
+              STACK_LINE="$STACK_LINE" STACK_COL="$STACK_COL" NODE_PATH=/tmp/numuw-sourcemap/node_modules node <<'NODE'
+          const fs = require('fs');
+          const { SourceMapConsumer } = require('source-map');
+          const raw = JSON.parse(fs.readFileSync('build/web/main.dart.js.map', 'utf8'));
+          const line = Number(process.env.STACK_LINE);
+          const browserColumn = Number(process.env.STACK_COL);
+
+          SourceMapConsumer.with(raw, null, consumer => {
+            for (const column of [Math.max(0, browserColumn - 1), browserColumn]) {
+              const position = consumer.originalPositionFor({
+                line,
+                column,
+                bias: SourceMapConsumer.GREATEST_LOWER_BOUND,
+              });
+              console.log(JSON.stringify({ generated: { line, column }, original: position }));
+            }
+          });
+          NODE
+            fi
+
+            echo "--- Generated web plugin registrants ---"
+            find .dart_tool build -type f \( -iname '*plugin*registrant*.dart' -o -iname '*web_plugin*.dart' \) -print -exec sh -c 'echo "### $1"; sed -n "1,260p" "$1"' _ {} \; 2>/dev/null || true
             echo "--- Chrome log ---"
             tail -200 /tmp/numuw-chrome.log || true
             echo "--- HTTP log ---"
             tail -100 /tmp/numuw-http.log || true
-            echo "--- DOM ---"
-            tail -160 /tmp/numuw-dom.html || true
+            echo "--- DOM tail ---"
+            tail -180 /tmp/numuw-dom.html || true
             exit 1
           fi
 
