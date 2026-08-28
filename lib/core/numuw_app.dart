@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../auth/auth_gate.dart';
+import '../screens/design_preview/full/preview_home.dart';
 import '../screens/design_preview/full_app_preview.dart';
 import '../state/app_preferences.dart';
 import 'theme/numuw_colors.dart';
@@ -12,6 +13,7 @@ class NumuwApp extends StatelessWidget {
 
   final String? startupError;
   static const bool designPreview = bool.fromEnvironment('DESIGN_PREVIEW');
+  static const bool homePreview = bool.fromEnvironment('HOME_PREVIEW');
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +82,9 @@ class NumuwApp extends StatelessWidget {
             );
           },
           home: designPreview
-              ? const FullAppPreview()
+              ? (homePreview
+                    ? const PreviewHomeScreen(black: false)
+                    : const FullAppPreview())
               : AuthGate(startupError: startupError),
         );
       },
