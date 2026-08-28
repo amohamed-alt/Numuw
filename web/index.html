@@ -80,6 +80,12 @@
       content: "!";
     }
   </style>
+
+  <!-- Required by the passkeys_web implementation pulled in by Supabase Auth.
+       It must be available before Flutter registers PasskeysWeb. -->
+  <script
+    src="https://github.com/corbado/flutter-passkeys/releases/download/2.4.0/bundle.js"
+    type="application/javascript"></script>
 </head>
 <body>
   <div id="numuw-boot-status" role="status" aria-live="polite">
