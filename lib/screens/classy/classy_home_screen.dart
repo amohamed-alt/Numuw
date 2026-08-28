@@ -10,6 +10,7 @@ import '../../state/child_session.dart';
 import '../../state/numuw_app_state.dart';
 import '../../widgets/app_widgets.dart';
 import '../../widgets/classy/classy_home_view.dart';
+import '../../widgets/classy/reference_home_view.dart';
 import '../main_shell.dart';
 
 class ClassyHomeScreen extends StatefulWidget {
@@ -88,8 +89,7 @@ class _ClassyHomeScreenState extends State<ClassyHomeScreen> {
                   onRetry: _refresh,
                 );
               }
-              final summary =
-                  NumuwAppState.instance.dashboard ?? snapshot.data;
+              final summary = NumuwAppState.instance.dashboard ?? snapshot.data;
               if (summary == null) {
                 return _ClassyHomeError(
                   message: 'تعذر تحميل ملخص اليوم.',
@@ -99,20 +99,20 @@ class _ClassyHomeScreenState extends State<ClassyHomeScreen> {
 
               final data = ClassyHomeViewData(
                 greeting: 'مرحباً يا ماما',
-                subtitle: 'يوم هادئ وواضح مع ${child.name}',
+                subtitle: 'اليوم مع ${child.name}',
                 childName: child.name,
                 childAge: ArabicFormatters.age(child),
                 latestFeeding: summary.latestFeeding == null
-                    ? 'لسه مفيش'
+                    ? '—'
                     : ArabicFormatters.time(summary.latestFeeding!.startedAt),
                 sleepToday: summary.sleepToday.inMinutes == 0
-                    ? 'لسه مفيش'
+                    ? '—'
                     : ArabicFormatters.duration(summary.sleepToday),
                 latestDiaper: summary.latestDiaper == null
-                    ? 'لسه مفيش'
+                    ? '—'
                     : ArabicFormatters.time(summary.latestDiaper!.startedAt),
                 nextVaccination: summary.nextVaccination == null
-                    ? 'غير محدد'
+                    ? '—'
                     : summary.nextVaccination!.name,
                 timeline: summary.recentEvents
                     .take(3)
@@ -120,7 +120,7 @@ class _ClassyHomeScreenState extends State<ClassyHomeScreen> {
                     .toList(growable: false),
               );
 
-              return ClassyHomeView(
+              return NumuwReferenceHomeView(
                 data: data,
                 onRefresh: _refresh,
                 onChildTap: _openChild,
