@@ -57,17 +57,13 @@ serve(async (req) => {
   }
 
   try {
-    // Preserve child records that belong to a shared family before deleting the
-    // auth user. Rows authored by the departing user are reassigned to the
-    // surviving child owner/editor; private children remain owned by the user
-    // and are intentionally removed by the existing ON DELETE CASCADE model.
     const { data: memberships, error: membershipError } = await admin
       .from("child_members")
-      .select("child_id,role,can_edit,created_at")
+      .select("child_id")
       .eq("user_id", user.id);
     if (membershipError) throw membershipError;
 
-    const childIds = [...new Set((memberships ?? []).map((row) => row.child_id as string))];
+    const childIds = [...new Set((memberships ?? []).map((row) => String(row.child_id)))];
 
     for (const childId of childIds) {
       const { data: child, error: childError } = await admin
@@ -78,7 +74,6 @@ serve(async (req) => {
       if (childError) throw childError;
       if (!child) continue;
 
-      let successorId: string | null = null;
       if (child.created_by === user.id) {
         const { data: candidates, error: candidateError } = await admin
           .from("child_members")
@@ -95,11 +90,8 @@ serve(async (req) => {
           if (difference !== 0) return difference;
           return String(a.created_at).localeCompare(String(b.created_at));
         });
-        successorId = ranked[0]?.user_id ?? null;
+        const successorId = ranked[0]?.user_id ? String(ranked[0].user_id) : null;
 
-        // No other trusted editor means this is effectively a private child.
-        // Leave ownership in place so the existing FK cascade removes the
-        // child and all linked DB data as part of account deletion.
         if (!successorId) {
           await removeChildStorage(admin, childId);
           continue;
@@ -121,8 +113,7 @@ serve(async (req) => {
           .eq("created_by", user.id);
         if (childTransferError) throw childTransferError;
       } else {
-        successorId = child.created_by as string;
-        await rehomeChildAuthoredData(admin, childId, user.id, successorId);
+        await rehomeChildAuthoredData(admin, childId, user.id, String(child.created_by));
       }
     }
 
@@ -150,14 +141,13 @@ async function rehomeChildAuthoredData(
 ) {
   await rehomeDocuments(admin, childId, departingUserId, successorId);
 
-  const authoredTables = [
+  for (const table of [
     "care_events",
     "growth_measurements",
     "vaccinations",
     "doctor_questions",
     "family_tasks",
-  ];
-  for (const table of authoredTables) {
+  ]) {
     const { error } = await admin
       .from(table)
       .update({ created_by: successorId })
@@ -198,7 +188,7 @@ async function rehomeDocuments(
 
     const { error: uploadError } = await admin.storage.from(bucket).upload(path, blob, {
       upsert: true,
-      contentType: document.mime_type ?? blob.type || undefined,
+      contentType: document.mime_type ?? (blob.type || undefined),
     });
     if (uploadError) throw uploadError;
 
