@@ -24,10 +24,28 @@ dependencies:
   share_plus: ^13.2.0
   path_provider: ^2.1.6
 
+  # Figma Make parity / production UX
+  flutter_animate: ^4.5.2
+  flutter_svg: ^2.3.0
+  skeletonizer: ^2.1.3
+  connectivity_plus: ^7.3.1
+  flutter_secure_storage: ^11.0.0
+  sentry_flutter: ^9.28.0
+  image_picker: ^1.2.3
+  file_picker: ^12.1.1
+  permission_handler: ^13.0.1
+  speech_to_text: ^7.4.0
+  app_links: ^7.2.1
+  cached_network_image: ^3.4.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  integration_test:
+    sdk: flutter
   flutter_lints: ^6.0.0
+  alchemist: ^0.14.0
+  patrol: ^4.9.0
 
 flutter:
   uses-material-design: true
