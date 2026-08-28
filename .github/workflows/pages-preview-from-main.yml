@@ -1,5 +1,7 @@
 name: Deploy Numuw preview
 
+# Builds the current Figma-parity Flutter branch while deploying from main so
+# GitHub Pages environment protection can remain scoped to the default branch.
 on:
   push:
     branches:
