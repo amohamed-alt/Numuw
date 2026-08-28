@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../auth/auth_gate.dart';
-import '../screens/design_preview/design_preview_gallery.dart';
+import '../screens/design_preview/full_app_preview.dart';
 import '../state/app_preferences.dart';
 import 'theme/numuw_colors.dart';
 import 'theme/numuw_theme.dart';
@@ -80,7 +80,7 @@ class NumuwApp extends StatelessWidget {
             );
           },
           home: designPreview
-              ? const DesignPreviewGallery()
+              ? const FullAppPreview()
               : AuthGate(startupError: startupError),
         );
       },
