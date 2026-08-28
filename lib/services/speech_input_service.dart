@@ -45,7 +45,7 @@ class SpeechInputService {
     if (!ready) return false;
     await _speech.listen(
       onResult: (result) => onResult(result.recognizedWords, result.finalResult),
-      options: stt.SpeechListenOptions(
+      listenOptions: stt.SpeechListenOptions(
         localeId: localeId,
         listenMode: stt.ListenMode.dictation,
         partialResults: true,
