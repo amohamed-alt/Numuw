@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_application_1/core/app_colors.dart';
 import 'package:flutter_application_1/widgets/classy/classy_home_view.dart';
+import 'package:flutter_application_1/widgets/classy/reference_home_view.dart';
+import 'package:flutter_application_1/widgets/icons/numuw_icon.dart';
 
 void main() {
   const data = ClassyHomeViewData(
@@ -44,7 +46,7 @@ void main() {
             body: SafeArea(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(18),
-                child: ClassyHomeView(
+                child: NumuwReferenceHomeView(
                   data: data,
                   onRefresh: () {},
                   onChildTap: () {},
@@ -66,7 +68,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('renders production home content without layout exceptions', (
+  testWidgets('renders reference production home without layout exceptions', (
     tester,
   ) async {
     await pumpHome(tester);
@@ -75,14 +77,18 @@ void main() {
     expect(find.text('نظرة سريعة لليوم'), findsOneWidget);
     expect(find.text('تسجيل سريع'), findsOneWidget);
     expect(find.text('آخر الأنشطة'), findsOneWidget);
+    expect(find.byType(NumuwIcon), findsWidgets);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('renders in dark mode without layout exceptions', (tester) async {
+  testWidgets('renders reference home in evening mode without layout exceptions', (
+    tester,
+  ) async {
     await pumpHome(tester, brightness: Brightness.dark);
 
     expect(find.text('تسجيل سريع'), findsOneWidget);
     expect(find.text('عرض كل الأنشطة'), findsOneWidget);
+    expect(find.byType(NumuwIcon), findsWidgets);
     expect(tester.takeException(), isNull);
   });
 }
