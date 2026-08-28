@@ -1,3 +1,4 @@
+import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 /// Single speech recognizer shared by short-form Numuw voice entry flows.
@@ -21,10 +22,21 @@ class SpeechInputService {
     return _available;
   }
 
+  Future<bool> requestPermission() async {
+    final microphone = await Permission.microphone.request();
+    if (!microphone.isGranted) return false;
+
+    // Speech permission exists on Apple platforms. On platforms where it is not
+    // separately applicable, permission_handler returns an allowed/no-op state.
+    final speech = await Permission.speech.request();
+    return speech.isGranted || speech.isLimited || speech.isProvisional;
+  }
+
   Future<bool> start({
     required void Function(String words, bool isFinal) onResult,
     String localeId = 'ar_EG',
   }) async {
+    if (!await requestPermission()) return false;
     final ready = await initialize();
     if (!ready) return false;
     await _speech.listen(
