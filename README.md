@@ -54,7 +54,7 @@ See [`docs/PHONE_ONLY_RELEASE.md`](docs/PHONE_ONLY_RELEASE.md) for the full work
 - Android application ID: `com.numuw.app`
 - iOS bundle ID: `com.numuw.app`
 - Display name: `نُمُوّ`
-- Package name: `numuw`
+- Dart package name remains the legacy internal `flutter_application_1` for compatibility with the existing test/import surface; this does not affect store identity.
 
 ## CI/CD
 

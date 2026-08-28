@@ -136,7 +136,10 @@ class AccountPolicyScreen extends StatelessWidget {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const WarningBanner(message: 'نُمُوّ لا يقدّم تشخيصًا طبيًا ولا يصف علاجًا أو جرعات.'),
             const SizedBox(height: 16),
-            Text('يطلب التطبيق أذونات الميكروفون والكاميرا والصور والإشعارات عند الحاجة فقط. بيانات الطفل لا يراها إلا أفراد الأسرة المصرح لهم.', style: TextStyle(color: numuwTextColor(), fontSize: 15, height: 1.9)),
+            Text(
+              'يستخدم التطبيق الاتصال بالإنترنت، ويطلب إذن الإشعارات عند تفعيل التنبيهات. أي إذن إضافي مثل الكاميرا أو الصور أو الميكروفون لن يُطلب إلا عند استخدام ميزة تحتاجه وبعد توضيح سبب الاستخدام. بيانات الطفل لا يراها إلا أفراد الأسرة المصرح لهم.',
+              style: TextStyle(color: numuwTextColor(), fontSize: 15, height: 1.9),
+            ),
           ]),
         ),
       );
