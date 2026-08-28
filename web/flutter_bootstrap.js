@@ -8,8 +8,12 @@
     console.error('Numuw web bootstrap failed', error);
     const status = bootStatus();
     if (!status) return;
+
+    const rawMessage =
+      error?.stack || error?.message || String(error || 'Unknown startup error');
+    status.dataset.error = rawMessage.slice(0, 2000);
     status.classList.add('is-error');
-    status.innerHTML = '<strong>تعذر تشغيل نُمُوّ</strong><span>حدّثي الصفحة مرة أخرى. إذا استمرت المشكلة، افتحيها في نافذة خاصة.</span>';
+    status.innerHTML = '<strong>تعذر تشغيل نُمُوّ</strong><span>حدث خطأ أثناء بدء التطبيق. تم تسجيل التفاصيل في فحص النشر.</span>';
   }
 
   async function clearLegacyFlutterServiceWorker() {
