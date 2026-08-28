@@ -39,28 +39,18 @@ jobs:
           flutter analyze --no-fatal-infos
           flutter test
 
-      - name: Build Flutter web preview
+      - name: Build connected Flutter web preview
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_URL: https://mwqscuoutmbihexphocx.supabase.co
+          SUPABASE_PUBLISHABLE_KEY: sb_publishable_bb3Pg8su9rFSfnkDqNftuQ_GE4r05nL
         run: |
-          if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_PUBLISHABLE_KEY" ]; then
-            echo "Building connected release preview"
-            flutter build web --release \
-              --base-href "/Numuw/" \
-              --dart-define=SUPABASE_URL="$SUPABASE_URL" \
-              --dart-define=SUPABASE_PUBLISHABLE_KEY="$SUPABASE_PUBLISHABLE_KEY"
-          else
-            echo "Supabase preview secrets are not configured; building safe Flutter design gallery"
-            flutter build web --debug \
-              --base-href "/Numuw/" \
-              --dart-define=DESIGN_PREVIEW=true
-          fi
+          flutter build web --release \
+            --base-href "/Numuw/" \
+            --dart-define=SUPABASE_URL="$SUPABASE_URL" \
+            --dart-define=SUPABASE_PUBLISHABLE_KEY="$SUPABASE_PUBLISHABLE_KEY"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
