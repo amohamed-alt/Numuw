@@ -88,7 +88,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byIcon(Icons.grid_view_rounded));
+    await tester.tap(find.byIcon(Icons.apps_rounded));
     await tester.pump();
 
     expect(selectedIndex, 4);
@@ -105,7 +105,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byIcon(Icons.add_circle_outline_rounded));
+    await tester.tap(find.byIcon(Icons.add_box_outlined));
     await tester.pumpAndSettle();
 
     expect(find.byType(QuickLogScreen), findsOneWidget);
