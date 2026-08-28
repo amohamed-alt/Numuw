@@ -50,6 +50,7 @@
     const config = {
       canvasKitBaseUrl: new URL('canvaskit/', document.baseURI).toString(),
       canvasKitVariant: 'full',
+      canvasKitForceCpuOnly: true,
     };
 
     await _flutter.loader.load({
