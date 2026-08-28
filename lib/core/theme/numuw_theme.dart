@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../app_colors.dart';
 import 'numuw_colors.dart';
 import 'numuw_radius.dart';
 import 'numuw_typography.dart';
@@ -14,12 +15,12 @@ ThemeData buildNumuwTheme({required bool night}) {
       : NumuwColorTokens.lightSurface;
   final elevatedSurface = night
       ? NumuwColorTokens.darkSurfaceElevated
-      : NumuwColorTokens.lightSurfaceSoft;
+      : AppColors.surfaceRaised;
   final primary = night
       ? NumuwColorTokens.darkPrimary
       : NumuwColorTokens.lightPrimary;
   final primaryStrong = night
-      ? NumuwColorTokens.darkPrimary
+      ? AppColors.nightPrimaryStrong
       : NumuwColorTokens.lightPrimaryDark;
   final primarySoft = night
       ? NumuwColorTokens.darkPrimarySoft
@@ -37,18 +38,39 @@ ThemeData buildNumuwTheme({required bool night}) {
       ? NumuwColorTokens.darkError
       : NumuwColorTokens.lightError;
 
-  final scheme = ColorScheme.fromSeed(
-    seedColor: primary,
+  final scheme = ColorScheme(
     brightness: brightness,
     primary: primary,
-    onPrimary: night ? NumuwColorTokens.darkBackground : Colors.white,
-    secondary: primarySoft,
-    onSecondary: textPrimary,
-    surface: surface,
-    onSurface: textPrimary,
-    outline: border,
+    onPrimary: night ? AppColors.nightBackground : Colors.white,
+    primaryContainer: primarySoft,
+    onPrimaryContainer: textPrimary,
+    secondary: night ? AppColors.nightPrimaryStrong : AppColors.peach,
+    onSecondary: night ? AppColors.nightBackground : Colors.white,
+    secondaryContainer: night
+        ? AppColors.nightSurfaceRaised
+        : AppColors.peachLight,
+    onSecondaryContainer: textPrimary,
+    tertiary: night ? const Color(0xFFB9CBB9) : AppColors.sage,
+    onTertiary: night ? AppColors.nightBackground : AppColors.text,
+    tertiaryContainer: night
+        ? const Color(0xFF29312C)
+        : AppColors.sageSoft,
+    onTertiaryContainer: textPrimary,
     error: error,
     onError: Colors.white,
+    errorContainer: night ? const Color(0xFF3D2428) : AppColors.peachLight,
+    onErrorContainer: textPrimary,
+    surface: surface,
+    onSurface: textPrimary,
+    surfaceContainerHighest: elevatedSurface,
+    onSurfaceVariant: textSecondary,
+    outline: border,
+    outlineVariant: night ? AppColors.nightBorderStrong : AppColors.borderStrong,
+    shadow: const Color(0x22000000),
+    scrim: const Color(0x66000000),
+    inverseSurface: textPrimary,
+    onInverseSurface: background,
+    inversePrimary: primarySoft,
   );
 
   final inputBorder = OutlineInputBorder(
@@ -65,15 +87,15 @@ ThemeData buildNumuwTheme({required bool night}) {
     fontFamily: NumuwTypography.fontFamily,
     colorScheme: scheme,
     textTheme: NumuwTypography.build(brightness),
-    splashFactory: InkSparkle.splashFactory,
-    highlightColor: primary.withValues(alpha: .06),
-    splashColor: primary.withValues(alpha: .08),
+    splashFactory: InkRipple.splashFactory,
+    highlightColor: primary.withValues(alpha: .045),
+    splashColor: primary.withValues(alpha: .07),
     dividerColor: border,
     dividerTheme: DividerThemeData(color: border, thickness: 1, space: 1),
     cardTheme: CardThemeData(
       color: surface,
       surfaceTintColor: Colors.transparent,
-      shadowColor: night ? Colors.transparent : const Color(0x12000000),
+      shadowColor: night ? Colors.transparent : const Color(0x12442A34),
       elevation: night ? 0 : 1,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
@@ -92,7 +114,7 @@ ThemeData buildNumuwTheme({required bool night}) {
       titleTextStyle: TextStyle(
         color: textPrimary,
         fontSize: 20,
-        fontWeight: FontWeight.w900,
+        fontWeight: FontWeight.w800,
         fontFamily: NumuwTypography.fontFamily,
         height: 1.25,
       ),
@@ -128,22 +150,22 @@ ThemeData buildNumuwTheme({required bool night}) {
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        minimumSize: const Size(48, 52),
+        minimumSize: const Size(48, 54),
         backgroundColor: primaryStrong,
-        foregroundColor: night ? NumuwColorTokens.darkBackground : Colors.white,
+        foregroundColor: night ? AppColors.nightBackground : Colors.white,
         disabledBackgroundColor: night
-            ? NumuwColorTokens.darkPrimarySoft
-            : NumuwColorTokens.lightBorder,
+            ? AppColors.nightSurfaceRaised
+            : AppColors.border,
         disabledForegroundColor: textSecondary,
         elevation: 0,
         shadowColor: Colors.transparent,
         padding: const EdgeInsetsDirectional.symmetric(
-          horizontal: 18,
+          horizontal: 20,
           vertical: 14,
         ),
         textStyle: const TextStyle(
           fontWeight: FontWeight.w800,
-          fontSize: 16,
+          fontSize: 15.5,
           height: 1.2,
         ),
         shape: RoundedRectangleBorder(
@@ -153,18 +175,18 @@ ThemeData buildNumuwTheme({required bool night}) {
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        minimumSize: const Size(48, 52),
+        minimumSize: const Size(48, 54),
         foregroundColor: textPrimary,
         backgroundColor: surface,
         side: BorderSide(color: border, width: 1.2),
         elevation: 0,
         padding: const EdgeInsetsDirectional.symmetric(
-          horizontal: 18,
+          horizontal: 20,
           vertical: 14,
         ),
         textStyle: const TextStyle(
           fontWeight: FontWeight.w800,
-          fontSize: 16,
+          fontSize: 15.5,
           height: 1.2,
         ),
         shape: RoundedRectangleBorder(
@@ -196,7 +218,7 @@ ThemeData buildNumuwTheme({required bool night}) {
         (states) => states.contains(WidgetState.selected) ? primary : surface,
       ),
       checkColor: WidgetStatePropertyAll(
-        night ? NumuwColorTokens.darkBackground : Colors.white,
+        night ? AppColors.nightBackground : Colors.white,
       ),
       side: BorderSide(color: border, width: 1.4),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
@@ -204,13 +226,33 @@ ThemeData buildNumuwTheme({required bool night}) {
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith(
         (states) => states.contains(WidgetState.selected)
-            ? (night ? NumuwColorTokens.darkBackground : Colors.white)
+            ? (night ? AppColors.nightBackground : Colors.white)
             : textSecondary,
       ),
       trackColor: WidgetStateProperty.resolveWith(
         (states) => states.contains(WidgetState.selected) ? primary : border,
       ),
       trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
+    ),
+    chipTheme: ChipThemeData(
+      backgroundColor: elevatedSurface,
+      selectedColor: primarySoft,
+      disabledColor: elevatedSurface.withValues(alpha: .5),
+      side: BorderSide(color: border),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(NumuwRadiusTokens.pill),
+      ),
+      labelStyle: TextStyle(
+        color: textPrimary,
+        fontFamily: NumuwTypography.fontFamily,
+        fontWeight: FontWeight.w700,
+      ),
+      secondaryLabelStyle: TextStyle(
+        color: primaryStrong,
+        fontFamily: NumuwTypography.fontFamily,
+        fontWeight: FontWeight.w800,
+      ),
+      padding: const EdgeInsetsDirectional.symmetric(horizontal: 10, vertical: 8),
     ),
     dialogTheme: DialogThemeData(
       backgroundColor: surface,
@@ -224,13 +266,13 @@ ThemeData buildNumuwTheme({required bool night}) {
         color: textPrimary,
         fontFamily: NumuwTypography.fontFamily,
         fontSize: 19,
-        fontWeight: FontWeight.w900,
+        fontWeight: FontWeight.w800,
       ),
       contentTextStyle: TextStyle(
         color: textSecondary,
         fontFamily: NumuwTypography.fontFamily,
         fontSize: 14,
-        height: 1.55,
+        height: 1.6,
       ),
     ),
     bottomSheetTheme: BottomSheetThemeData(
@@ -264,6 +306,12 @@ ThemeData buildNumuwTheme({required bool night}) {
       color: primary,
       linearTrackColor: border,
       circularTrackColor: border,
+    ),
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: FadeForwardsPageTransitionsBuilder(),
+        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+      },
     ),
   );
 }
