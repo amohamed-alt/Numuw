@@ -14,13 +14,16 @@ class NumuwApp extends StatelessWidget {
   final String? startupError;
   static const bool designPreview = bool.fromEnvironment('DESIGN_PREVIEW');
   static const bool homePreview = bool.fromEnvironment('HOME_PREVIEW');
+  static const bool darkPreview = bool.fromEnvironment('DARK_PREVIEW');
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: AppPreferences.instance,
       builder: (context, _) {
-        final night = AppPreferences.instance.nightMode;
+        final night = designPreview && homePreview
+            ? darkPreview
+            : AppPreferences.instance.nightMode;
         final appBackground = night
             ? NumuwColorTokens.darkBackground
             : NumuwColorTokens.lightBackground;
@@ -83,7 +86,7 @@ class NumuwApp extends StatelessWidget {
           },
           home: designPreview
               ? (homePreview
-                    ? const PreviewHomeScreen(black: false)
+                    ? PreviewHomeScreen(black: darkPreview)
                     : const FullAppPreview())
               : AuthGate(startupError: startupError),
         );
