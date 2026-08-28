@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../core/app_colors.dart';
+import '../core/errors/app_error.dart';
+import '../services/auth_service.dart';
 import '../state/child_session.dart';
 import '../widgets/app_widgets.dart';
 import 'account_security_screen.dart';
@@ -16,6 +18,8 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  bool deletingAccount = false;
+
   @override
   void initState() {
     super.initState();
@@ -95,6 +99,69 @@ class _AccountScreenState extends State<AccountScreen> {
     if (selectedId == null) return;
     final selected = children.firstWhere((child) => child.id == selectedId);
     ChildSession.instance.selectChild(selected);
+  }
+
+  Future<void> _deleteAccount() async {
+    if (deletingAccount) return;
+    final confirmation = TextEditingController();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: AlertDialog(
+          title: const Text('حذف الحساب نهائيًا؟'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'سيتم حذف حسابك وبيانات الأطفال الخاصة بك نهائيًا. إذا كان طفل مشتركًا مع مقدم رعاية آخر، سنحافظ على سجل الطفل وننقل مسؤوليته لمقدم رعاية لديه صلاحية تعديل.',
+              ),
+              const SizedBox(height: 16),
+              const Text('للتأكيد اكتبي كلمة «حذف»:'),
+              const SizedBox(height: 8),
+              TextField(
+                controller: confirmation,
+                autofocus: true,
+                textDirection: TextDirection.rtl,
+                decoration: const InputDecoration(hintText: 'حذف'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('إلغاء'),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(backgroundColor: Colors.red.shade700),
+              onPressed: () => Navigator.pop(
+                dialogContext,
+                confirmation.text.trim() == 'حذف',
+              ),
+              child: const Text('حذف نهائي'),
+            ),
+          ],
+        ),
+      ),
+    );
+    confirmation.dispose();
+
+    if (confirmed != true || !mounted) return;
+    setState(() => deletingAccount = true);
+    try {
+      await AuthService().deleteAccount();
+      ChildSession.instance.clear();
+    } catch (error, stackTrace) {
+      logError(error, stackTrace);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(readableError(error))),
+      );
+    } finally {
+      if (mounted) setState(() => deletingAccount = false);
+    }
   }
 
   @override
@@ -219,9 +286,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             fontWeight: FontWeight.w800,
                           ),
                         ),
-                        subtitle: item.subtitle == null
-                            ? null
-                            : Text(item.subtitle!),
+                        subtitle: item.subtitle == null ? null : Text(item.subtitle!),
                         trailing: Icon(
                           Icons.chevron_left_rounded,
                           color: numuwSecondaryTextColor(),
@@ -232,6 +297,43 @@ class _AccountScreenState extends State<AccountScreen> {
                     ],
                   );
                 }),
+              ),
+            ),
+            const SizedBox(height: 18),
+            SoftCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'منطقة حساسة',
+                    style: TextStyle(
+                      color: Colors.red.shade700,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'يمكنك حذف الحساب وبياناته نهائيًا من داخل نُمُوّ.',
+                    style: TextStyle(color: numuwSecondaryTextColor()),
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    onPressed: deletingAccount ? null : _deleteAccount,
+                    icon: deletingAccount
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.delete_outline_rounded),
+                    label: Text(deletingAccount ? 'جارٍ حذف الحساب…' : 'حذف الحساب نهائيًا'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.red.shade700,
+                      side: BorderSide(color: Colors.red.shade300),
+                      minimumSize: const Size.fromHeight(48),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
