@@ -1,30 +1,493 @@
 Resolving dependencies...
 Downloading packages...
-  dbus 0.7.13 (0.7.14 available)
+  app_links 7.2.0 (7.2.1 available)
+  app_links_platform_interface 2.0.3 (2.0.4 available)
+  archive 4.0.9 (4.2.0 available)
+  code_assets 1.2.1 (2.0.0 available)
+  cross_file 0.3.5+4 (0.3.5+5 available)
+  dbus 0.7.13 (0.7.15 available)
   equatable 2.0.8 (2.1.0 available)
-  functions_client 2.6.1 (2.6.4 available)
-  gotrue 2.22.0 (2.25.0 available)
+  flutter_local_notifications 22.0.1 (22.3.0 available)
+  flutter_local_notifications_platform_interface 12.0.0 (12.2.0 available)
+  functions_client 2.6.1 (2.7.1 available)
+  gotrue 2.22.0 (2.27.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  image 4.9.1 (4.9.2 available)
   intl 0.20.2 (0.20.3 available)
+  jni 1.0.0 (1.0.3 available)
+  jni_flutter 1.0.1 (1.0.2 available)
   matcher 0.12.19 (0.12.20 available)
-  meta 1.18.0 (1.18.3 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  meta 1.18.0 (1.19.0 available)
+  objective_c 9.4.1 (9.6.0 available)
   package_config 2.2.0 (3.0.0 available)
-  passkeys 2.20.0 (2.21.1 available)
-  passkeys_android 2.12.0 (2.12.2 available)
-  passkeys_darwin 0.4.0 (0.4.1+1 available)
-  passkeys_doctor 1.4.1 (1.5.1 available)
-  passkeys_platform_interface 2.6.0 (2.8.0 available)
-  passkeys_web 2.9.0 (2.9.2 available)
-  passkeys_windows 0.1.1 (0.1.2+1 available)
-  postgrest 2.7.2 (2.8.0 available)
+  package_info_plus 10.2.0 (10.2.1 available)
+  passkeys 2.20.0 (2.22.3 available)
+  passkeys_android 2.12.0 (2.13.1 available)
+  passkeys_darwin 0.4.0 (0.4.3+3 available)
+  passkeys_doctor 1.4.1 (1.6.0 available)
+  passkeys_platform_interface 2.6.0 (2.9.0 available)
+  passkeys_web 2.9.0 (2.10.0 available)
+  passkeys_windows 0.1.1 (0.1.3+2 available)
+  posix 6.5.0 (6.5.2 available)
+  postgrest 2.7.2 (2.9.1 available)
   qr 3.0.2 (4.0.0 available)
-  realtime_client 2.8.0 (2.10.0 available)
-  storage_client 2.5.7 (2.6.0 available)
-  supabase 2.13.0 (2.13.4 available)
-  supabase_flutter 2.15.0 (2.15.4 available)
+  realtime_client 2.8.0 (2.13.0 available)
+  record_use 0.6.0 (1.1.1 available)
+  share_plus 13.2.0 (13.3.0 available)
+  share_plus_platform_interface 7.1.0 (7.2.0 available)
+  shared_preferences_android 2.4.26 (2.4.28 available)
+  shared_preferences_foundation 2.5.6 (2.5.7 available)
+  storage_client 2.5.7 (2.8.0 available)
+  supabase 2.13.0 (2.16.1 available)
+  supabase_flutter 2.15.0 (2.17.2 available)
   test_api 0.7.11 (0.7.13 available)
-  vector_math 2.2.0 (2.4.0 available)
+  url_launcher_android 6.3.32 (6.3.33 available)
+  url_launcher_ios 6.4.1 (6.4.2 available)
+  url_launcher_linux 3.2.2 (3.2.3 available)
+  url_launcher_macos 3.2.5 (3.2.6 available)
+  url_launcher_windows 3.1.5 (3.1.6 available)
+  uuid 4.5.3 (4.6.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+  vm_service 15.2.0 (15.3.0 available)
+  win32 6.3.0 (6.4.0 available)
 Got dependencies!
-23 packages have newer versions incompatible with dependency constraints.
+51 packages have newer versions incompatible with dependency constraints.
 Try `flutter pub outdated` for more information.
 Analyzing Numuw...                                              
-No issues found! (ran in 19.9s)
+
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/ai_assistant_response_test.dart:3:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/models/ai_assistant_response.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/ai_assistant_response_test.dart:3:8 • uri_does_not_exist
+  error • Undefined name 'AiAssistantResponse'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_response_test.dart:7:22 • undefined_identifier
+  error • Undefined name 'AiAssistantResponse'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_response_test.dart:26:22 • undefined_identifier
+  error • Undefined name 'AiAssistantResponse'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_response_test.dart:43:22 • undefined_identifier
+  error • Undefined name 'AiAssistantResponse'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_response_test.dart:68:22 • undefined_identifier
+  error • Undefined name 'AiAssistantResponse'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_response_test.dart:98:13 • undefined_identifier
+  error • Undefined name 'AiAssistantResponse'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_response_test.dart:112:22 • undefined_identifier
+  error • Undefined name 'AiAssistantResponse'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_response_test.dart:131:13 • undefined_identifier
+  error • Undefined name 'AiAssistantResponse'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_response_test.dart:137:22 • undefined_identifier
+  error • Undefined name 'AiAssistantResponse'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_response_test.dart:158:22 • undefined_identifier
+  error • Undefined name 'AiAssistantResponse'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_response_test.dart:184:22 • undefined_identifier
+  error • Undefined name 'AiAssistantResponse'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_response_test.dart:207:22 • undefined_identifier
+  error • Undefined name 'AiAssistantResponse'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_response_test.dart:228:22 • undefined_identifier
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/ai_assistant_service_test.dart:7:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/core/errors/app_error.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/ai_assistant_service_test.dart:7:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/ai_assistant_service_test.dart:8:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/models/care_event.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/ai_assistant_service_test.dart:8:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/ai_assistant_service_test.dart:9:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/models/child_profile.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/ai_assistant_service_test.dart:9:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/ai_assistant_service_test.dart:10:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/services/ai_assistant_service.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/ai_assistant_service_test.dart:10:8 • uri_does_not_exist
+  error • Classes and mixins can only implement other classes and mixins. Try specifying a class or mixin, or remove the name from the list • test/ai_assistant_service_test.dart:12:33 • implements_non_class
+warning • The getter doesn't override an inherited getter. Try updating this class to match the superclass, or removing the override annotation • test/ai_assistant_service_test.dart:20:16 • override_on_non_overriding_member
+warning • The method doesn't override an inherited method. Try updating this class to match the superclass, or removing the override annotation • test/ai_assistant_service_test.dart:23:32 • override_on_non_overriding_member
+  error • The name 'InvalidSessionException' isn't a class. Try correcting the name to match an existing class • test/ai_assistant_service_test.dart:29:19 • creation_with_non_type
+  error • Undefined class 'ChildProfile'. Try changing the name to the name of an existing class, or creating a class with the name 'ChildProfile' • test/ai_assistant_service_test.dart:36:1 • undefined_class
+  error • The name 'ChildProfile' isn't a class. Try correcting the name to match an existing class • test/ai_assistant_service_test.dart:36:32 • creation_with_non_type
+  error • Undefined class 'CareEvent'. Try changing the name to the name of an existing class, or creating a class with the name 'CareEvent' • test/ai_assistant_service_test.dart:45:1 • undefined_class
+  error • The function 'CareEvent' isn't defined. Try importing the library that defines 'CareEvent', correcting the name to the name of an existing function, or defining a function named 'CareEvent' • test/ai_assistant_service_test.dart:57:10 • undefined_function
+  error • The function 'AiAssistantService' isn't defined. Try importing the library that defines 'AiAssistantService', correcting the name to the name of an existing function, or defining a function named 'AiAssistantService' • test/ai_assistant_service_test.dart:76:21 • undefined_function
+  error • The name 'InvalidSessionException' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'InvalidSessionException' • test/ai_assistant_service_test.dart:87:19 • non_type_as_type_argument
+  error • The function 'AiAssistantService' isn't defined. Try importing the library that defines 'AiAssistantService', correcting the name to the name of an existing function, or defining a function named 'AiAssistantService' • test/ai_assistant_service_test.dart:92:21 • undefined_function
+  error • The name 'RequestTimeoutException' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'RequestTimeoutException' • test/ai_assistant_service_test.dart:103:19 • non_type_as_type_argument
+  error • Undefined name 'AiAssistantService'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_service_test.dart:108:20 • undefined_identifier
+  error • The name 'InvalidSessionException' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'InvalidSessionException' • test/ai_assistant_service_test.dart:111:24 • non_type_as_type_argument
+  error • Undefined name 'AiAssistantService'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_service_test.dart:115:20 • undefined_identifier
+  error • The name 'UnauthorizedChildException' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'UnauthorizedChildException' • test/ai_assistant_service_test.dart:118:24 • non_type_as_type_argument
+  error • Undefined name 'AiAssistantService'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_service_test.dart:122:20 • undefined_identifier
+  error • The name 'RateLimitException' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'RateLimitException' • test/ai_assistant_service_test.dart:125:24 • non_type_as_type_argument
+  error • The function 'AiAssistantService' isn't defined. Try importing the library that defines 'AiAssistantService', correcting the name to the name of an existing function, or defining a function named 'AiAssistantService' • test/ai_assistant_service_test.dart:129:21 • undefined_function
+  error • The function 'AiAssistantService' isn't defined. Try importing the library that defines 'AiAssistantService', correcting the name to the name of an existing function, or defining a function named 'AiAssistantService' • test/ai_assistant_service_test.dart:153:21 • undefined_function
+  error • Undefined name 'AiAssistantService'. Try correcting the name to one that is defined, or defining the name • test/ai_assistant_service_test.dart:176:20 • undefined_identifier
+  error • The name 'InvalidAiResponseException' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'InvalidAiResponseException' • test/ai_assistant_service_test.dart:179:24 • non_type_as_type_argument
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/assistant_screen_test.dart:4:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/models/child_profile.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/assistant_screen_test.dart:4:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/assistant_screen_test.dart:5:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/screens/assistant_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/assistant_screen_test.dart:5:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/assistant_screen_test.dart:6:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/state/child_session.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/assistant_screen_test.dart:6:8 • uri_does_not_exist
+  error • Undefined name 'ChildSession'. Try correcting the name to one that is defined, or defining the name • test/assistant_screen_test.dart:10:5 • undefined_identifier
+  error • The name 'ChildProfile' isn't a class. Try correcting the name to match an existing class • test/assistant_screen_test.dart:11:13 • creation_with_non_type
+  error • Undefined name 'ChildSession'. Try correcting the name to one that is defined, or defining the name • test/assistant_screen_test.dart:22:12 • undefined_identifier
+  error • Invalid constant value • test/assistant_screen_test.dart:25:53 • invalid_constant
+  error • The function 'AssistantScreen' isn't defined. Try importing the library that defines 'AssistantScreen', correcting the name to the name of an existing function, or defining a function named 'AssistantScreen' • test/assistant_screen_test.dart:25:53 • undefined_function
+  error • Invalid constant value • test/assistant_screen_test.dart:35:53 • invalid_constant
+  error • The function 'AssistantScreen' isn't defined. Try importing the library that defines 'AssistantScreen', correcting the name to the name of an existing function, or defining a function named 'AssistantScreen' • test/assistant_screen_test.dart:35:53 • undefined_function
+  error • The name 'AssistantScreen' isn't a class. Try correcting the name to match an existing class • test/assistant_screen_test.dart:46:56 • creation_with_non_type
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/growth_chart_series_test.dart:3:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/growth_chart_series.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/growth_chart_series_test.dart:3:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/growth_chart_series_test.dart:4:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/growth_math.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/growth_chart_series_test.dart:4:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/growth_chart_series_test.dart:5:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/who_growth_standards.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/growth_chart_series_test.dart:5:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/growth_chart_series_test.dart:6:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/models/growth_measurement.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/growth_chart_series_test.dart:6:8 • uri_does_not_exist
+  error • Undefined name 'WhoGrowthStandards'. Try correcting the name to one that is defined, or defining the name • test/growth_chart_series_test.dart:10:12 • undefined_identifier
+  error • Undefined name 'WhoGrowthStandards'. Try correcting the name to one that is defined, or defining the name • test/growth_chart_series_test.dart:11:12 • undefined_identifier
+  error • Undefined name 'GrowthChartSeriesBuilder'. Try correcting the name to one that is defined, or defining the name • test/growth_chart_series_test.dart:15:20 • undefined_identifier
+  error • Undefined name 'GrowthIndicator'. Try correcting the name to one that is defined, or defining the name • test/growth_chart_series_test.dart:16:18 • undefined_identifier
+  error • Undefined name 'ChildSex'. Try correcting the name to one that is defined, or defining the name • test/growth_chart_series_test.dart:17:12 • undefined_identifier
+  error • The function 'GrowthMeasurement' isn't defined. Try importing the library that defines 'GrowthMeasurement', correcting the name to the name of an existing function, or defining a function named 'GrowthMeasurement' • test/growth_chart_series_test.dart:20:9 • undefined_function
+  error • Undefined name 'GrowthRangeBand'. Try correcting the name to one that is defined, or defining the name • test/growth_chart_series_test.dart:32:39 • undefined_identifier
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/growth_math_test.dart:3:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/growth_math.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/growth_math_test.dart:3:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/growth_math_test.dart:4:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/who_growth_standards.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/growth_math_test.dart:4:8 • uri_does_not_exist
+  error • Const variables must be initialized with a constant value. Try changing the initializer to be a constant expression • test/growth_math_test.dart:7:15 • const_initialized_with_non_constant_value
+  error • The function 'LmsGrowthRow' isn't defined. Try importing the library that defines 'LmsGrowthRow', correcting the name to the name of an existing function, or defining a function named 'LmsGrowthRow' • test/growth_math_test.dart:7:15 • undefined_function
+  error • Undefined name 'GrowthIndicator'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:8:16 • undefined_identifier
+  error • Undefined name 'ChildSex'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:9:10 • undefined_identifier
+  error • Undefined name 'GrowthMath'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:17:12 • undefined_identifier
+  error • Const variables must be initialized with a constant value. Try changing the initializer to be a constant expression • test/growth_math_test.dart:21:20 • const_initialized_with_non_constant_value
+  error • The function 'LmsGrowthRow' isn't defined. Try importing the library that defines 'LmsGrowthRow', correcting the name to the name of an existing function, or defining a function named 'LmsGrowthRow' • test/growth_math_test.dart:21:20 • undefined_function
+  error • Undefined name 'GrowthIndicator'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:22:18 • undefined_identifier
+  error • Undefined name 'ChildSex'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:23:12 • undefined_identifier
+  error • Undefined name 'GrowthMath'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:30:12 • undefined_identifier
+  error • Undefined name 'GrowthMath'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:34:20 • undefined_identifier
+  error • Undefined name 'GrowthIndicator'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:35:18 • undefined_identifier
+  error • Undefined name 'ChildSex'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:36:12 • undefined_identifier
+  error • Undefined name 'GrowthRangeBand'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:43:25 • undefined_identifier
+  error • Undefined name 'GrowthMath'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:47:20 • undefined_identifier
+  error • Undefined name 'GrowthIndicator'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:48:18 • undefined_identifier
+  error • Undefined name 'ChildSex'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:49:12 • undefined_identifier
+  error • Undefined name 'GrowthRangeBand'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:56:25 • undefined_identifier
+  error • Undefined name 'GrowthMath'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:57:12 • undefined_identifier
+  error • Undefined name 'GrowthRangeBand'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:57:38 • undefined_identifier
+  error • Undefined name 'GrowthMath'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:58:12 • undefined_identifier
+  error • Undefined name 'GrowthRangeBand'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:58:38 • undefined_identifier
+  error • Undefined name 'GrowthMath'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:59:12 • undefined_identifier
+  error • Undefined name 'GrowthRangeBand'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:59:37 • undefined_identifier
+  error • Undefined name 'GrowthMath'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:60:12 • undefined_identifier
+  error • Undefined name 'GrowthRangeBand'. Try correcting the name to one that is defined, or defining the name • test/growth_math_test.dart:60:37 • undefined_identifier
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/health_content_test.dart:3:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/development_and_feeding_library.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/health_content_test.dart:3:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/health_content_test.dart:4:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/health_sources.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/health_content_test.dart:4:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/health_content_test.dart:5:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/vaccination_records.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/health_content_test.dart:5:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/health_content_test.dart:6:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/vaccination_schedule_catalog.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/health_content_test.dart:6:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/health_content_test.dart:7:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/who_growth_standards.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/health_content_test.dart:7:8 • uri_does_not_exist
+  error • Undefined name 'OfficialHealthSources'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:12:14 • undefined_identifier
+  error • Undefined name 'OfficialHealthSources'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:13:14 • undefined_identifier
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:13:57 • undefined_identifier
+  error • Undefined name 'OfficialHealthSources'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:15:9 • undefined_identifier
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:15:52 • undefined_identifier
+  error • Undefined name 'OfficialHealthSources'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:19:9 • undefined_identifier
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:19:52 • undefined_identifier
+  error • Undefined name 'OfficialHealthSources'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:22:14 • undefined_identifier
+  error • Undefined name 'HealthDisclaimer'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:23:14 • undefined_identifier
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:29:29 • undefined_identifier
+  error • Undefined name 'VaccinationScheduleCatalog'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:30:26 • undefined_identifier
+  error • Undefined name 'HealthContentStatus'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:33:39 • undefined_identifier
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:34:24 • undefined_identifier
+  error • Undefined name 'HealthContentStatus'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:35:35 • undefined_identifier
+  error • Undefined name 'HealthContentStatus'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:38:59 • undefined_identifier
+  error • Undefined name 'HealthContentStatus'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:42:35 • undefined_identifier
+  error • Const variables must be initialized with a constant value. Try changing the initializer to be a constant expression • test/health_content_test.dart:49:20 • const_initialized_with_non_constant_value
+  error • The function 'VaccineDoseDefinition' isn't defined. Try importing the library that defines 'VaccineDoseDefinition', correcting the name to the name of an existing function, or defining a function named 'VaccineDoseDefinition' • test/health_content_test.dart:49:20 • undefined_function
+  error • The function 'VaccinationScheduleDefinition' isn't defined. Try importing the library that defines 'VaccinationScheduleDefinition', correcting the name to the name of an existing function, or defining a function named 'VaccinationScheduleDefinition' • test/health_content_test.dart:57:24 • undefined_function
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:58:18 • undefined_identifier
+  error • Undefined name 'OfficialHealthSources'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:59:17 • undefined_identifier
+  error • Const variables must be initialized with a constant value. Try changing the initializer to be a constant expression • test/health_content_test.dart:74:25 • const_initialized_with_non_constant_value
+  error • The function 'VaccineDoseDefinition' isn't defined. Try importing the library that defines 'VaccineDoseDefinition', correcting the name to the name of an existing function, or defining a function named 'VaccineDoseDefinition' • test/health_content_test.dart:74:25 • undefined_function
+  error • Const variables must be initialized with a constant value. Try changing the initializer to be a constant expression • test/health_content_test.dart:81:26 • const_initialized_with_non_constant_value
+  error • The function 'VaccineDoseDefinition' isn't defined. Try importing the library that defines 'VaccineDoseDefinition', correcting the name to the name of an existing function, or defining a function named 'VaccineDoseDefinition' • test/health_content_test.dart:81:26 • undefined_function
+  error • The function 'VaccinationScheduleDefinition' isn't defined. Try importing the library that defines 'VaccinationScheduleDefinition', correcting the name to the name of an existing function, or defining a function named 'VaccinationScheduleDefinition' • test/health_content_test.dart:89:24 • undefined_function
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:90:18 • undefined_identifier
+  error • Undefined name 'OfficialHealthSources'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:91:17 • undefined_identifier
+  error • The function 'VaccinationPlan' isn't defined. Try importing the library that defines 'VaccinationPlan', correcting the name to the name of an existing function, or defining a function named 'VaccinationPlan' • test/health_content_test.dart:95:20 • undefined_function
+  error • The function 'VaccinationRecord' isn't defined. Try importing the library that defines 'VaccinationRecord', correcting the name to the name of an existing function, or defining a function named 'VaccinationRecord' • test/health_content_test.dart:100:11 • undefined_function
+  error • Undefined name 'WhoGrowthStandards'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:113:14 • undefined_identifier
+  error • Undefined name 'WhoGrowthStandards'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:114:14 • undefined_identifier
+  error • Undefined name 'GrowthIndicator'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:114:63 • undefined_identifier
+  error • Undefined name 'WhoGrowthStandards'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:115:14 • undefined_identifier
+  error • Undefined name 'GrowthIndicator'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:115:63 • undefined_identifier
+  error • Undefined name 'WhoGrowthStandards'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:116:14 • undefined_identifier
+  error • Undefined name 'GrowthIndicator'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:116:63 • undefined_identifier
+  error • Undefined name 'WhoGrowthStandards'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:117:14 • undefined_identifier
+  error • Undefined name 'WhoGrowthStandards'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:118:14 • undefined_identifier
+  error • Undefined name 'WhoGrowthStandards'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:120:9 • undefined_identifier
+  error • Undefined name 'GrowthIndicator'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:121:22 • undefined_identifier
+  error • Undefined name 'ChildSex'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:122:16 • undefined_identifier
+  error • Undefined name 'DevelopmentLibrary'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:132:14 • undefined_identifier
+  error • Undefined name 'DevelopmentLibrary'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:133:14 • undefined_identifier
+  error • Undefined name 'DevelopmentLibrary'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:134:14 • undefined_identifier
+  error • Undefined name 'DevelopmentLibrary'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:135:14 • undefined_identifier
+  error • The function 'ageInCompletedMonths' isn't defined. Try importing the library that defines 'ageInCompletedMonths', correcting the name to the name of an existing function, or defining a function named 'ageInCompletedMonths' • test/health_content_test.dart:139:14 • undefined_function
+  error • The function 'ageInCompletedMonths' isn't defined. Try importing the library that defines 'ageInCompletedMonths', correcting the name to the name of an existing function, or defining a function named 'ageInCompletedMonths' • test/health_content_test.dart:140:14 • undefined_function
+  error • The function 'ageInCompletedMonths' isn't defined. Try importing the library that defines 'ageInCompletedMonths', correcting the name to the name of an existing function, or defining a function named 'ageInCompletedMonths' • test/health_content_test.dart:141:14 • undefined_function
+  error • Undefined name 'ComplementaryFeedingLibrary'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:145:14 • undefined_identifier
+  error • Undefined name 'ComplementaryFeedingLibrary'. Try correcting the name to one that is defined, or defining the name • test/health_content_test.dart:146:14 • undefined_identifier
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/health_sources_test.dart:3:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/health_sources.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/health_sources_test.dart:3:8 • uri_does_not_exist
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_sources_test.dart:8:14 • undefined_identifier
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_sources_test.dart:9:14 • undefined_identifier
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_sources_test.dart:9:46 • undefined_identifier
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_sources_test.dart:10:14 • undefined_identifier
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_sources_test.dart:10:46 • undefined_identifier
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_sources_test.dart:11:14 • undefined_identifier
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_sources_test.dart:11:46 • undefined_identifier
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_sources_test.dart:12:14 • undefined_identifier
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_sources_test.dart:13:14 • undefined_identifier
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/health_sources_test.dart:17:29 • undefined_identifier
+  error • Undefined name 'OfficialHealthSources'. Try correcting the name to one that is defined, or defining the name • test/health_sources_test.dart:18:24 • undefined_identifier
+  error • Undefined name 'OfficialHealthSources'. Try correcting the name to one that is defined, or defining the name • test/health_sources_test.dart:30:14 • undefined_identifier
+  error • Undefined name 'OfficialHealthSources'. Try correcting the name to one that is defined, or defining the name • test/health_sources_test.dart:31:14 • undefined_identifier
+  error • Undefined name 'OfficialHealthSources'. Try correcting the name to one that is defined, or defining the name • test/health_sources_test.dart:32:14 • undefined_identifier
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/numuw_ui_smoke_test.dart:5:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/core/theme/numuw_theme.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/numuw_ui_smoke_test.dart:5:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/numuw_ui_smoke_test.dart:6:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/models/child_profile.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/numuw_ui_smoke_test.dart:6:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/numuw_ui_smoke_test.dart:7:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/screens/quick_log_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/numuw_ui_smoke_test.dart:7:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/numuw_ui_smoke_test.dart:8:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/screens/welcome_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/numuw_ui_smoke_test.dart:8:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/numuw_ui_smoke_test.dart:9:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/state/app_preferences.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/numuw_ui_smoke_test.dart:9:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/numuw_ui_smoke_test.dart:10:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/state/child_session.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/numuw_ui_smoke_test.dart:10:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/numuw_ui_smoke_test.dart:11:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/state/log_timer_state.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/numuw_ui_smoke_test.dart:11:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/numuw_ui_smoke_test.dart:12:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/widgets/app_bottom_navigation.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/numuw_ui_smoke_test.dart:12:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/numuw_ui_smoke_test.dart:13:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/widgets/app_widgets.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/numuw_ui_smoke_test.dart:13:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/numuw_ui_smoke_test.dart:14:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/widgets/quick_log_sheet.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/numuw_ui_smoke_test.dart:14:8 • uri_does_not_exist
+  error • Undefined class 'ChildProfile'. Try changing the name to the name of an existing class, or creating a class with the name 'ChildProfile' • test/numuw_ui_smoke_test.dart:16:1 • undefined_class
+  error • The name 'ChildProfile' isn't a class. Try correcting the name to match an existing class • test/numuw_ui_smoke_test.dart:16:32 • creation_with_non_type
+  error • The function 'buildNumuwTheme' isn't defined. Try importing the library that defines 'buildNumuwTheme', correcting the name to the name of an existing function, or defining a function named 'buildNumuwTheme' • test/numuw_ui_smoke_test.dart:26:10 • undefined_function
+  error • The function 'WelcomeScreen' isn't defined. Try importing the library that defines 'WelcomeScreen', correcting the name to the name of an existing function, or defining a function named 'WelcomeScreen' • test/numuw_ui_smoke_test.dart:27:9 • undefined_function
+  error • The function 'QuickLogScreen' isn't defined. Try importing the library that defines 'QuickLogScreen', correcting the name to the name of an existing function, or defining a function named 'QuickLogScreen' • test/numuw_ui_smoke_test.dart:34:14 • undefined_function
+  error • Undefined name 'ChildSession'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:42:5 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:43:11 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:44:11 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:45:11 • undefined_identifier
+  error • Undefined name 'AppPreferences'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:46:11 • undefined_identifier
+  error • Undefined name 'AppPreferences'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:50:11 • undefined_identifier
+  error • Undefined name 'ChildSession'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:51:5 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:52:11 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:53:11 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:54:11 • undefined_identifier
+  error • Undefined name 'WelcomeScreen'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:62:24 • undefined_identifier
+  error • Undefined name 'PrimaryButton'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:63:24 • undefined_identifier
+  error • The function 'AppBottomNavigation' isn't defined. Try importing the library that defines 'AppBottomNavigation', correcting the name to the name of an existing function, or defining a function named 'AppBottomNavigation' • test/numuw_ui_smoke_test.dart:79:34 • undefined_function
+  error • The name 'QuickLogSheet' isn't a class. Try correcting the name to match an existing class • test/numuw_ui_smoke_test.dart:105:43 • creation_with_non_type
+  error • Undefined name 'ChildSession'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:128:5 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:129:11 • undefined_identifier
+  error • Undefined name 'ChildSession'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:143:5 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:144:11 • undefined_identifier
+  error • Undefined name 'ChildSession'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:158:5 • undefined_identifier
+  error • Undefined name 'WelcomeScreen'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:171:24 • undefined_identifier
+  error • Undefined name 'AppPreferences'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:173:11 • undefined_identifier
+  error • Undefined name 'WelcomeScreen'. Try correcting the name to one that is defined, or defining the name • test/numuw_ui_smoke_test.dart:175:24 • undefined_identifier
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/offline_care_event_queue_test.dart:1:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/services/offline_care_event_queue.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/offline_care_event_queue_test.dart:1:8 • uri_does_not_exist
+  error • Undefined name 'OfflineCareEventQueue'. Try correcting the name to one that is defined, or defining the name • test/offline_care_event_queue_test.dart:12:21 • undefined_identifier
+  error • Undefined name 'OfflineCareEventQueue'. Try correcting the name to one that is defined, or defining the name • test/offline_care_event_queue_test.dart:32:23 • undefined_identifier
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/vaccination_plan_mapper_test.dart:3:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/health_sources.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/vaccination_plan_mapper_test.dart:3:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/vaccination_plan_mapper_test.dart:4:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/vaccination_plan_mapper.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/vaccination_plan_mapper_test.dart:4:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/vaccination_plan_mapper_test.dart:5:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/vaccination_plan_summary.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/vaccination_plan_mapper_test.dart:5:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/vaccination_plan_mapper_test.dart:6:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/vaccination_schedule_catalog.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/vaccination_plan_mapper_test.dart:6:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/vaccination_plan_mapper_test.dart:7:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/models/vaccination.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/vaccination_plan_mapper_test.dart:7:8 • uri_does_not_exist
+  error • Const variables must be initialized with a constant value. Try changing the initializer to be a constant expression • test/vaccination_plan_mapper_test.dart:10:21 • const_initialized_with_non_constant_value
+  error • The function 'VaccineDoseDefinition' isn't defined. Try importing the library that defines 'VaccineDoseDefinition', correcting the name to the name of an existing function, or defining a function named 'VaccineDoseDefinition' • test/vaccination_plan_mapper_test.dart:10:21 • undefined_function
+  error • Const variables must be initialized with a constant value. Try changing the initializer to be a constant expression • test/vaccination_plan_mapper_test.dart:17:22 • const_initialized_with_non_constant_value
+  error • The function 'VaccineDoseDefinition' isn't defined. Try importing the library that defines 'VaccineDoseDefinition', correcting the name to the name of an existing function, or defining a function named 'VaccineDoseDefinition' • test/vaccination_plan_mapper_test.dart:17:22 • undefined_function
+  error • Undefined class 'VaccinationScheduleDefinition'. Try changing the name to the name of an existing class, or creating a class with the name 'VaccinationScheduleDefinition' • test/vaccination_plan_mapper_test.dart:25:3 • undefined_class
+  error • The function 'VaccinationScheduleDefinition' isn't defined. Try importing the library that defines 'VaccinationScheduleDefinition', correcting the name to the name of an existing function, or defining a function named 'VaccinationScheduleDefinition' • test/vaccination_plan_mapper_test.dart:25:47 • undefined_function
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/vaccination_plan_mapper_test.dart:26:18 • undefined_identifier
+  error • Undefined name 'OfficialHealthSources'. Try correcting the name to one that is defined, or defining the name • test/vaccination_plan_mapper_test.dart:27:17 • undefined_identifier
+  error • Undefined name 'VaccinationPlanMapper'. Try correcting the name to one that is defined, or defining the name • test/vaccination_plan_mapper_test.dart:32:18 • undefined_identifier
+  error • The function 'Vaccination' isn't defined. Try importing the library that defines 'Vaccination', correcting the name to the name of an existing function, or defining a function named 'Vaccination' • test/vaccination_plan_mapper_test.dart:37:9 • undefined_function
+  error • Undefined name 'VaccinationPlanMapper'. Try correcting the name to one that is defined, or defining the name • test/vaccination_plan_mapper_test.dart:56:18 • undefined_identifier
+  error • The function 'Vaccination' isn't defined. Try importing the library that defines 'Vaccination', correcting the name to the name of an existing function, or defining a function named 'Vaccination' • test/vaccination_plan_mapper_test.dart:61:9 • undefined_function
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/vaccination_plan_summary_test.dart:3:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/health_sources.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/vaccination_plan_summary_test.dart:3:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/vaccination_plan_summary_test.dart:4:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/vaccination_plan_summary.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/vaccination_plan_summary_test.dart:4:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/vaccination_plan_summary_test.dart:5:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/vaccination_records.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/vaccination_plan_summary_test.dart:5:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/vaccination_plan_summary_test.dart:6:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/content/vaccination_schedule_catalog.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/vaccination_plan_summary_test.dart:6:8 • uri_does_not_exist
+  error • The function 'VaccinationScheduleDefinition' isn't defined. Try importing the library that defines 'VaccinationScheduleDefinition', correcting the name to the name of an existing function, or defining a function named 'VaccinationScheduleDefinition' • test/vaccination_plan_summary_test.dart:10:22 • undefined_function
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/vaccination_plan_summary_test.dart:11:16 • undefined_identifier
+  error • Undefined name 'OfficialHealthSources'. Try correcting the name to one that is defined, or defining the name • test/vaccination_plan_summary_test.dart:12:15 • undefined_identifier
+  error • The function 'VaccinationPlan' isn't defined. Try importing the library that defines 'VaccinationPlan', correcting the name to the name of an existing function, or defining a function named 'VaccinationPlan' • test/vaccination_plan_summary_test.dart:16:18 • undefined_function
+  error • Const variables must be initialized with a constant value. Try changing the initializer to be a constant expression • test/vaccination_plan_summary_test.dart:28:23 • const_initialized_with_non_constant_value
+  error • The function 'VaccineDoseDefinition' isn't defined. Try importing the library that defines 'VaccineDoseDefinition', correcting the name to the name of an existing function, or defining a function named 'VaccineDoseDefinition' • test/vaccination_plan_summary_test.dart:28:23 • undefined_function
+  error • Const variables must be initialized with a constant value. Try changing the initializer to be a constant expression • test/vaccination_plan_summary_test.dart:35:24 • const_initialized_with_non_constant_value
+  error • The function 'VaccineDoseDefinition' isn't defined. Try importing the library that defines 'VaccineDoseDefinition', correcting the name to the name of an existing function, or defining a function named 'VaccineDoseDefinition' • test/vaccination_plan_summary_test.dart:35:24 • undefined_function
+  error • The function 'VaccinationScheduleDefinition' isn't defined. Try importing the library that defines 'VaccinationScheduleDefinition', correcting the name to the name of an existing function, or defining a function named 'VaccinationScheduleDefinition' • test/vaccination_plan_summary_test.dart:43:22 • undefined_function
+  error • Undefined name 'NumuwCountry'. Try correcting the name to one that is defined, or defining the name • test/vaccination_plan_summary_test.dart:44:16 • undefined_identifier
+  error • Undefined name 'OfficialHealthSources'. Try correcting the name to one that is defined, or defining the name • test/vaccination_plan_summary_test.dart:45:15 • undefined_identifier
+  error • The function 'VaccinationPlan' isn't defined. Try importing the library that defines 'VaccinationPlan', correcting the name to the name of an existing function, or defining a function named 'VaccinationPlan' • test/vaccination_plan_summary_test.dart:49:25 • undefined_function
+  error • The function 'VaccinationRecord' isn't defined. Try importing the library that defines 'VaccinationRecord', correcting the name to the name of an existing function, or defining a function named 'VaccinationRecord' • test/vaccination_plan_summary_test.dart:54:9 • undefined_function
+  error • The function 'VaccinationRecord' isn't defined. Try importing the library that defines 'VaccinationRecord', correcting the name to the name of an existing function, or defining a function named 'VaccinationRecord' • test/vaccination_plan_summary_test.dart:64:7 • undefined_function
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/weekly_summary_test.dart:1:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/models/care_event.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/weekly_summary_test.dart:1:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/weekly_summary_test.dart:2:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/models/growth_measurement.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/weekly_summary_test.dart:2:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/weekly_summary_test.dart:3:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/models/weekly_child_summary.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/weekly_summary_test.dart:3:8 • uri_does_not_exist
+  error • Const variables must be initialized with a constant value. Try changing the initializer to be a constant expression • test/weekly_summary_test.dart:8:24 • const_initialized_with_non_constant_value
+  error • The function 'WeeklySummaryCalculator' isn't defined. Try importing the library that defines 'WeeklySummaryCalculator', correcting the name to the name of an existing function, or defining a function named 'WeeklySummaryCalculator' • test/weekly_summary_test.dart:8:24 • undefined_function
+  error • Undefined name 'WeeklySummaryCalculator'. Try correcting the name to one that is defined, or defining the name • test/weekly_summary_test.dart:57:26 • undefined_identifier
+  error • Undefined name 'WeeklyComparisonTrend'. Try correcting the name to one that is defined, or defining the name • test/weekly_summary_test.dart:65:32 • undefined_identifier
+  error • Undefined name 'WeeklySummaryCalculator'. Try correcting the name to one that is defined, or defining the name • test/weekly_summary_test.dart:70:26 • undefined_identifier
+  error • Undefined name 'WeeklyComparisonTrend'. Try correcting the name to one that is defined, or defining the name • test/weekly_summary_test.dart:78:32 • undefined_identifier
+  error • Undefined name 'WeeklySummaryCalculator'. Try correcting the name to one that is defined, or defining the name • test/weekly_summary_test.dart:84:25 • undefined_identifier
+  error • Undefined name 'WeeklySummaryCalculator'. Try correcting the name to one that is defined, or defining the name • test/weekly_summary_test.dart:91:25 • undefined_identifier
+  error • Undefined name 'WeeklySummaryCalculator'. Try correcting the name to one that is defined, or defining the name • test/weekly_summary_test.dart:98:22 • undefined_identifier
+  error • Undefined name 'WeeklyComparisonTrend'. Try correcting the name to one that is defined, or defining the name • test/weekly_summary_test.dart:106:31 • undefined_identifier
+  error • Undefined name 'WeeklyComparisonTrend'. Try correcting the name to one that is defined, or defining the name • test/weekly_summary_test.dart:107:31 • undefined_identifier
+  error • Undefined name 'WeeklyComparisonTrend'. Try correcting the name to one that is defined, or defining the name • test/weekly_summary_test.dart:108:28 • undefined_identifier
+  error • Undefined class 'CareEvent'. Try changing the name to the name of an existing class, or creating a class with the name 'CareEvent' • test/weekly_summary_test.dart:132:1 • undefined_class
+  error • The function 'CareEvent' isn't defined. Try importing the library that defines 'CareEvent', correcting the name to the name of an existing function, or defining a function named 'CareEvent' • test/weekly_summary_test.dart:132:54 • undefined_function
+  error • Undefined class 'CareEvent'. Try changing the name to the name of an existing class, or creating a class with the name 'CareEvent' • test/weekly_summary_test.dart:141:1 • undefined_class
+  error • The function 'CareEvent' isn't defined. Try importing the library that defines 'CareEvent', correcting the name to the name of an existing function, or defining a function named 'CareEvent' • test/weekly_summary_test.dart:141:43 • undefined_function
+  error • Undefined class 'CareEvent'. Try changing the name to the name of an existing class, or creating a class with the name 'CareEvent' • test/weekly_summary_test.dart:149:1 • undefined_class
+  error • The function 'CareEvent' isn't defined. Try importing the library that defines 'CareEvent', correcting the name to the name of an existing function, or defining a function named 'CareEvent' • test/weekly_summary_test.dart:149:60 • undefined_function
+  error • Undefined class 'CareEvent'. Try changing the name to the name of an existing class, or creating a class with the name 'CareEvent' • test/weekly_summary_test.dart:158:1 • undefined_class
+  error • The function 'CareEvent' isn't defined. Try importing the library that defines 'CareEvent', correcting the name to the name of an existing function, or defining a function named 'CareEvent' • test/weekly_summary_test.dart:158:66 • undefined_function
+  error • Undefined class 'GrowthMeasurement'. Try changing the name to the name of an existing class, or creating a class with the name 'GrowthMeasurement' • test/weekly_summary_test.dart:170:1 • undefined_class
+  error • The function 'GrowthMeasurement' isn't defined. Try importing the library that defines 'GrowthMeasurement', correcting the name to the name of an existing function, or defining a function named 'GrowthMeasurement' • test/weekly_summary_test.dart:171:5 • undefined_function
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:5:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/core/formatters/arabic_formatters.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:5:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:6:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/core/errors/app_error.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:6:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:7:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/core/numuw_app.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:7:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:8:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/data/egypt_vaccination_schedule.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:8:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:9:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/models/care_event.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:9:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:10:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/models/child_guardian.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:10:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:11:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/models/child_profile.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:11:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:12:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/models/pumping_analytics.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:12:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:13:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/models/vaccination.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:13:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:14:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/repositories/dashboard_repository.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:14:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:15:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/repositories/family_task_repository.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:15:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:16:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/screens/auth/sign_in_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:16:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:17:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/screens/auth/sign_up_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:17:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:18:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/screens/home_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:18:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:19:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/screens/main_shell.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:19:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:20:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/screens/pumping_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:20:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:21:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/screens/quick_log_screen.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:21:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:22:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/services/notification_service.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:22:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:23:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/state/child_session.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:23:8 • uri_does_not_exist
+   info • The imported package 'flutter_application_1' isn't a dependency of the importing package. Try adding a dependency for 'flutter_application_1' in the 'pubspec.yaml' file • test/widget_test.dart:24:8 • depend_on_referenced_packages
+  error • Target of URI doesn't exist: 'package:flutter_application_1/state/log_timer_state.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • test/widget_test.dart:24:8 • uri_does_not_exist
+  error • The function 'ChildProfile' isn't defined. Try importing the library that defines 'ChildProfile', correcting the name to the name of an existing function, or defining a function named 'ChildProfile' • test/widget_test.dart:28:19 • undefined_function
+  error • Undefined name 'ArabicFormatters'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:38:7 • undefined_identifier
+  error • Undefined name 'ChildProfile'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:44:19 • undefined_identifier
+  error • Undefined name 'ChildGuardian'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:62:22 • undefined_identifier
+  error • Undefined name 'CareEvent'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:77:19 • undefined_identifier
+  error • The function 'CareEvent' isn't defined. Try importing the library that defines 'CareEvent', correcting the name to the name of an existing function, or defining a function named 'CareEvent' • test/widget_test.dart:146:19 • undefined_function
+  error • The function 'CareEvent' isn't defined. Try importing the library that defines 'CareEvent', correcting the name to the name of an existing function, or defining a function named 'CareEvent' • test/widget_test.dart:163:19 • undefined_function
+  error • Undefined name 'PumpingComparison'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:183:26 • undefined_identifier
+  error • Undefined name 'PumpingComparison'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:201:24 • undefined_identifier
+  error • Undefined name 'PumpingTrend'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:211:30 • undefined_identifier
+  error • Undefined name 'PumpingComparison'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:216:24 • undefined_identifier
+  error • Undefined name 'PumpingTrend'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:226:30 • undefined_identifier
+  error • Undefined name 'PumpingComparison'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:231:24 • undefined_identifier
+  error • Undefined name 'PumpingTrend'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:240:30 • undefined_identifier
+  error • Undefined name 'PumpingComparison'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:245:24 • undefined_identifier
+  error • Undefined name 'PumpingTrend'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:255:30 • undefined_identifier
+  error • Undefined name 'PumpingComparison'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:259:24 • undefined_identifier
+  error • Undefined name 'PumpingTrend'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:265:30 • undefined_identifier
+  error • Undefined name 'PumpingComparison'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:272:24 • undefined_identifier
+  error • Undefined name 'PumpingComparison'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:288:24 • undefined_identifier
+  error • Undefined name 'PumpingComparison'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:304:24 • undefined_identifier
+  error • Undefined name 'PumpingComparison'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:320:24 • undefined_identifier
+  error • Undefined name 'ReminderPlanner'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:339:18 • undefined_identifier
+  error • The function 'CareEvent' isn't defined. Try importing the library that defines 'CareEvent', correcting the name to the name of an existing function, or defining a function named 'CareEvent' • test/widget_test.dart:356:19 • undefined_function
+  error • Undefined name 'ReminderPlanner'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:364:18 • undefined_identifier
+  error • Undefined name 'ReminderPlanner'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:376:18 • undefined_identifier
+  error • The function 'Vaccination' isn't defined. Try importing the library that defines 'Vaccination', correcting the name to the name of an existing function, or defining a function named 'Vaccination' • test/widget_test.dart:379:13 • undefined_function
+  error • Undefined name 'EgyptVaccinationSchedule'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:395:12 • undefined_identifier
+  error • Undefined name 'EgyptVaccinationSchedule'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:397:7 • undefined_identifier
+  error • Undefined name 'EgyptVaccinationSchedule'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:400:12 • undefined_identifier
+  error • Undefined name 'EgyptVaccinationSchedule'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:409:9 • undefined_identifier
+  error • Undefined name 'EgyptVaccinationSchedule'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:413:9 • undefined_identifier
+  error • Undefined name 'EgyptVaccinationSchedule'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:417:9 • undefined_identifier
+  error • Undefined name 'CareEvent'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:424:19 • undefined_identifier
+  error • Undefined name 'CareEvent'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:438:19 • undefined_identifier
+  error • The function 'readableError' isn't defined. Try importing the library that defines 'readableError', correcting the name to the name of an existing function, or defining a function named 'readableError' • test/widget_test.dart:456:7 • undefined_function
+  error • The name 'RequestTimeoutException' isn't a class. Try correcting the name to match an existing class • test/widget_test.dart:456:27 • creation_with_non_type
+  error • The function 'readableError' isn't defined. Try importing the library that defines 'readableError', correcting the name to the name of an existing function, or defining a function named 'readableError' • test/widget_test.dart:460:7 • undefined_function
+  error • Undefined name 'CareEvent'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:468:21 • undefined_identifier
+  error • Undefined name 'DashboardRepository'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:492:7 • undefined_identifier
+  error • Undefined name 'DashboardRepository'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:506:7 • undefined_identifier
+  error • Undefined name 'DashboardRepository'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:516:7 • undefined_identifier
+  error • Undefined name 'DashboardRepository'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:533:7 • undefined_identifier
+  error • Undefined name 'DashboardRepository'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:553:19 • undefined_identifier
+  error • The function 'isValidTaskTitle' isn't defined. Try importing the library that defines 'isValidTaskTitle', correcting the name to the name of an existing function, or defining a function named 'isValidTaskTitle' • test/widget_test.dart:563:12 • undefined_function
+  error • The function 'isValidTaskTitle' isn't defined. Try importing the library that defines 'isValidTaskTitle', correcting the name to the name of an existing function, or defining a function named 'isValidTaskTitle' • test/widget_test.dart:564:12 • undefined_function
+  error • The function 'isValidTaskTitle' isn't defined. Try importing the library that defines 'isValidTaskTitle', correcting the name to the name of an existing function, or defining a function named 'isValidTaskTitle' • test/widget_test.dart:565:12 • undefined_function
+  error • The function 'isValidTaskTitle' isn't defined. Try importing the library that defines 'isValidTaskTitle', correcting the name to the name of an existing function, or defining a function named 'isValidTaskTitle' • test/widget_test.dart:566:12 • undefined_function
+  error • The function 'isValidTaskTitle' isn't defined. Try importing the library that defines 'isValidTaskTitle', correcting the name to the name of an existing function, or defining a function named 'isValidTaskTitle' • test/widget_test.dart:567:12 • undefined_function
+  error • The function 'isValidTaskTitle' isn't defined. Try importing the library that defines 'isValidTaskTitle', correcting the name to the name of an existing function, or defining a function named 'isValidTaskTitle' • test/widget_test.dart:568:12 • undefined_function
+  error • The function 'isValidTaskTitle' isn't defined. Try importing the library that defines 'isValidTaskTitle', correcting the name to the name of an existing function, or defining a function named 'isValidTaskTitle' • test/widget_test.dart:569:12 • undefined_function
+  error • The function 'isValidTaskTitle' isn't defined. Try importing the library that defines 'isValidTaskTitle', correcting the name to the name of an existing function, or defining a function named 'isValidTaskTitle' • test/widget_test.dart:570:12 • undefined_function
+  error • Undefined name 'ChildSession'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:578:5 • undefined_identifier
+  error • Undefined name 'ChildSession'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:580:7 • undefined_identifier
+  error • Undefined name 'ChildSession'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:581:7 • undefined_identifier
+  error • Undefined name 'ChildSession'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:584:5 • undefined_identifier
+  error • Undefined name 'ChildSession'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:585:5 • undefined_identifier
+  error • Undefined name 'ChildSession'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:587:12 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:595:13 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:598:13 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:599:14 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:601:13 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:602:14 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:608:11 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:611:11 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:613:12 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:614:12 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:616:11 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:617:12 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:619:11 • undefined_identifier
+  error • Undefined name 'LogTimerState'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:620:12 • undefined_identifier
+  error • The name 'NumuwApp' isn't a class. Try correcting the name to match an existing class • test/widget_test.dart:626:37 • creation_with_non_type
+  error • Invalid constant value • test/widget_test.dart:637:18 • invalid_constant
+  error • The function 'MainShell' isn't defined. Try importing the library that defines 'MainShell', correcting the name to the name of an existing function, or defining a function named 'MainShell' • test/widget_test.dart:637:18 • undefined_function
+  error • Undefined name 'HomeScreen'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:641:24 • undefined_identifier
+  error • Undefined name 'QuickLogScreen'. Try correcting the name to one that is defined, or defining the name • test/widget_test.dart:642:24 • undefined_identifier
+  error • The name 'NumuwApp' isn't a class. Try correcting the name to match an existing class • test/widget_test.dart:646:35 • creation_with_non_type
+  error • Invalid constant value • test/widget_test.dart:660:18 • invalid_constant
+  error • The function 'SignInScreen' isn't defined. Try importing the library that defines 'SignInScreen', correcting the name to the name of an existing function, or defining a function named 'SignInScreen' • test/widget_test.dart:660:18 • undefined_function
+  error • Invalid constant value • test/widget_test.dart:682:18 • invalid_constant
+  error • The function 'SignUpScreen' isn't defined. Try importing the library that defines 'SignUpScreen', correcting the name to the name of an existing function, or defining a function named 'SignUpScreen' • test/widget_test.dart:682:18 • undefined_function
+  error • The function 'PumpingLogPane' isn't defined. Try importing the library that defines 'PumpingLogPane', correcting the name to the name of an existing function, or defining a function named 'PumpingLogPane' • test/widget_test.dart:706:48 • undefined_function
+  error • Undefined class 'CareEvent'. Try changing the name to the name of an existing class, or creating a class with the name 'CareEvent' • test/widget_test.dart:719:1 • undefined_class
+  error • The function 'CareEvent' isn't defined. Try importing the library that defines 'CareEvent', correcting the name to the name of an existing function, or defining a function named 'CareEvent' • test/widget_test.dart:719:71 • undefined_function
+  error • Undefined class 'CareEvent'. Try changing the name to the name of an existing class, or creating a class with the name 'CareEvent' • test/widget_test.dart:728:1 • undefined_class
+  error • The function 'CareEvent' isn't defined. Try importing the library that defines 'CareEvent', correcting the name to the name of an existing function, or defining a function named 'CareEvent' • test/widget_test.dart:728:54 • undefined_function
+  error • Undefined class 'ChildProfile'. Try changing the name to the name of an existing class, or creating a class with the name 'ChildProfile' • test/widget_test.dart:740:1 • undefined_class
+  error • The function 'ChildProfile' isn't defined. Try importing the library that defines 'ChildProfile', correcting the name to the name of an existing function, or defining a function named 'ChildProfile' • test/widget_test.dart:740:35 • undefined_function
+  error • Undefined class 'CareEvent'. Try changing the name to the name of an existing class, or creating a class with the name 'CareEvent' • test/widget_test.dart:749:1 • undefined_class
+  error • The function 'CareEvent' isn't defined. Try importing the library that defines 'CareEvent', correcting the name to the name of an existing function, or defining a function named 'CareEvent' • test/widget_test.dart:755:7 • undefined_function
+
+433 issues found. (ran in 19.6s)
