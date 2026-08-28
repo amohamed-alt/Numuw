@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/app_colors.dart';
 import '../core/theme/numuw_motion.dart';
 import 'app_widgets.dart';
+import 'icons/numuw_icon.dart';
 import 'numuw_motion_widgets.dart';
 
 class AppBottomNavigation extends StatelessWidget {
@@ -16,11 +17,11 @@ class AppBottomNavigation extends StatelessWidget {
   final ValueChanged<int> onChanged;
 
   static const items = <_NavData>[
-    _NavData(Icons.home_rounded, 'الرئيسية'),
-    _NavData(Icons.add_box_outlined, 'تسجيل'),
-    _NavData(Icons.child_care_outlined, 'طفلي'),
-    _NavData(Icons.chat_bubble_outline_rounded, 'المساعد'),
-    _NavData(Icons.apps_rounded, 'المزيد'),
+    _NavData(NumuwIcons.home, 'الرئيسية'),
+    _NavData(NumuwIcons.quickLog, 'تسجيل'),
+    _NavData(NumuwIcons.child, 'طفلي'),
+    _NavData(NumuwIcons.assistant, 'المساعد'),
+    _NavData(NumuwIcons.more, 'المزيد'),
   ];
 
   @override
@@ -70,8 +71,8 @@ class AppBottomNavigation extends StatelessWidget {
                           duration: NumuwMotionTokens.chip,
                           curve: NumuwMotionTokens.standard,
                           scale: selected ? 1.07 : 1,
-                          child: Icon(
-                            item.icon,
+                          child: NumuwIcon(
+                            item.asset,
                             size: selected ? 20 : 19,
                             color: selected ? accent : inactive,
                           ),
@@ -111,8 +112,8 @@ class AppBottomNavigation extends StatelessWidget {
 }
 
 class _NavData {
-  const _NavData(this.icon, this.label);
+  const _NavData(this.asset, this.label);
 
-  final IconData icon;
+  final String asset;
   final String label;
 }
