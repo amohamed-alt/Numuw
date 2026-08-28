@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../auth/auth_gate.dart';
+import '../screens/design_preview/full/preview_feeding.dart';
 import '../screens/design_preview/full/preview_home.dart';
 import '../screens/design_preview/full_app_preview.dart';
 import '../state/app_preferences.dart';
@@ -14,6 +15,7 @@ class NumuwApp extends StatelessWidget {
   final String? startupError;
   static const bool designPreview = bool.fromEnvironment('DESIGN_PREVIEW');
   static const bool homePreview = bool.fromEnvironment('HOME_PREVIEW');
+  static const bool feedingPreview = bool.fromEnvironment('FEEDING_PREVIEW');
   static const bool darkPreview = bool.fromEnvironment('DARK_PREVIEW');
 
   @override
@@ -21,7 +23,9 @@ class NumuwApp extends StatelessWidget {
     return AnimatedBuilder(
       animation: AppPreferences.instance,
       builder: (context, _) {
-        final night = designPreview && homePreview
+        final deterministicPreview =
+            designPreview && (homePreview || feedingPreview);
+        final night = deterministicPreview
             ? darkPreview
             : AppPreferences.instance.nightMode;
         final appBackground = night
@@ -85,7 +89,9 @@ class NumuwApp extends StatelessWidget {
             );
           },
           home: designPreview
-              ? (homePreview
+              ? (feedingPreview
+                    ? PreviewFeedingScreen(black: darkPreview)
+                    : homePreview
                     ? PreviewHomeScreen(black: darkPreview)
                     : const FullAppPreview())
               : AuthGate(startupError: startupError),
