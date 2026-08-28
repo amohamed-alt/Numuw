@@ -1,0 +1,74 @@
+name: Classy design preview
+
+on:
+  push:
+    branches:
+      - design/classy-motherhood-v1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.4'
+          channel: stable
+          cache: true
+
+      - name: Resolve packages
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: Test
+        run: flutter test
+
+      - name: Build design lab
+        run: |
+          flutter build web --release \
+            --dart-define=DESIGN_PREVIEW=true
+
+      - name: Capture preview screenshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [ -z "$CHROME" ]; then
+            echo "Chrome/Chromium not found; skipping screenshot."
+            exit 0
+          fi
+
+          python3 -m http.server 8765 --directory build/web >/tmp/numuw-design-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 2
+
+          "$CHROME" \
+            --headless=new \
+            --no-sandbox \
+            --disable-dev-shm-usage \
+            --hide-scrollbars \
+            --window-size=430,1200 \
+            --virtual-time-budget=7000 \
+            --screenshot="$GITHUB_WORKSPACE/numuw-classy-preview.png" \
+            http://127.0.0.1:8765/ || true
+
+      - name: Upload web preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: numuw-classy-design-preview
+          path: |
+            build/web
+            numuw-classy-preview.png
+          if-no-files-found: error
+          retention-days: 14
