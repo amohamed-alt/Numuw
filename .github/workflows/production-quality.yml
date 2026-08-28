@@ -18,7 +18,7 @@ jobs:
   quality:
     name: Analyze, test, web
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -37,21 +37,18 @@ jobs:
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Test
-        # The legacy suite still contains one assertion that checks for the old
-        # HomeScreen runtime type. The replacement ClassyHomeScreen lazy-load
-        # assertion lives in test/main_shell_classy_test.dart and is executed
-        # by this same command. Keep every other existing test enabled.
         run: >-
           flutter test
           --name '^(?!.*MainShell lazily creates unopened tabs).*$'
 
-      - name: Build shared home preview
+      - name: Build Morning home preview
         run: >-
           flutter build web --release
           --dart-define=DESIGN_PREVIEW=true
           --dart-define=HOME_PREVIEW=true
+          --dart-define=DARK_PREVIEW=false
 
-      - name: Capture phone preview
+      - name: Capture Morning phone preview
         shell: bash
         run: |
           set -euo pipefail
@@ -60,12 +57,10 @@ jobs:
             echo "Chrome/Chromium not found; skipping screenshot."
             exit 0
           fi
-
           python3 -m http.server 8765 --directory build/web >/tmp/numuw-home-http.log 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           sleep 2
-
           "$CHROME" \
             --headless=new \
             --no-sandbox \
@@ -73,14 +68,46 @@ jobs:
             --hide-scrollbars \
             --window-size=430,1200 \
             --virtual-time-budget=7000 \
-            --screenshot="$GITHUB_WORKSPACE/numuw-production-home.png" \
+            --screenshot="$GITHUB_WORKSPACE/numuw-production-home-morning.png" \
             http://127.0.0.1:8765/
 
-      - name: Upload visual preview
+      - name: Build Evening home preview
+        run: >-
+          flutter build web --release
+          --dart-define=DESIGN_PREVIEW=true
+          --dart-define=HOME_PREVIEW=true
+          --dart-define=DARK_PREVIEW=true
+
+      - name: Capture Evening phone preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [ -z "$CHROME" ]; then
+            echo "Chrome/Chromium not found; skipping screenshot."
+            exit 0
+          fi
+          python3 -m http.server 8766 --directory build/web >/tmp/numuw-home-dark-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 2
+          "$CHROME" \
+            --headless=new \
+            --no-sandbox \
+            --disable-dev-shm-usage \
+            --hide-scrollbars \
+            --window-size=430,1200 \
+            --virtual-time-budget=7000 \
+            --screenshot="$GITHUB_WORKSPACE/numuw-production-home-evening.png" \
+            http://127.0.0.1:8766/
+
+      - name: Upload visual previews
         uses: actions/upload-artifact@v4
         with:
-          name: numuw-production-home-preview
-          path: numuw-production-home.png
+          name: numuw-production-home-previews
+          path: |
+            numuw-production-home-morning.png
+            numuw-production-home-evening.png
           if-no-files-found: warn
           retention-days: 14
 
