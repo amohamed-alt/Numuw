@@ -285,36 +285,45 @@ class ClassyHomeView extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: NumuwClassySurface(
                 tinted: true,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _FeatureIcon(
-                      icon: Icons.lightbulb_outline_rounded,
-                      color: AppColors.plum,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      data.tipTitle,
-                      style: TextStyle(
-                        color: _text(context),
-                        fontWeight: FontWeight.w800,
+                child: SizedBox(
+                  height: 146,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _FeatureIcon(
+                        icon: Icons.lightbulb_outline_rounded,
+                        color: AppColors.plum,
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      data.tipText,
-                      style: TextStyle(
-                        color: _secondary(context),
-                        fontSize: 11.5,
-                        height: 1.45,
+                      const SizedBox(height: 8),
+                      Text(
+                        data.tipTitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: _text(context),
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Expanded(
+                        child: Text(
+                          data.tipText,
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: _secondary(context),
+                            fontSize: 11.5,
+                            height: 1.45,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -322,32 +331,41 @@ class ClassyHomeView extends StatelessWidget {
             Expanded(
               child: NumuwClassySurface(
                 tinted: true,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const _FeatureIcon(
-                      icon: Icons.star_outline_rounded,
-                      color: AppColors.warning,
-                      background: AppColors.champagneSoft,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      data.activityTitle,
-                      style: TextStyle(
-                        color: _text(context),
-                        fontWeight: FontWeight.w800,
+                child: SizedBox(
+                  height: 146,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const _FeatureIcon(
+                        icon: Icons.star_outline_rounded,
+                        color: AppColors.warning,
+                        background: AppColors.champagneSoft,
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      data.activityText,
-                      style: TextStyle(
-                        color: _secondary(context),
-                        fontSize: 11.5,
-                        height: 1.45,
+                      const SizedBox(height: 8),
+                      Text(
+                        data.activityTitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: _text(context),
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Expanded(
+                        child: Text(
+                          data.activityText,
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: _secondary(context),
+                            fontSize: 11.5,
+                            height: 1.45,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
