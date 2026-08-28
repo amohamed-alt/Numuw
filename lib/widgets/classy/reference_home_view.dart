@@ -23,6 +23,7 @@ class NumuwReferenceHomeView extends StatelessWidget {
     this.onDiaper,
     this.onFood,
     this.onMedicine,
+    this.onTemperature,
   });
 
   final ClassyHomeViewData data;
@@ -36,6 +37,7 @@ class NumuwReferenceHomeView extends StatelessWidget {
   final VoidCallback? onDiaper;
   final VoidCallback? onFood;
   final VoidCallback? onMedicine;
+  final VoidCallback? onTemperature;
 
   bool _dark(BuildContext context) => Theme.of(context).brightness == Brightness.dark;
   Color _text(BuildContext context) => _dark(context) ? AppColors.nightText : AppColors.text;
@@ -90,7 +92,7 @@ class NumuwReferenceHomeView extends StatelessWidget {
                     Expanded(
                       child: _ReferenceMetric(
                         metric: metrics[i],
-                        asset: _metricAsset(i),
+                        asset: _metricAsset(metrics[i], i),
                         onTap: switch (i) {
                           0 => onFeeding,
                           1 => onDiaper,
@@ -110,9 +112,9 @@ class NumuwReferenceHomeView extends StatelessWidget {
                 children: [
                   Expanded(child: _ReferenceQuickAction(label: 'رضاعة', asset: NumuwIcons.feeding, tint: AppColors.roseMist, accent: AppColors.plum, onTap: onFeeding)),
                   Expanded(child: _ReferenceQuickAction(label: 'شفط', asset: NumuwIcons.pumping, tint: AppColors.lavenderSoft, accent: const Color(0xFF8D7399), onTap: onPumping)),
-                  Expanded(child: _ReferenceQuickAction(label: 'نوم', asset: NumuwIcons.sleep, tint: AppColors.sageSoft, accent: AppColors.success, onTap: onSleep)),
                   Expanded(child: _ReferenceQuickAction(label: 'طعام', asset: NumuwIcons.food, tint: AppColors.champagneSoft, accent: AppColors.warning, onTap: onFood)),
                   Expanded(child: _ReferenceQuickAction(label: 'دواء', asset: NumuwIcons.medicine, tint: AppColors.powderSoft, accent: AppColors.info, onTap: onMedicine)),
+                  Expanded(child: _ReferenceQuickAction(label: 'حرارة', asset: NumuwIcons.temperature, tint: AppColors.blushSoft, accent: AppColors.danger, onTap: onTemperature ?? onMedicine)),
                   Expanded(child: _ReferenceQuickAction(label: 'المزيد', asset: NumuwIcons.more, tint: _raised(context), accent: _secondary(context), onTap: onViewAll)),
                 ],
               ),
@@ -165,12 +167,17 @@ class NumuwReferenceHomeView extends StatelessWidget {
     );
   }
 
-  String _metricAsset(int index) => switch (index) {
-    0 => NumuwIcons.feeding,
-    1 => NumuwIcons.diaper,
-    2 => NumuwIcons.sleep,
-    _ => NumuwIcons.vaccination,
-  };
+  String _metricAsset(ClassyHomeMetric metric, int index) {
+    final label = metric.label;
+    if (label.contains('دواء') || label.contains('أدوية')) return NumuwIcons.temperature;
+    if (label.contains('تطعيم')) return NumuwIcons.vaccination;
+    return switch (index) {
+      0 => NumuwIcons.feeding,
+      1 => NumuwIcons.diaper,
+      2 => NumuwIcons.sleep,
+      _ => NumuwIcons.vaccination,
+    };
+  }
 }
 
 class _ReferenceTopBar extends StatelessWidget {
