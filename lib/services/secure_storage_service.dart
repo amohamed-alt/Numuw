@@ -8,7 +8,7 @@ class SecureStorageService {
   static final SecureStorageService instance = SecureStorageService._();
 
   static const _storage = FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    aOptions: AndroidOptions(storageNamespace: 'numuw_secure'),
   );
 
   Future<void> write(String key, String value) =>
