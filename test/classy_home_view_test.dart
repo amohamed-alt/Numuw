@@ -6,13 +6,13 @@ import 'package:flutter_application_1/widgets/classy/classy_home_view.dart';
 void main() {
   const data = ClassyHomeViewData(
     greeting: 'مرحباً يا ماما',
-    subtitle: 'يوم هادئ مع ليان',
+    subtitle: 'اليوم، 28 أغسطس',
     childName: 'ليان أحمد',
     childAge: '9 أشهر و12 يوم',
-    latestFeeding: '12:30',
-    sleepToday: '2 س 40 د',
-    latestDiaper: '11:20',
-    nextVaccination: 'بعد 4 أيام',
+    latestFeeding: '5',
+    sleepToday: '2',
+    latestDiaper: '3',
+    nextVaccination: '1',
     timeline: [
       ClassyHomeTimelineItem(
         title: 'رضاعة طبيعية',
@@ -71,9 +71,10 @@ void main() {
   ) async {
     await pumpHome(tester);
 
-    expect(find.text('مرحباً يا ماما'), findsOneWidget);
     expect(find.text('ليان أحمد'), findsOneWidget);
     expect(find.text('نظرة سريعة لليوم'), findsOneWidget);
+    expect(find.text('تسجيل سريع'), findsOneWidget);
+    expect(find.text('آخر الأنشطة'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -81,6 +82,7 @@ void main() {
     await pumpHome(tester, brightness: Brightness.dark);
 
     expect(find.text('تسجيل سريع'), findsOneWidget);
+    expect(find.text('عرض كل الأنشطة'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }
