@@ -1,9 +1,6 @@
 name: Numuw production quality
 
 on:
-  push:
-    branches:
-      - feature/numuw-production-polish
   pull_request:
     branches:
       - design/classy-motherhood-v1
@@ -14,7 +11,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: numuw-production-${{ github.ref }}
+  group: numuw-production-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
