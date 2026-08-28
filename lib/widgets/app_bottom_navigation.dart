@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
 import '../core/theme/numuw_motion.dart';
-import 'app_widgets.dart';
 import 'icons/numuw_icon.dart';
 import 'numuw_motion_widgets.dart';
 
@@ -26,11 +25,13 @@ class AppBottomNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final night = numuwNightMode();
-    final surface = numuwSurfaceColor();
-    final border = numuwBorderColor();
+    final night = Theme.of(context).brightness == Brightness.dark;
+    final surface = night ? AppColors.nightSurface : AppColors.surface;
+    final border = night ? AppColors.nightBorder : AppColors.border;
     final accent = night ? AppColors.nightPrimaryStrong : AppColors.plum;
-    final inactive = numuwSecondaryTextColor();
+    final inactive = night
+        ? AppColors.nightSecondaryText
+        : AppColors.secondaryText;
 
     return SafeArea(
       top: false,
