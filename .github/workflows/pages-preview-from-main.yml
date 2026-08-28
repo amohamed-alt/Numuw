@@ -79,11 +79,10 @@ jobs:
             --headless=new \
             --no-sandbox \
             --disable-dev-shm-usage \
+            --disable-gpu \
             --no-first-run \
             --no-default-browser-check \
             --user-data-dir=/tmp/numuw-chrome-profile \
-            --use-gl=swiftshader \
-            --enable-webgl \
             --virtual-time-budget=15000 \
             --dump-dom \
             http://127.0.0.1:8765/Numuw/ \
@@ -91,14 +90,14 @@ jobs:
           CHROME_EXIT=$?
           set -e
 
-          if [ "$CHROME_EXIT" -ne 0 ] || ! grep -q "flt-glass-pane" /tmp/numuw-dom.html; then
+          if [ "$CHROME_EXIT" -ne 0 ] || grep -q 'id="numuw-boot-status"[^>]*class="is-error"' /tmp/numuw-dom.html || ! grep -q "flt-glass-pane" /tmp/numuw-dom.html; then
             echo "Flutter did not attach a rendered view during the Pages smoke test."
             echo "--- Chrome log ---"
             tail -200 /tmp/numuw-chrome.log || true
             echo "--- HTTP log ---"
             tail -100 /tmp/numuw-http.log || true
             echo "--- DOM ---"
-            head -120 /tmp/numuw-dom.html || true
+            tail -160 /tmp/numuw-dom.html || true
             exit 1
           fi
 
