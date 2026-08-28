@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - numuw-redesign
+      - feature/figma-parity-foundation
   workflow_dispatch:
 
 permissions:
