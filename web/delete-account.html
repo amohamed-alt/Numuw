@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index,follow">
+  <meta name="description" content="حذف حساب نُمُوّ وبياناته المرتبطة.">
+  <title>حذف حساب نُمُوّ</title>
+  <style>
+    :root { color-scheme: light dark; font-family: system-ui,-apple-system,"Segoe UI",sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; background:#0f1923; color:#f7f3ea; display:grid; place-items:center; padding:24px; }
+    main { width:min(100%,520px); background:#172130; border:1px solid #2b3746; border-radius:24px; padding:28px; box-shadow:0 20px 60px #0005; }
+    .logo { width:58px; height:58px; border-radius:50%; display:grid; place-items:center; background:#e8b86d; color:#0f1923; font-size:28px; font-weight:900; margin-bottom:16px; }
+    h1 { margin:0 0 10px; font-size:28px; }
+    p,li { color:#c8d0d8; line-height:1.8; }
+    label { display:block; margin-top:14px; margin-bottom:6px; font-weight:700; }
+    input { width:100%; min-height:48px; border-radius:14px; border:1px solid #405064; background:#0f1923; color:#f7f3ea; padding:0 14px; font:inherit; }
+    button { width:100%; min-height:50px; margin-top:18px; border:0; border-radius:14px; background:#bb3030; color:white; font:inherit; font-weight:800; cursor:pointer; }
+    button:disabled { opacity:.6; cursor:wait; }
+    .note { background:#0f1923; border:1px solid #344355; border-radius:16px; padding:14px 16px; margin:18px 0; }
+    #status { display:none; margin-top:16px; border-radius:14px; padding:12px 14px; line-height:1.7; }
+    #status.error { display:block; background:#4d1f25; color:#ffd9dd; }
+    #status.success { display:block; background:#173f34; color:#d7fff1; }
+    a { color:#e8b86d; }
+  </style>
+</head>
+<body>
+<main>
+  <div class="logo" aria-hidden="true">ن</div>
+  <h1>حذف حساب نُمُوّ</h1>
+  <p>هذه الصفحة الرسمية لحذف حساب <strong>نُمُوّ</strong> خارج التطبيق. بعد التحقق من بيانات الدخول، يُحذف حسابك والبيانات الشخصية المرتبطة به نهائيًا.</p>
+
+  <div class="note">
+    <strong>قبل الحذف</strong>
+    <ul>
+      <li>لا يمكن التراجع عن حذف الحساب.</li>
+      <li>بيانات الطفل الخاصة بحسابك تُحذف مع الحساب.</li>
+      <li>إذا كان الطفل مشتركًا مع مقدم رعاية آخر لديه صلاحية تعديل، نحافظ على سجل الطفل المشترك وننقل مسؤوليته إلى مقدم رعاية مؤهل بدل حذف سجل الأسرة بالكامل.</li>
+      <li>إذا كان لديك اشتراك مدفوع عبر Apple أو Google، إلغاء الحساب لا يضمن إلغاء الاشتراك في المتجر؛ ألغِ التجديد من إعدادات المتجر كذلك.</li>
+    </ul>
+  </div>
+
+  <form id="delete-form">
+    <label for="email">البريد الإلكتروني</label>
+    <input id="email" type="email" autocomplete="username" required>
+
+    <label for="password">كلمة المرور</label>
+    <input id="password" type="password" autocomplete="current-password" minlength="6" required>
+
+    <label for="confirm">للتأكيد اكتبي «حذف»</label>
+    <input id="confirm" type="text" autocomplete="off" required>
+
+    <button id="submit" type="submit">حذف الحساب نهائيًا</button>
+    <div id="status" role="status" aria-live="polite"></div>
+  </form>
+
+  <p style="margin-top:20px;font-size:13px">يمكنك أيضًا حذف الحساب من داخل التطبيق: المزيد ← الحساب والخصوصية ← حذف الحساب نهائيًا.</p>
+  <p style="font-size:13px"><a href="./">العودة إلى نُمُوّ</a></p>
+</main>
+
+<script>
+(() => {
+  const SUPABASE_URL = 'https://mwqscuoutmbihexphocx.supabase.co';
+  const PUBLISHABLE_KEY = 'sb_publishable_bb3Pg8su9rFSfnkDqNftuQ_GE4r05nL';
+  const form = document.getElementById('delete-form');
+  const button = document.getElementById('submit');
+  const status = document.getElementById('status');
+
+  function show(message, type) {
+    status.textContent = message;
+    status.className = type;
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    status.className = '';
+    status.textContent = '';
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirm = document.getElementById('confirm').value.trim();
+    if (confirm !== 'حذف') {
+      show('اكتبي كلمة «حذف» كما هي لتأكيد الطلب.', 'error');
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'جارٍ التحقق والحذف…';
+
+    try {
+      const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+        method: 'POST',
+        headers: {
+          'apikey': PUBLISHABLE_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+      const authData = await authResponse.json().catch(() => ({}));
+      if (!authResponse.ok || !authData.access_token) {
+        throw new Error('تعذر تسجيل الدخول. راجعي البريد وكلمة المرور ثم حاولي مرة أخرى.');
+      }
+
+      const deleteResponse = await fetch(`${SUPABASE_URL}/functions/v1/delete-account`, {
+        method: 'POST',
+        headers: {
+          'apikey': PUBLISHABLE_KEY,
+          'Authorization': `Bearer ${authData.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ confirmation: 'DELETE_NUMUW_ACCOUNT' })
+      });
+      const deleteData = await deleteResponse.json().catch(() => ({}));
+      if (!deleteResponse.ok || deleteData.deleted !== true) {
+        throw new Error(deleteData.message || 'تعذر حذف الحساب حاليًا. حاولي مرة أخرى لاحقًا.');
+      }
+
+      form.reset();
+      show('تم حذف حساب نُمُوّ بنجاح. لم يعد بإمكانك تسجيل الدخول بهذا الحساب.', 'success');
+    } catch (error) {
+      show(error && error.message ? error.message : 'تعذر إكمال الطلب.', 'error');
+    } finally {
+      button.disabled = false;
+      button.textContent = 'حذف الحساب نهائيًا';
+    }
+  });
+})();
+</script>
+</body>
+</html>
