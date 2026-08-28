@@ -49,7 +49,7 @@ class SupabaseAiAssistantTransport implements AiAssistantTransport {
         .invoke(
           functionId,
           body: body,
-          headers: {'Authorization': 'Bearer ' + session.accessToken},
+          headers: {'Authorization': 'Bearer ${session.accessToken}'},
         )
         .timeout(timeout);
     return _normalizeResponse(response.data);
@@ -58,7 +58,7 @@ class SupabaseAiAssistantTransport implements AiAssistantTransport {
 
 class AiAssistantService {
   AiAssistantService({AiAssistantTransport? transport})
-    : _transport = transport ?? SupabaseAiAssistantTransport();
+      : _transport = transport ?? SupabaseAiAssistantTransport();
 
   static const functionId = 'ai-assistant';
   static const chatFunctionId = 'ai-assistant-chat';
@@ -72,6 +72,7 @@ class AiAssistantService {
     required String question,
     required DateTime now,
     required Locale locale,
+    String? attachmentId,
   }) {
     final text = question.trim();
     if (text.isEmpty) {
@@ -85,20 +86,27 @@ class AiAssistantService {
     if (containsEmergencyKeyword(text)) {
       throw const EmergencyDetectedException();
     }
+
+    final payload = <String, dynamic>{
+      ...AiContextBuilder.dailySummary(
+        child: child,
+        events: events,
+        now: now,
+        locale: _localeTag(locale),
+        timezoneOffsetMinutes: now.timeZoneOffset.inMinutes,
+      ),
+      'question': text,
+    };
+    final normalizedAttachmentId = attachmentId?.trim();
+    if (normalizedAttachmentId != null && normalizedAttachmentId.isNotEmpty) {
+      payload['attachment_id'] = normalizedAttachmentId;
+    }
+
     return _call(
       mode: AiAssistantMode.chat,
       childId: child.id,
       targetFunctionId: chatFunctionId,
-      payload: {
-        ...AiContextBuilder.dailySummary(
-          child: child,
-          events: events,
-          now: now,
-          locale: _localeTag(locale),
-          timezoneOffsetMinutes: now.timeZoneOffset.inMinutes,
-        ),
-        'question': text,
-      },
+      payload: payload,
     );
   }
 
@@ -272,8 +280,8 @@ class AiAssistantService {
 
   static String _localeTag(Locale locale) =>
       locale.countryCode == null || locale.countryCode!.isEmpty
-      ? locale.languageCode
-      : '${locale.languageCode}-${locale.countryCode}';
+          ? locale.languageCode
+          : '${locale.languageCode}-${locale.countryCode}';
 }
 
 Map<String, dynamic> _normalizeResponse(Object? data) {

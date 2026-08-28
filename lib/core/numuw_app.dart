@@ -18,7 +18,8 @@ class NumuwApp extends StatelessWidget {
     return AnimatedBuilder(
       animation: AppPreferences.instance,
       builder: (context, _) {
-        final night = AppPreferences.instance.nightMode;
+        final prefs = AppPreferences.instance;
+        final night = prefs.nightMode;
         final appBackground = night
             ? NumuwColorTokens.darkBackground
             : NumuwColorTokens.lightBackground;
@@ -37,7 +38,9 @@ class NumuwApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
           ],
           theme: buildNumuwTheme(night: night),
-          themeAnimationDuration: const Duration(milliseconds: 240),
+          themeAnimationDuration: prefs.reducedMotion
+              ? Duration.zero
+              : const Duration(milliseconds: 450),
           themeAnimationCurve: Curves.easeOutCubic,
           builder: (context, child) {
             final app = Directionality(

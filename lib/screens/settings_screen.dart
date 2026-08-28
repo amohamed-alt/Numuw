@@ -5,6 +5,7 @@ import '../core/app_colors.dart';
 import '../state/app_preferences.dart';
 import '../state/country_preference.dart';
 import '../widgets/app_widgets.dart';
+import 'account_security_screen.dart';
 import 'country_selection_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -37,6 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final prefs = AppPreferences.instance;
     final country = CountryPreference.instance.country;
+
     return Scaffold(
       backgroundColor: numuwPageColor(),
       body: AppPage(
@@ -45,9 +47,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: [
             const NumuwHeader(
               title: 'الإعدادات',
-              subtitle: 'تحكّمي في تجربة نُمُوّ بما يناسب بيتكِ.',
+              subtitle: 'خلّي نُمُوّ أهدى وأسهل بالشكل اللي يناسبكِ.',
             ),
             const SizedBox(height: 18),
+            _AppearanceCard(prefs: prefs),
+            const SizedBox(height: 16),
             SoftCard(
               child: Column(
                 children: [
@@ -66,33 +70,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     },
                   ),
                   const Divider(height: 24),
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    value: prefs.nightMode,
-                    onChanged: (value) async => prefs.setNightMode(value),
-                    title: Text(
-                      'وضع الليل الهادئ',
-                      style: TextStyle(
-                        color: numuwTextColor(),
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    subtitle: Text(
-                      'ألوان أهدى للرضعات وتسجيلات الساعة 3 الفجر.',
-                      style: TextStyle(
-                        color: numuwSecondaryTextColor(),
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            SoftCard(
-              child: Column(
-                children: [
                   _SettingsRow(
                     icon: Icons.notifications_active_outlined,
                     title: 'التنبيهات',
@@ -102,15 +79,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const Divider(height: 24),
                   _SettingsRow(
                     icon: Icons.lock_outline_rounded,
-                    title: 'الخصوصية والأمان',
-                    subtitle: 'الحساب، حذف البيانات، وصلاحيات الأسرة.',
-                    onTap: () {},
+                    title: 'الخصوصية والأذونات',
+                    subtitle: 'اعرفي بالضبط متى ولماذا نطلب أي إذن.',
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const AccountPolicyScreen(),
+                      ),
+                    ),
                   ),
                   const Divider(height: 24),
                   _SettingsRow(
                     icon: Icons.workspace_premium_outlined,
-                    title: 'الاشتراك المميز',
-                    subtitle: 'التقارير، الذكاء الاصطناعي، ومكتبة الوثائق.',
+                    title: 'نُمُوّ Premium',
+                    subtitle: 'التقارير، الأسرة، والمزايا الإضافية.',
                     onTap: () {},
                   ),
                 ],
@@ -122,7 +103,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'مصدر المحتوى الطبي',
+                    'مصدر المحتوى الصحي',
                     style: TextStyle(
                       color: numuwTextColor(),
                       fontSize: 16,
@@ -131,10 +112,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'المصادر الحالية: ${country.sourceSummary}. تظهر التفاصيل داخل شاشة الدولة قبل الاعتماد، ولا يتم عرض أي جرعة غير موثقة.',
+                    'المصادر الحالية: ${country.sourceSummary}. تظهر التفاصيل داخل شاشة الدولة، ولا يعرض نُمُوّ جرعات أو تشخيصات من عنده.',
                     style: TextStyle(
                       color: numuwSecondaryTextColor(),
-                      height: 1.6,
+                      height: 1.65,
                     ),
                   ),
                 ],
@@ -142,6 +123,170 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _AppearanceCard extends StatelessWidget {
+  const _AppearanceCard({required this.prefs});
+
+  final AppPreferences prefs;
+
+  @override
+  Widget build(BuildContext context) {
+    final options = const [
+      ('system', 'تلقائي', Icons.brightness_auto_rounded),
+      ('light', 'فاتح', Icons.light_mode_outlined),
+      ('dark', 'داكن', Icons.dark_mode_outlined),
+    ];
+
+    return SoftCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: numuwAccentColor().withValues(alpha: .12),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(Icons.palette_outlined, color: numuwAccentColor()),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'المظهر',
+                      style: TextStyle(
+                        color: numuwTextColor(),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    Text(
+                      'فاتح نهارًا، وقمر هادئ في الظلام.',
+                      style: TextStyle(
+                        color: numuwSecondaryTextColor(),
+                        fontSize: 12.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: options.map((option) {
+              final selected = prefs.themePreference == option.$1;
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.symmetric(horizontal: 3),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: () => prefs.setThemePreference(option.$1),
+                    child: AnimatedContainer(
+                      duration: NumuwMotion.fast,
+                      padding: const EdgeInsetsDirectional.symmetric(
+                        horizontal: 8,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: selected
+                            ? numuwAccentColor().withValues(alpha: .13)
+                            : numuwPageColor(),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: selected
+                              ? numuwAccentColor().withValues(alpha: .45)
+                              : numuwBorderColor(),
+                          width: selected ? 1.6 : 1,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(
+                            option.$3,
+                            color: selected
+                                ? numuwAccentColor()
+                                : numuwSecondaryTextColor(),
+                            size: 20,
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            option.$2,
+                            style: TextStyle(
+                              color: selected
+                                  ? numuwTextColor()
+                                  : numuwSecondaryTextColor(),
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }).toList(growable: false),
+          ),
+          const SizedBox(height: 14),
+          Divider(height: 1, color: numuwBorderColor()),
+          const SizedBox(height: 6),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            value: prefs.nightLogging,
+            onChanged: prefs.nightMode
+                ? (value) => prefs.setNightLogging(value)
+                : null,
+            title: Text(
+              'وضع التسجيل الليلي',
+              style: TextStyle(
+                color: numuwTextColor(),
+                fontSize: 14.5,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            subtitle: Text(
+              prefs.nightMode
+                  ? 'يخفض إضاءة شاشات الرضاعة والنوم والحفاضة أكثر.'
+                  : 'يتاح عند استخدام الوضع الداكن.',
+              style: TextStyle(
+                color: numuwSecondaryTextColor(),
+                fontSize: 12.5,
+                height: 1.5,
+              ),
+            ),
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            value: prefs.reducedMotion,
+            onChanged: (value) => prefs.setReducedMotion(value),
+            title: Text(
+              'تقليل الحركة',
+              style: TextStyle(
+                color: numuwTextColor(),
+                fontSize: 14.5,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            subtitle: Text(
+              'يقلل الانتقالات والحركات المساعدة لو بتضايقك.',
+              style: TextStyle(
+                color: numuwSecondaryTextColor(),
+                fontSize: 12.5,
+                height: 1.5,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -171,10 +316,10 @@ class _SettingsRow extends StatelessWidget {
             width: 46,
             height: 46,
             decoration: BoxDecoration(
-              color: AppColors.mint.withValues(alpha: .12),
+              color: numuwAccentColor().withValues(alpha: .12),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, color: AppColors.mint),
+            child: Icon(icon, color: numuwAccentColor()),
           ),
           const SizedBox(width: 12),
           Expanded(

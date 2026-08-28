@@ -1,18 +1,20 @@
-name: Deploy mobile web preview
+name: Validate mobile web preview
 
 on:
   push:
+    branches:
+      - numuw-redesign
+      - feature/figma-parity-foundation
+  pull_request:
     branches:
       - numuw-redesign
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: numuw-github-pages
+  group: numuw-web-preview-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -22,14 +24,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-
-      - name: Validate preview configuration
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
-        run: |
-          test -n "$SUPABASE_URL" || (echo "Missing GitHub secret SUPABASE_URL" && exit 1)
-          test -n "$SUPABASE_PUBLISHABLE_KEY" || (echo "Missing GitHub secret SUPABASE_PUBLISHABLE_KEY" && exit 1)
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -46,31 +40,12 @@ jobs:
           flutter analyze --no-fatal-infos
           flutter test
 
-      - name: Build Flutter web
+      - name: Build connected Flutter web preview
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_URL: https://mwqscuoutmbihexphocx.supabase.co
+          SUPABASE_PUBLISHABLE_KEY: sb_publishable_bb3Pg8su9rFSfnkDqNftuQ_GE4r05nL
         run: |
           flutter build web --release \
             --base-href "/Numuw/" \
             --dart-define=SUPABASE_URL="$SUPABASE_URL" \
             --dart-define=SUPABASE_PUBLISHABLE_KEY="$SUPABASE_PUBLISHABLE_KEY"
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: build/web
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy preview
-        id: deployment
-        uses: actions/deploy-pages@v4

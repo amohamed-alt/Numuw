@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../services/observability_service.dart';
 
 class AppException implements Exception {
   const AppException(this.userMessage, [this.technicalMessage]);
@@ -105,6 +109,7 @@ String _authError(String message) {
 }
 
 void logError(Object error, StackTrace stackTrace) {
+  unawaited(ObservabilityService.capture(error, stackTrace));
   if (!kDebugMode) return;
   debugPrint('Error type: ${error.runtimeType}');
   if (error is AuthException) {

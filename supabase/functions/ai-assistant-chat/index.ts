@@ -12,6 +12,13 @@ const questionLimit = 700;
 const minuteLimit = 6;
 const dailyLimit = 50;
 const geminiTimeoutMs = 30000;
+const maxAttachmentBytes = 5 * 1024 * 1024;
+const allowedAttachmentMimeTypes = new Set([
+  "application/pdf",
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+]);
 
 const emergencyKeywords = [
   "مش بيتنفس",
@@ -25,6 +32,12 @@ const emergencyKeywords = [
   "مش بيستجيب",
   "نزيف شديد",
 ];
+
+type AttachmentPart = {
+  mimeType: string;
+  data: string;
+  title: string;
+};
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return jsonResponse({}, 200);
@@ -52,12 +65,16 @@ serve(async (req) => {
   const childId = parsed.child_id?.trim() ?? "";
   const payload = parsed.payload ?? {};
   const question = String(payload.question ?? "").trim();
+  const attachmentId = String(payload.attachment_id ?? "").trim();
 
   if (parsed.mode !== "chat") {
     return jsonResponse({ message: "وضع المساعد غير مدعوم." }, 400);
   }
   if (!isUuid(childId)) {
     return jsonResponse({ message: "معرف الطفل غير صالح." }, 400);
+  }
+  if (attachmentId && !isUuid(attachmentId)) {
+    return jsonResponse({ message: "معرف المرفق غير صالح." }, 400);
   }
   if (!question) {
     return jsonResponse({ message: "اكتبي سؤالك أولًا." }, 400);
@@ -113,18 +130,21 @@ serve(async (req) => {
     await assertRateLimit(authClient, userId);
     const child = await loadChild(authClient, childId);
     if (!child) {
-      return jsonResponse({
-        message: "ليس لديكِ صلاحية للوصول إلى بيانات هذا الطفل.",
-      }, 403);
+      return jsonResponse({ message: "ليس لديكِ صلاحية للوصول إلى بيانات هذا الطفل." }, 403);
     }
 
     const events = await fetchRecentCareEvents(authClient, childId);
+    const attachment = attachmentId
+      ? await loadAttachment(authClient, childId, attachmentId)
+      : null;
+
     const geminiBody = buildGeminiRequest({
       child,
       events: summarizeEvents(events),
       payload: sanitizePayload(payload),
       question,
       model: geminiModel,
+      attachment,
     });
     const geminiResponse = await callGemini(geminiKey, geminiModel, geminiBody);
     const validated = validateChatResponse(geminiResponse);
@@ -187,23 +207,66 @@ async function fetchRecentCareEvents(client: any, childId: string) {
   return data ?? [];
 }
 
+async function loadAttachment(
+  client: any,
+  childId: string,
+  attachmentId: string,
+): Promise<AttachmentPart> {
+  const { data: document, error } = await client
+    .from("child_documents")
+    .select("id,child_id,storage_bucket,storage_path,mime_type,size_bytes,title")
+    .eq("id", attachmentId)
+    .eq("child_id", childId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!document) throw new AttachmentAccessError();
+
+  const mimeType = String(document.mime_type ?? "").toLowerCase();
+  if (!allowedAttachmentMimeTypes.has(mimeType)) {
+    throw new AttachmentValidationError("المساعد يدعم PDF وJPG وPNG وWebP فقط.");
+  }
+  const declaredSize = Number(document.size_bytes ?? 0);
+  if (declaredSize > maxAttachmentBytes) {
+    throw new AttachmentValidationError("ملف المساعد أكبر من 5 ميجابايت.");
+  }
+
+  const { data: blob, error: downloadError } = await client.storage
+    .from(String(document.storage_bucket))
+    .download(String(document.storage_path));
+  if (downloadError || !blob) throw downloadError ?? new AttachmentAccessError();
+
+  const bytes = new Uint8Array(await blob.arrayBuffer());
+  if (bytes.byteLength === 0 || bytes.byteLength > maxAttachmentBytes) {
+    throw new AttachmentValidationError("حجم المرفق غير صالح للمساعد.");
+  }
+
+  return {
+    mimeType,
+    data: bytesToBase64(bytes),
+    title: String(document.title ?? "مرفق"),
+  };
+}
+
 function buildGeminiRequest({
   child,
   events,
   payload,
   question,
   model,
+  attachment,
 }: {
   child: Record<string, unknown>;
   events: unknown[];
   payload: Record<string, unknown>;
   question: string;
   model: string;
+  attachment: AttachmentPart | null;
 }) {
   const systemInstruction = [
     "أنت مساعد أمومة عربي داخل تطبيق نُمُوّ.",
-    "استخدم سجلات الطفل المرسلة فقط ولا تخترع أرقامًا أو مواعيد.",
+    "استخدم سجلات الطفل والمرفق المرسل فقط ولا تخترع أرقامًا أو مواعيد.",
     "لا تقدم تشخيصًا طبيًا أو تغيير جرعات أو بدائل علاجية.",
+    "إذا كان المرفق غير واضح أو غير قابل للقراءة فقل ذلك بوضوح.",
     "عند الشك أو وجود أعراض مقلقة، وجّه الأم للطبيب أو الطوارئ.",
     "أجب بصيغة JSON فقط مطابقة للمخطط.",
   ].join(" ");
@@ -214,6 +277,7 @@ function buildGeminiRequest({
     recent_events: events,
     client_context: payload,
     question,
+    attachment_title: attachment?.title ?? null,
     instructions: [
       "اجعلي الرد عربيًا دافئًا ومختصرًا ومناسبًا لأم مرهقة.",
       "استخدم sections عند الحاجة لتقسيم الرد إلى نقاط عملية.",
@@ -222,9 +286,14 @@ function buildGeminiRequest({
     ],
   };
 
+  const parts: Record<string, unknown>[] = [{ text: JSON.stringify(prompt) }];
+  if (attachment) {
+    parts.push({ inlineData: { mimeType: attachment.mimeType, data: attachment.data } });
+  }
+
   return {
     model,
-    contents: [{ role: "user", parts: [{ text: JSON.stringify(prompt) }] }],
+    contents: [{ role: "user", parts }],
     systemInstruction: { parts: [{ text: systemInstruction }] },
     generationConfig: {
       temperature: 0.25,
@@ -286,7 +355,9 @@ function validateChatResponse(response: unknown) {
   const json = response as Record<string, unknown>;
   const message = stringValue(json.message) ?? "";
   if (!message) throw new InvalidAiResponseError();
-  const sections = Array.isArray(json.sections) ? json.sections.map(normalizeSection).filter(Boolean) : [];
+  const sections = Array.isArray(json.sections)
+    ? json.sections.map(normalizeSection).filter(Boolean)
+    : [];
   return {
     message,
     requires_confirmation: false,
@@ -332,13 +403,16 @@ function safeChildContext(child: Record<string, unknown>) {
     stage: stringValue(child.stage),
     feeding_type: stringValue(child.feeding_type),
     birth_date: stringValue(child.birth_date),
-    age_in_days: birthDate ? Math.max(0, Math.floor((now.getTime() - birthDate.getTime()) / 86400000)) : null,
+    age_in_days: birthDate
+      ? Math.max(0, Math.floor((now.getTime() - birthDate.getTime()) / 86400000))
+      : null,
   };
 }
 
 function sanitizePayload(payload: Record<string, unknown>) {
   const clone = { ...payload };
   delete clone.question;
+  delete clone.attachment_id;
   return clone;
 }
 
@@ -357,6 +431,16 @@ function extractGeminiText(payload: any): string | null {
     .join("")
     .trim();
   return text.length > 0 ? text : null;
+}
+
+function bytesToBase64(bytes: Uint8Array) {
+  let binary = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    const slice = bytes.subarray(i, Math.min(i + chunk, bytes.length));
+    binary += String.fromCharCode(...slice);
+  }
+  return btoa(binary);
 }
 
 function normalizeStringArray(value: unknown) {
@@ -422,6 +506,8 @@ function jsonResponse(body: unknown, status: number) {
 class RateLimitError extends Error {}
 class InvalidAiResponseError extends Error {}
 class GeminiEmptyResponseError extends Error {}
+class AttachmentAccessError extends Error {}
+class AttachmentValidationError extends Error {}
 class GeminiHttpError extends Error {
   constructor(public status: number, message: string) {
     super(message);
@@ -432,18 +518,34 @@ function mapError(error: unknown) {
   if (error instanceof RateLimitError) {
     return { status: 429, body: { message: error.message } };
   }
+  if (error instanceof AttachmentAccessError) {
+    return { status: 403, body: { message: "ليس لديكِ صلاحية لاستخدام هذا المرفق." } };
+  }
+  if (error instanceof AttachmentValidationError) {
+    return { status: 400, body: { message: error.message } };
+  }
   if (error instanceof GeminiHttpError) {
     return {
       status: error.status === 429 ? 429 : 503,
-      body: { message: error.status === 429 ? "حاولي مرة أخرى بعد دقيقة." : "المساعد غير متاح الآن." },
+      body: {
+        message: error.status === 429
+          ? "حاولي مرة أخرى بعد دقيقة."
+          : "المساعد غير متاح الآن.",
+      },
     };
   }
   if (error instanceof GeminiEmptyResponseError || error instanceof InvalidAiResponseError) {
-    return { status: 502, body: { message: "لم يصلني رد واضح. جرّبي مرة أخرى بعد قليل." } };
+    return {
+      status: 502,
+      body: { message: "لم يصلني رد واضح. جرّبي مرة أخرى بعد قليل." },
+    };
   }
   const text = String(error).toLowerCase();
   if (text.includes("timeout") || text.includes("abort")) {
-    return { status: 504, body: { message: "استغرق الرد وقتًا طويلًا. حاولي مرة أخرى." } };
+    return {
+      status: 504,
+      body: { message: "استغرق الرد وقتًا طويلًا. حاولي مرة أخرى." },
+    };
   }
   return { status: 503, body: { message: "المساعد غير متاح الآن." } };
 }

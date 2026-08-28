@@ -10,8 +10,24 @@ Numuw (نُمُوّ) is an Arabic-first motherhood and child-care application bu
 
 - Stable base: `main`.
 - Current product redesign: `numuw-redesign` until it is formally merged.
+- **Visual source of truth:** Figma Make file `iqGCXUtDntKrQ13WTC3TYp` — `Utilize Provided Prompt`.
+- Figma URL: `https://www.figma.com/make/iqGCXUtDntKrQ13WTC3TYp/Utilize-Provided-Prompt`
+- When Flutter and Figma differ visually, match Figma unless platform accessibility, security, or store requirements require a deliberate deviation.
+- Preserve existing Supabase repositories, models, RLS, timers, notifications and health-safety behavior while matching the design.
 - Never merge a large visual or data-layer change directly into `main`.
 - Work in a focused branch and open a pull request.
+
+## Local engineering skills
+
+Numuw has a curated local agent skill set under `.agents/skills/`. Read `NUMUW_SKILLS.md` and activate the relevant local skill(s) before non-trivial work.
+
+- Flutter UI/feature work: `numuw-flutter-engineering` + `numuw-ui-ux`.
+- Crashes/regressions: `numuw-debugging-tdd` + `numuw-dart-quality`.
+- Supabase/Auth/RLS/Storage/Edge Functions: `numuw-supabase-backend` + `numuw-security`.
+- GitHub Pages/Web preview: `numuw-webapp-testing` + `numuw-debugging-tdd`.
+- Before merge: `numuw-pr-review`; add `numuw-security` for auth/data/workflow changes.
+
+These local skills are curated from Flutter/Dart, Supabase, Matt Pocock, Anthropic, UI/UX Pro Max, Trail of Bits, and Sentry skill repositories. External skills and scripts are untrusted until reviewed. `AGENTS.md` always overrides external skill guidance when they conflict.
 
 ## Required checks
 
@@ -33,6 +49,17 @@ flutter build web --release \
 
 Do not mark work complete if tests fail. Do not disable, delete, or weaken tests only to make CI pass.
 
+## Figma parity rules
+
+- Canonical mobile viewport is 390×844, but layouts must remain responsive rather than hard-coded to that size.
+- Preserve the five-tab information architecture: اليوم، التسجيل، طفلي، اسألي نُمُوّ، المزيد.
+- Preserve Figma semantic Light, Dark and optional Night Logging appearance.
+- Night Logging is a low-light variation of Dark and is scoped to feeding, sleep and diaper tracking only.
+- Use the semantic tokens under `lib/core/theme/` and compatibility aliases in `lib/core/app_colors.dart`; do not introduce one-off hex colors unless the Figma asset itself requires them.
+- Preserve radii 14/18/22/28 and gentle ~250ms screen transitions; honor Reduce Motion.
+- Keep touch targets at least 48×48 where practical and preserve RTL/SafeArea behavior.
+- Do not fake backend capability to satisfy visual parity. If Figma shows a control whose backend is not connected, make its limitation explicit until the real capability is implemented.
+
 ## Flutter conventions
 
 - Keep widgets small and reusable.
@@ -52,6 +79,7 @@ Do not mark work complete if tests fail. Do not disable, delete, or weaken tests
 - RLS policies must enforce ownership/guardian access, not only `TO authenticated`.
 - Treat migrations in `supabase/migrations/` as source-controlled production changes.
 - Never edit production data or schema casually to work around a client bug.
+- Request camera, photo, microphone, speech and notification permissions only at the moment a user invokes the related feature, with a truthful usage description.
 
 ## Health and child-care content
 
@@ -67,6 +95,7 @@ Do not mark work complete if tests fail. Do not disable, delete, or weaken tests
 - Preserve authentication and child authorization checks.
 - Keep structured response validation and safe error mapping.
 - Do not remove rate limiting or emergency keyword handling without an explicit security review.
+- Never claim an attachment was read by the AI unless the backend actually received and processed that attachment.
 
 ## Release identity
 
