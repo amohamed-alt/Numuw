@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
@@ -5,6 +7,8 @@ import '../core/errors/app_error.dart';
 import '../models/ai_assistant_response.dart';
 import '../repositories/care_event_repository.dart';
 import '../services/ai_assistant_service.dart';
+import '../services/media_picker_service.dart';
+import '../services/speech_input_service.dart';
 import '../state/child_session.dart';
 import '../widgets/app_widgets.dart';
 
@@ -29,7 +33,9 @@ class _AssistantScreenState extends State<AssistantScreen> {
   final _input = TextEditingController();
   final List<_Message> _messages = [];
   bool _loading = false;
+  bool _listening = false;
   String? _error;
+  NumuwPickedFile? _attachment;
 
   AiAssistantService get _assistantService =>
       widget._assistant ?? (_assistant ??= AiAssistantService());
@@ -47,6 +53,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
   @override
   void dispose() {
     _input.dispose();
+    unawaited(SpeechInputService.instance.cancel());
     super.dispose();
   }
 
@@ -54,6 +61,20 @@ class _AssistantScreenState extends State<AssistantScreen> {
     final child = ChildSession.instance.selectedChild;
     final text = (preset ?? _input.text).trim();
     if (child == null || text.isEmpty || _loading) return;
+
+    if (_attachment != null) {
+      setState(() {
+        _error =
+            'المرفق مختار محليًا فقط حاليًا. أزيليه لإرسال السؤال؛ إرسال الملفات سيتفعّل بعد ربط تخزين Supabase الآمن.';
+      });
+      return;
+    }
+
+    if (_listening) {
+      await SpeechInputService.instance.stop();
+      if (mounted) setState(() => _listening = false);
+    }
+
     final locale = Localizations.localeOf(context);
     final now = DateTime.now();
     setState(() {
@@ -62,6 +83,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
       _loading = true;
       _error = null;
     });
+
     try {
       final events = await _careRepository.fetchRecent(child.id, limit: 50);
       final response = text.contains('لخّصي') || text.contains('ملخص')
@@ -89,6 +111,50 @@ class _AssistantScreenState extends State<AssistantScreen> {
     }
   }
 
+  Future<void> _toggleVoice() async {
+    if (_loading) return;
+    if (_listening) {
+      await SpeechInputService.instance.stop();
+      if (mounted) setState(() => _listening = false);
+      return;
+    }
+
+    setState(() => _error = null);
+    final started = await SpeechInputService.instance.start(
+      onResult: (words, isFinal) {
+        if (!mounted) return;
+        setState(() {
+          _input.text = words;
+          _input.selection = TextSelection.collapsed(offset: words.length);
+          if (isFinal) _listening = false;
+        });
+      },
+    );
+    if (!mounted) return;
+    setState(() {
+      _listening = started;
+      if (!started) {
+        _error =
+            'لم نتمكن من تشغيل الإدخال الصوتي. تأكدي من السماح بالميكروفون والتعرّف على الكلام.';
+      }
+    });
+  }
+
+  Future<void> _pickAttachment() async {
+    if (_loading) return;
+    try {
+      final picked = await MediaPickerService.instance.pickDocument();
+      if (!mounted || picked == null) return;
+      setState(() {
+        _attachment = picked;
+        _error = null;
+      });
+    } catch (error, stackTrace) {
+      logError(error, stackTrace);
+      if (mounted) setState(() => _error = readableError(error));
+    }
+  }
+
   String _responseText(AiAssistantResponse response) {
     final parts = <String>[];
     final message = response.message.trim();
@@ -101,8 +167,9 @@ class _AssistantScreenState extends State<AssistantScreen> {
           .toList();
       if (title.isEmpty && items.isEmpty) continue;
       if (title.isNotEmpty) parts.add(title);
-      if (items.isNotEmpty)
+      if (items.isNotEmpty) {
         parts.add(items.map((item) => '• $item').join('\n'));
+      }
     }
     final disclaimer = response.disclaimer?.trim();
     if (disclaimer != null && disclaimer.isNotEmpty) parts.add(disclaimer);
@@ -115,6 +182,11 @@ class _AssistantScreenState extends State<AssistantScreen> {
   Widget build(BuildContext context) {
     final child = ChildSession.instance.selectedChild;
     final accent = numuwAccentColor();
+    final infoBackground = numuwNightMode()
+        ? AppColors.nightInfoSoft
+        : AppColors.blueLight;
+    final infoColor = numuwNightMode() ? AppColors.nightInfo : AppColors.blue;
+
     return Scaffold(
       backgroundColor: numuwPageColor(),
       body: SafeArea(
@@ -163,6 +235,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
                     onPressed: () => setState(() {
                       _messages.clear();
                       _error = null;
+                      _attachment = null;
                     }),
                     badge: false,
                     size: 44,
@@ -192,24 +265,24 @@ class _AssistantScreenState extends State<AssistantScreen> {
                     Container(
                       padding: const EdgeInsetsDirectional.all(13),
                       decoration: BoxDecoration(
-                        color: AppColors.blueLight,
+                        color: infoBackground,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: AppColors.blue.withValues(alpha: .24),
+                          color: infoColor.withValues(alpha: .28),
                         ),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.info_outline_rounded,
-                            color: AppColors.blue,
+                            color: infoColor,
                             size: 18,
                           ),
                           const SizedBox(width: 9),
                           Expanded(
                             child: Text(
-                              'لا ترسلي معلومات شخصية غير ضرورية أو صورًا حساسة.',
+                              'لا ترسلي معلومات شخصية غير ضرورية. نُمُوّ لا يقدّم تشخيصًا طبيًا أو يغيّر جرعات العلاج.',
                               style: TextStyle(
                                 color: numuwTextColor(),
                                 fontSize: 13,
@@ -239,9 +312,9 @@ class _AssistantScreenState extends State<AssistantScreen> {
                   ] else ...[
                     ..._messages.map((m) => _Bubble(message: m)),
                     if (_loading)
-                      Align(
+                      const Align(
                         alignment: AlignmentDirectional.centerStart,
-                        child: _Card(child: const LoadingDots()),
+                        child: _Card(child: LoadingDots()),
                       ),
                   ],
                   if (_error != null) ...[
@@ -251,10 +324,57 @@ class _AssistantScreenState extends State<AssistantScreen> {
                 ],
               ),
             ),
+            if (_attachment != null)
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(18, 0, 18, 8),
+                child: Container(
+                  padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 8, 8),
+                  decoration: BoxDecoration(
+                    color: infoBackground,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: infoColor.withValues(alpha: .25)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.insert_drive_file_outlined, color: infoColor),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _attachment!.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: numuwTextColor(),
+                                fontSize: 12.5,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            Text(
+                              'مختار محليًا · غير مُرسل للمساعد حاليًا',
+                              style: TextStyle(
+                                color: numuwSecondaryTextColor(),
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => setState(() => _attachment = null),
+                        icon: const Icon(Icons.close_rounded),
+                        tooltip: 'إزالة المرفق',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(18, 0, 18, 10),
               child: Container(
-                padding: const EdgeInsetsDirectional.fromSTEB(10, 7, 8, 7),
+                padding: const EdgeInsetsDirectional.fromSTEB(7, 7, 7, 7),
                 decoration: BoxDecoration(
                   color: numuwSurfaceColor(),
                   borderRadius: BorderRadius.circular(20),
@@ -262,12 +382,22 @@ class _AssistantScreenState extends State<AssistantScreen> {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.attach_file_rounded,
-                      color: numuwSecondaryTextColor(),
-                      size: 20,
+                    _ComposerButton(
+                      icon: Icons.attach_file_rounded,
+                      active: false,
+                      onTap: child == null || _loading ? null : _pickAttachment,
+                      tooltip: 'إرفاق ملف',
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 3),
+                    _ComposerButton(
+                      icon: _listening
+                          ? Icons.stop_circle_outlined
+                          : Icons.mic_none_rounded,
+                      active: _listening,
+                      onTap: child == null || _loading ? null : _toggleVoice,
+                      tooltip: _listening ? 'إيقاف التسجيل' : 'إدخال صوتي',
+                    ),
+                    const SizedBox(width: 5),
                     Expanded(
                       child: TextField(
                         controller: _input,
@@ -275,8 +405,10 @@ class _AssistantScreenState extends State<AssistantScreen> {
                         minLines: 1,
                         maxLines: 4,
                         textDirection: TextDirection.rtl,
-                        decoration: const InputDecoration(
-                          hintText: 'اكتبي سؤالك...',
+                        decoration: InputDecoration(
+                          hintText: _listening
+                              ? 'بتسمعكِ… اتكلمي براحتك'
+                              : 'اكتبي سؤالك...',
                           border: InputBorder.none,
                           filled: false,
                           isDense: true,
@@ -284,15 +416,23 @@ class _AssistantScreenState extends State<AssistantScreen> {
                         onSubmitted: (_) => _send(),
                       ),
                     ),
+                    const SizedBox(width: 5),
                     InkWell(
                       onTap: child == null || _loading ? null : () => _send(),
                       borderRadius: BorderRadius.circular(16),
-                      child: Container(
+                      child: AnimatedContainer(
+                        duration: NumuwMotion.fast,
                         width: 46,
                         height: 46,
                         decoration: BoxDecoration(
                           color: accent,
                           borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: accent.withValues(alpha: .18),
+                              blurRadius: 14,
+                            ),
+                          ],
                         ),
                         child: _loading
                             ? const Padding(
@@ -302,9 +442,11 @@ class _AssistantScreenState extends State<AssistantScreen> {
                                   color: Colors.white,
                                 ),
                               )
-                            : const Icon(
+                            : Icon(
                                 Icons.send_rounded,
-                                color: Colors.white,
+                                color: numuwNightMode()
+                                    ? AppColors.nightBackground
+                                    : Colors.white,
                                 size: 21,
                               ),
                       ),
@@ -314,6 +456,46 @@ class _AssistantScreenState extends State<AssistantScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ComposerButton extends StatelessWidget {
+  const _ComposerButton({
+    required this.icon,
+    required this.active,
+    required this.onTap,
+    required this.tooltip,
+  });
+
+  final IconData icon;
+  final bool active;
+  final VoidCallback? onTap;
+  final String tooltip;
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = numuwAccentColor();
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(13),
+        child: AnimatedContainer(
+          duration: NumuwMotion.fast,
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: active ? accent.withValues(alpha: .14) : Colors.transparent,
+            borderRadius: BorderRadius.circular(13),
+          ),
+          child: Icon(
+            icon,
+            color: active ? accent : numuwSecondaryTextColor(),
+            size: 20,
+          ),
         ),
       ),
     );
@@ -346,14 +528,14 @@ class _Suggestion extends StatelessWidget {
     padding: const EdgeInsetsDirectional.only(bottom: 10),
     child: Material(
       color: numuwSurfaceColor(),
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(18),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         child: Container(
           padding: const EdgeInsetsDirectional.all(14),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(18),
             border: Border.all(color: numuwBorderColor()),
           ),
           child: Row(
@@ -404,7 +586,9 @@ class _Bubble extends StatelessWidget {
         child: Text(
           message.text,
           style: TextStyle(
-            color: user ? Colors.white : numuwTextColor(),
+            color: user
+                ? (numuwNightMode() ? AppColors.nightBackground : Colors.white)
+                : numuwTextColor(),
             fontSize: 14,
             height: 1.65,
             fontWeight: FontWeight.w600,
