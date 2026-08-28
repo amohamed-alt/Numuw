@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../core/app_colors.dart';
+import '../services/network_status_service.dart';
 import '../widgets/app_bottom_navigation.dart';
 import '../widgets/app_widgets.dart';
 import '../widgets/quick_log_sheet.dart';
@@ -44,15 +46,39 @@ class _MainShellState extends State<MainShell> {
       useSafeArea: true,
       isScrollControlled: true,
       backgroundColor: numuwSurfaceColor(),
+      barrierColor: const Color(0x9904080D),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(NumuwRadius.largeCard),
+        ),
+      ),
       builder: (_) => const QuickLogSheet(),
     );
     if (!mounted || mode == null) return;
     await Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => Scaffold(
+      PageRouteBuilder<void>(
+        transitionDuration: NumuwMotion.screen,
+        reverseTransitionDuration: NumuwMotion.fast,
+        pageBuilder: (_, animation, __) => Scaffold(
           backgroundColor: numuwPageColor(),
           body: QuickLogScreen(initialMode: mode),
         ),
+        transitionsBuilder: (_, animation, __, child) {
+          final curved = CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutCubic,
+          );
+          return FadeTransition(
+            opacity: curved,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(.06, 0),
+                end: Offset.zero,
+              ).animate(curved),
+              child: child,
+            ),
+          );
+        },
       ),
     );
   }
@@ -83,17 +109,69 @@ class _MainShellState extends State<MainShell> {
       openChildSection: _openChildSection,
       child: Scaffold(
         backgroundColor: numuwPageColor(),
-        body: Stack(
+        body: Column(
           children: [
-            for (var i = 0; i < _pages.length; i++)
-              if (_pages[i] != null)
-                Offstage(
-                  offstage: selectedIndex != i,
-                  child: TickerMode(
-                    enabled: selectedIndex == i,
-                    child: _pages[i]!,
+            AnimatedBuilder(
+              animation: NetworkStatusService.instance,
+              builder: (context, _) {
+                final offline = NetworkStatusService.instance.initialized &&
+                    !NetworkStatusService.instance.hasConnectivity;
+                return AnimatedContainer(
+                  duration: NumuwMotion.fast,
+                  height: offline ? 34 : 0,
+                  width: double.infinity,
+                  color: numuwNightMode()
+                      ? AppColors.nightWarningSoft
+                      : AppColors.peachLight,
+                  alignment: Alignment.center,
+                  child: AnimatedOpacity(
+                    duration: NumuwMotion.fast,
+                    opacity: offline ? 1 : 0,
+                    child: Text(
+                      'أنتِ بدون اتصال — التسجيلات المدعومة تُحفظ مؤقتًا',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: numuwNightMode()
+                            ? AppColors.nightWarning
+                            : AppColors.peach,
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                   ),
-                ),
+                );
+              },
+            ),
+            Expanded(
+              child: Stack(
+                children: [
+                  for (var i = 0; i < _pages.length; i++)
+                    if (_pages[i] != null)
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          ignoring: selectedIndex != i,
+                          child: TickerMode(
+                            enabled: selectedIndex == i,
+                            child: AnimatedOpacity(
+                              opacity: selectedIndex == i ? 1 : 0,
+                              duration: NumuwMotion.screen,
+                              curve: Curves.easeOutCubic,
+                              child: AnimatedSlide(
+                                offset: selectedIndex == i
+                                    ? Offset.zero
+                                    : const Offset(0, .018),
+                                duration: NumuwMotion.screen,
+                                curve: Curves.easeOutCubic,
+                                child: _pages[i]!,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                ],
+              ),
+            ),
           ],
         ),
         bottomNavigationBar: AppBottomNavigation(
