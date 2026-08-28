@@ -34,7 +34,7 @@ class AppBottomNavigation extends StatelessWidget {
 
     return SafeArea(
       top: false,
-      minimum: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 10),
+      minimum: const EdgeInsets.fromLTRB(12, 0, 12, 10),
       child: Material(
         color: Colors.transparent,
         child: Container(
