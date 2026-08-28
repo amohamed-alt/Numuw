@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/app_colors.dart';
 import '../../../widgets/app_bottom_navigation.dart';
 import '../../../widgets/classy/classy_home_view.dart';
+import '../../../widgets/classy/reference_home_view.dart';
 import 'preview_shared.dart';
 
 class PreviewHomeScreen extends StatelessWidget {
@@ -19,7 +20,7 @@ class PreviewHomeScreen extends StatelessWidget {
       selectedIndex: 0,
       onChanged: (_) {},
     ),
-    child: ClassyHomeView(
+    child: NumuwReferenceHomeView(
       data: const ClassyHomeViewData(
         greeting: 'مرحباً يا ماما',
         subtitle: 'اليوم، 28 أغسطس',
