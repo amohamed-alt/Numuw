@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
+import '../core/theme/numuw_motion.dart';
 import 'app_widgets.dart';
+import 'numuw_motion_widgets.dart';
 
 class AppBottomNavigation extends StatelessWidget {
   const AppBottomNavigation({
@@ -13,12 +15,12 @@ class AppBottomNavigation extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onChanged;
 
-  static const items = [
-    _NavData(Icons.home_rounded, 'اليوم'),
-    _NavData(Icons.edit_note_rounded, 'التسجيل'),
+  static const items = <_NavData>[
+    _NavData(Icons.home_rounded, 'الرئيسية'),
+    _NavData(Icons.add_circle_outline_rounded, 'تسجيل'),
     _NavData(Icons.child_care_rounded, 'طفلي'),
-    _NavData(Icons.chat_bubble_outline_rounded, 'اسألي'),
-    _NavData(Icons.menu_rounded, 'المزيد'),
+    _NavData(Icons.auto_awesome_outlined, 'المساعد'),
+    _NavData(Icons.grid_view_rounded, 'المزيد'),
   ];
 
   @override
@@ -26,34 +28,30 @@ class AppBottomNavigation extends StatelessWidget {
     final night = numuwNightMode();
     final surface = numuwSurfaceColor();
     final border = numuwBorderColor();
-    final accent = numuwAccentColor();
+    final accent = night ? AppColors.nightPrimaryStrong : AppColors.plum;
     final inactive = numuwSecondaryTextColor();
     final activeBackground = night
-        ? AppColors.nightGold.withValues(alpha: .16)
-        : AppColors.mintLight;
+        ? AppColors.nightPrimarySoft
+        : AppColors.roseMist;
 
     return SafeArea(
       top: false,
       minimum: const EdgeInsets.fromLTRB(12, 0, 12, 10),
-      child: Material(
-        color: Colors.transparent,
+      child: RepaintBoundary(
         child: Container(
-          height: 68,
-          padding: const EdgeInsetsDirectional.symmetric(
-            horizontal: 6,
-            vertical: 6,
-          ),
+          height: 72,
+          padding: const EdgeInsetsDirectional.fromSTEB(8, 8, 8, 7),
           decoration: BoxDecoration(
-            color: surface.withValues(alpha: .98),
-            borderRadius: BorderRadius.circular(24),
+            color: surface.withValues(alpha: .985),
+            borderRadius: BorderRadius.circular(22),
             border: Border.all(color: border),
             boxShadow: night
-                ? const []
-                : const [
+                ? const <BoxShadow>[]
+                : const <BoxShadow>[
                     BoxShadow(
-                      color: Color(0x18000000),
-                      blurRadius: 22,
-                      offset: Offset(0, 8),
+                      color: Color(0x12442A34),
+                      blurRadius: 26,
+                      offset: Offset(0, 10),
                     ),
                   ],
           ),
@@ -61,65 +59,72 @@ class AppBottomNavigation extends StatelessWidget {
             children: List.generate(items.length, (index) {
               final item = items[index];
               final selected = selectedIndex == index;
-              final color = selected ? accent : inactive;
-
               return Expanded(
                 child: Semantics(
                   selected: selected,
                   button: true,
                   label: item.label,
-                  child: Material(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(18),
-                    clipBehavior: Clip.antiAlias,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(18),
-                      onTap: () => onChanged(index),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 180),
-                        curve: Curves.easeOutCubic,
-                        padding: const EdgeInsetsDirectional.symmetric(
-                          horizontal: 4,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: selected
-                              ? activeBackground
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(18),
-                          border: selected
-                              ? Border.all(
-                                  color: accent.withValues(alpha: .22),
-                                )
-                              : null,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AnimatedScale(
-                              duration: const Duration(milliseconds: 180),
-                              scale: selected ? 1.06 : 1,
-                              child: Icon(item.icon, size: 21, color: color),
+                  child: NumuwPressable(
+                    onTap: selected ? null : () => onChanged(index),
+                    scale: .97,
+                    borderRadius: BorderRadius.circular(15),
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.symmetric(
+                        horizontal: 2,
+                        vertical: 1,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AnimatedContainer(
+                            duration: NumuwMotionTokens.chip,
+                            curve: NumuwMotionTokens.standard,
+                            width: selected ? 40 : 36,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: selected
+                                  ? activeBackground
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(13),
+                              border: selected
+                                  ? Border.all(
+                                      color: accent.withValues(alpha: .16),
+                                    )
+                                  : null,
                             ),
-                            const SizedBox(height: 3),
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
+                            child: AnimatedScale(
+                              duration: NumuwMotionTokens.chip,
+                              curve: NumuwMotionTokens.standard,
+                              scale: selected ? 1.04 : 1,
+                              child: Icon(
+                                item.icon,
+                                size: 19,
+                                color: selected ? accent : inactive,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: AnimatedDefaultTextStyle(
+                              duration: NumuwMotionTokens.chip,
+                              curve: NumuwMotionTokens.standard,
+                              style: TextStyle(
+                                color: selected ? accent : inactive,
+                                fontSize: 9.5,
+                                height: 1.1,
+                                fontWeight: selected
+                                    ? FontWeight.w800
+                                    : FontWeight.w600,
+                              ),
                               child: Text(
                                 item.label,
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: color,
-                                  fontSize: 10.5,
-                                  height: 1.1,
-                                  fontWeight: selected
-                                      ? FontWeight.w800
-                                      : FontWeight.w600,
-                                ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
