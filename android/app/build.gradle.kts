@@ -6,8 +6,9 @@ plugins {
 
 android {
     namespace = "com.numuw.app"
-    // Google Play requires API 36 for new apps and updates starting 2026-08-31.
-    compileSdk = 36
+    // Compile with API 37 for current secure-storage/plugin compatibility while
+    // targeting API 36, which satisfies Google Play's 2026 requirement.
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
