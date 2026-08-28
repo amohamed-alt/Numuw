@@ -17,10 +17,10 @@ class AppBottomNavigation extends StatelessWidget {
 
   static const items = <_NavData>[
     _NavData(Icons.home_rounded, 'الرئيسية'),
-    _NavData(Icons.add_circle_outline_rounded, 'تسجيل'),
-    _NavData(Icons.child_care_rounded, 'طفلي'),
-    _NavData(Icons.auto_awesome_outlined, 'المساعد'),
-    _NavData(Icons.grid_view_rounded, 'المزيد'),
+    _NavData(Icons.add_box_outlined, 'تسجيل'),
+    _NavData(Icons.child_care_outlined, 'طفلي'),
+    _NavData(Icons.chat_bubble_outline_rounded, 'المساعد'),
+    _NavData(Icons.apps_rounded, 'المزيد'),
   ];
 
   @override
@@ -30,28 +30,23 @@ class AppBottomNavigation extends StatelessWidget {
     final border = numuwBorderColor();
     final accent = night ? AppColors.nightPrimaryStrong : AppColors.plum;
     final inactive = numuwSecondaryTextColor();
-    final activeBackground = night
-        ? AppColors.nightPrimarySoft
-        : AppColors.roseMist;
 
     return SafeArea(
       top: false,
-      minimum: const EdgeInsets.fromLTRB(12, 0, 12, 10),
       child: RepaintBoundary(
         child: Container(
-          height: 72,
-          padding: const EdgeInsetsDirectional.fromSTEB(8, 8, 8, 7),
+          height: 64,
+          padding: const EdgeInsetsDirectional.fromSTEB(10, 6, 10, 6),
           decoration: BoxDecoration(
-            color: surface.withValues(alpha: .985),
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: border),
+            color: surface.withValues(alpha: .995),
+            border: Border(top: BorderSide(color: border.withValues(alpha: .8))),
             boxShadow: night
                 ? const <BoxShadow>[]
-                : const <BoxShadow>[
+                : const [
                     BoxShadow(
-                      color: Color(0x12442A34),
-                      blurRadius: 26,
-                      offset: Offset(0, 10),
+                      color: Color(0x0A442A34),
+                      blurRadius: 14,
+                      offset: Offset(0, -3),
                     ),
                   ],
           ),
@@ -67,65 +62,42 @@ class AppBottomNavigation extends StatelessWidget {
                   child: NumuwPressable(
                     onTap: selected ? null : () => onChanged(index),
                     scale: .97,
-                    borderRadius: BorderRadius.circular(15),
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.symmetric(
-                        horizontal: 2,
-                        vertical: 1,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          AnimatedContainer(
+                    borderRadius: BorderRadius.circular(14),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AnimatedScale(
+                          duration: NumuwMotionTokens.chip,
+                          curve: NumuwMotionTokens.standard,
+                          scale: selected ? 1.07 : 1,
+                          child: Icon(
+                            item.icon,
+                            size: selected ? 20 : 19,
+                            color: selected ? accent : inactive,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: AnimatedDefaultTextStyle(
                             duration: NumuwMotionTokens.chip,
                             curve: NumuwMotionTokens.standard,
-                            width: selected ? 40 : 36,
-                            height: 32,
-                            decoration: BoxDecoration(
-                              color: selected
-                                  ? activeBackground
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(13),
-                              border: selected
-                                  ? Border.all(
-                                      color: accent.withValues(alpha: .16),
-                                    )
-                                  : null,
+                            style: TextStyle(
+                              color: selected ? accent : inactive,
+                              fontSize: 9.2,
+                              height: 1,
+                              fontWeight: selected
+                                  ? FontWeight.w800
+                                  : FontWeight.w600,
                             ),
-                            child: AnimatedScale(
-                              duration: NumuwMotionTokens.chip,
-                              curve: NumuwMotionTokens.standard,
-                              scale: selected ? 1.04 : 1,
-                              child: Icon(
-                                item.icon,
-                                size: 19,
-                                color: selected ? accent : inactive,
-                              ),
+                            child: Text(
+                              item.label,
+                              maxLines: 1,
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                          const SizedBox(height: 3),
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: AnimatedDefaultTextStyle(
-                              duration: NumuwMotionTokens.chip,
-                              curve: NumuwMotionTokens.standard,
-                              style: TextStyle(
-                                color: selected ? accent : inactive,
-                                fontSize: 9.5,
-                                height: 1.1,
-                                fontWeight: selected
-                                    ? FontWeight.w800
-                                    : FontWeight.w600,
-                              ),
-                              child: Text(
-                                item.label,
-                                maxLines: 1,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
