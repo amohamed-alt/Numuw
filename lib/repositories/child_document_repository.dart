@@ -108,12 +108,7 @@ class ChildDocumentRepository {
   }
 
   Future<void> remove(UploadedChildDocument document) async {
-    final storageError = await _client.storage
-        .from(document.bucket)
-        .remove([document.path]);
-    if (storageError.isNotEmpty) {
-      throw AppException('تعذر حذف المرفق من التخزين.');
-    }
+    await _client.storage.from(document.bucket).remove([document.path]);
     await _client.from('child_documents').delete().eq('id', document.id);
   }
 
@@ -133,19 +128,12 @@ class ChildDocumentRepository {
   }
 
   static String _safeName(String value) {
-    final trimmed = value.trim();
-    final source = trimmed.isEmpty ? 'attachment' : trimmed;
-    return source
+    final source = value.trim().isEmpty ? 'attachment' : value.trim();
+    final sanitized = source
         .replaceAll(RegExp(r'[^A-Za-z0-9._-]+'), '-')
         .replaceAll(RegExp(r'-+'), '-')
         .replaceAll(RegExp(r'^[-.]+|[-.]+$'), '')
-        .toLowerCase()
-        .isEmpty
-        ? 'attachment'
-        : source
-            .replaceAll(RegExp(r'[^A-Za-z0-9._-]+'), '-')
-            .replaceAll(RegExp(r'-+'), '-')
-            .replaceAll(RegExp(r'^[-.]+|[-.]+$'), '')
-            .toLowerCase();
+        .toLowerCase();
+    return sanitized.isEmpty ? 'attachment' : sanitized;
   }
 }
