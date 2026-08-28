@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
@@ -26,10 +27,13 @@ class SpeechInputService {
     final microphone = await Permission.microphone.request();
     if (!microphone.isGranted) return false;
 
-    // Speech permission exists on Apple platforms. On platforms where it is not
-    // separately applicable, permission_handler returns an allowed/no-op state.
-    final speech = await Permission.speech.request();
-    return speech.isGranted || speech.isLimited || speech.isProvisional;
+    if (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS) {
+      final speech = await Permission.speech.request();
+      return speech.isGranted || speech.isLimited || speech.isProvisional;
+    }
+
+    return true;
   }
 
   Future<bool> start({
