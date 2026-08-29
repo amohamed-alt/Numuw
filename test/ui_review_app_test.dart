@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:flutter_application_1/main_ui_review_fixed.dart';
+import 'package:flutter_application_1/main_ui_review_v3.dart';
 
 void main() {
   testWidgets('UI review candidate exposes every major review surface', (tester) async {
     await tester.binding.setSurfaceSize(const Size(390, 844));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
-    await tester.pumpWidget(const NumuwReviewFixedApp());
+    await tester.pumpWidget(const NumuwUiReviewV3());
     await tester.pumpAndSettle();
 
     expect(find.text('صباح الخير يا ماما'), findsOneWidget);
