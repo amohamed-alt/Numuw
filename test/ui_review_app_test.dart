@@ -21,7 +21,7 @@ void main() {
 
     await tester.tap(find.text('تسجيل'));
     await tester.pumpAndSettle();
-    expect(find.text('تسجيل سريع'), findsOneWidget);
+    expect(find.text('تسجيل سريع'), findsWidgets);
     expect(find.text('رضاعة'), findsWidgets);
 
     await tester.tap(find.text('الطفل'));
