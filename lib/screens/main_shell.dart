@@ -4,8 +4,8 @@ import '../widgets/app_bottom_navigation.dart';
 import 'assistant_screen.dart';
 import 'child_screen.dart';
 import 'classy/classy_home_screen.dart';
+import 'classy/classy_quick_log_screen.dart';
 import 'more_screen.dart';
-import 'quick_log_screen.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -44,7 +44,7 @@ class _MainShellState extends State<MainShell> {
   void _ensurePage(int index) {
     _pages[index] ??= switch (index) {
       0 => const ClassyHomeScreen(),
-      1 => const QuickLogScreen(),
+      1 => const ClassyQuickLogScreen(),
       2 => ChildScreen(initialSection: childInitialSection),
       3 => const AssistantScreen(),
       4 => const MoreScreen(),
