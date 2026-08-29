@@ -22,24 +22,37 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Reject privileged Supabase credentials in tracked source
+      - name: Reject hardcoded privileged credentials in tracked production source
         shell: bash
         run: |
           set -euo pipefail
-          if git grep -nEI '(service[_-]?role|SUPABASE_SERVICE_ROLE_KEY|sb_secret_[A-Za-z0-9_-]{12,}|eyJ[a-zA-Z0-9_-]{20,}\.[a-zA-Z0-9_-]{20,}\.[a-zA-Z0-9_-]{20,})' -- \
+
+          # Literal privileged keys/JWTs must never be committed. Backend Edge
+          # Functions are allowed to reference SUPABASE_SERVICE_ROLE_KEY by name
+          # because Supabase injects that value at runtime from environment secrets.
+          if git grep -nEI '(sb_secret_[A-Za-z0-9_-]{12,}|eyJ[a-zA-Z0-9_-]{20,}\.[a-zA-Z0-9_-]{20,}\.[a-zA-Z0-9_-]{20,})' -- \
             'lib/**' 'web/**' 'android/**' 'ios/**' 'supabase/functions/**' ':!**/*.md' ':!test/**'; then
-            echo 'Potential privileged credential or JWT-like secret detected in tracked production source.' >&2
+            echo 'Potential hardcoded privileged credential or JWT-like secret detected in tracked production source.' >&2
             exit 1
           fi
 
-      - name: Reject unsafe Supabase client configuration
+      - name: Reject privileged Supabase configuration in Flutter client
         shell: bash
         run: |
           set -euo pipefail
           git grep -q 'SUPABASE_PUBLISHABLE_KEY' -- lib
           git grep -q 'AuthFlowType.pkce' -- lib
-          if git grep -nE 'SUPABASE_(SERVICE_ROLE|SECRET)_KEY' -- lib; then
-            echo 'Privileged Supabase key reference must never exist in Flutter client code.' >&2
+          if git grep -nEI '(service[_-]?role|SUPABASE_SERVICE_ROLE_KEY|SUPABASE_SECRET_KEY|sb_secret_[A-Za-z0-9_-]{12,})' -- lib; then
+            echo 'Privileged Supabase key references must never exist in Flutter client code.' >&2
+            exit 1
+          fi
+
+      - name: Validate Edge Function secret usage
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git grep -nE 'createClient\([^,]+,[[:space:]]*["'"'"'](eyJ|sb_secret_)' -- 'supabase/functions/**'; then
+            echo 'Edge Functions must load privileged Supabase credentials from runtime environment variables.' >&2
             exit 1
           fi
 
