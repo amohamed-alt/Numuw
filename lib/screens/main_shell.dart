@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import '../services/notification_service.dart';
+import '../state/child_session.dart';
 import '../widgets/app_bottom_navigation.dart';
 import 'assistant_screen.dart';
 import 'child_screen.dart';
@@ -18,11 +22,24 @@ class _MainShellState extends State<MainShell> {
   int selectedIndex = 0;
   String? childInitialSection;
   final List<Widget?> _pages = List<Widget?>.filled(5, null);
+  StreamSubscription<String>? _notificationSubscription;
 
   @override
   void initState() {
     super.initState();
     _ensurePage(0);
+    _notificationSubscription = NotificationService.instance.responsePayloads
+        .listen(_handleNotificationPayload);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final payload = NotificationService.instance.takePendingLaunchPayload();
+      if (payload != null) _handleNotificationPayload(payload);
+    });
+  }
+
+  @override
+  void dispose() {
+    _notificationSubscription?.cancel();
+    super.dispose();
   }
 
   void _selectTab(int index) {
@@ -38,6 +55,33 @@ class _MainShellState extends State<MainShell> {
       selectedIndex = 2;
       _pages[2] = ChildScreen(initialSection: section);
     });
+  }
+
+  void _handleNotificationPayload(String payload) {
+    if (!mounted) return;
+    final destination = parseNotificationPayload(payload);
+    _selectChildIfAvailable(destination.childId);
+
+    switch (destination.type) {
+      case NotificationDestinationType.quickLog:
+        _selectTab(1);
+      case NotificationDestinationType.vaccinations:
+        _openChildSection('vaccinations');
+      case NotificationDestinationType.home:
+        _selectTab(0);
+    }
+  }
+
+  void _selectChildIfAvailable(String? childId) {
+    if (childId == null || childId.isEmpty) return;
+    for (final child in ChildSession.instance.children) {
+      if (child.id == childId) {
+        if (ChildSession.instance.selectedChild?.id != childId) {
+          ChildSession.instance.selectChild(child);
+        }
+        return;
+      }
+    }
   }
 
   void _ensurePage(int index) {
