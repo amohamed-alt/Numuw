@@ -31,19 +31,20 @@ class PushDeviceRepository {
       throw const FormatException('Unsupported push platform');
     }
 
+    // A native push token belongs to one installation, not permanently to one
+    // account. The server RPC atomically transfers ownership when a shared
+    // device signs into a different account, avoiding stale cross-account push
+    // delivery that client-side RLS cleanup cannot reliably prevent.
     await withRepositoryTimeout(
-      _supabase.from('push_devices').upsert(
-        {
-          'user_id': user.id,
-          'platform': normalizedPlatform,
-          'token': normalizedToken,
-          'timezone': _cleanOptional(timezone),
-          'locale': _cleanOptional(locale),
-          'app_version': _cleanOptional(appVersion),
-          'enabled': true,
-          'last_seen_at': DateTime.now().toUtc().toIso8601String(),
+      _supabase.rpc(
+        'claim_push_device',
+        params: {
+          'p_token': normalizedToken,
+          'p_platform': normalizedPlatform,
+          'p_timezone': _cleanOptional(timezone),
+          'p_locale': _cleanOptional(locale),
+          'p_app_version': _cleanOptional(appVersion),
         },
-        onConflict: 'user_id,token',
       ),
     );
   }
