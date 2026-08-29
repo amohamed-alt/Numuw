@@ -1,1 +1,2 @@
 Trigger Organic production-foundation GitHub Pages preview.
+Run after signup CI stabilization: 2026-08-29T10:04Z
