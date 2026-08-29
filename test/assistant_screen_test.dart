@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:flutter_application_1/design/numuw_motion_widgets.dart';
+import 'package:flutter_application_1/design/numuw_organic_icons.dart';
 import 'package:flutter_application_1/models/child_profile.dart';
 import 'package:flutter_application_1/screens/assistant_screen.dart';
 import 'package:flutter_application_1/state/child_session.dart';
@@ -29,6 +31,16 @@ void main() {
     expect(find.text('اسألي'), findsOneWidget);
     expect(find.text('ملخص للطبيب'), findsOneWidget);
     expect(find.text('صياغة سؤال'), findsOneWidget);
+  });
+
+  testWidgets('assistant uses organic icons and reduced-motion-aware pressables', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const MaterialApp(home: AssistantScreen()));
+
+    expect(find.byType(NumuwOrganicIcon), findsAtLeastNWidgets(5));
+    expect(find.byType(NumuwPressable), findsAtLeastNWidgets(4));
+    expect(find.byType(NumuwEntrance), findsWidgets);
   });
 
   testWidgets('emergency notice can be shown', (tester) async {
