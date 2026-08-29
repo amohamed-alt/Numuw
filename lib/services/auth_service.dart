@@ -1,5 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../repositories/push_device_repository.dart';
+
 class AuthService {
   AuthService({SupabaseClient? client})
     : _client = client ?? Supabase.instance.client;
@@ -10,6 +12,8 @@ class AuthService {
   Session? get currentSession => _client.auth.currentSession;
   User? get currentUser => _client.auth.currentUser;
   String? get currentEmail => _client.auth.currentUser?.email;
+
+  PushDeviceRepository get _pushDevices => PushDeviceRepository(client: _client);
 
   Future<AuthResponse> signUp({
     required String email,
@@ -63,5 +67,15 @@ class AuthService {
     return null;
   }
 
-  Future<void> signOut() => _client.auth.signOut();
+  Future<void> signOut() async {
+    // Push subscriptions are user-scoped. Disable them while the authenticated
+    // session can still satisfy RLS, then sign out regardless of cleanup
+    // failures so a transient network issue can never trap the user in-session.
+    try {
+      await _pushDevices.disableAllForCurrentUser();
+    } catch (_) {
+      // Best-effort cleanup. The user must always be able to sign out.
+    }
+    await _client.auth.signOut();
+  }
 }
