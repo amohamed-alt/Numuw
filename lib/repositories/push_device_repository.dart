@@ -18,7 +18,7 @@ class PushDeviceRepository {
   }) async {
     final user = _supabase.auth.currentUser;
     if (user == null) {
-      throw const AuthException('Authentication required');
+      throw StateError('Authentication required');
     }
 
     final normalizedToken = token.trim();
