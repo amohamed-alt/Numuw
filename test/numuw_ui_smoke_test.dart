@@ -88,7 +88,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byIcon(Icons.menu_rounded));
+    await tester.tap(find.text('المزيد'));
     await tester.pump();
 
     expect(selectedIndex, 4);
@@ -105,7 +105,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byIcon(Icons.edit_note_rounded));
+    await tester.tap(find.text('التسجيل'));
     await tester.pumpAndSettle();
 
     expect(find.byType(QuickLogScreen), findsOneWidget);
@@ -121,12 +121,16 @@ void main() {
 
     await tester.pumpWidget(_quickLogHost());
     await tester.pumpAndSettle();
-    await tester.tap(find.byType(QuickLogTypeButton).at(0));
+
+    final feedingAction = find.text('رضاعة');
+    expect(feedingAction, findsOneWidget);
+    await tester.tap(feedingAction);
     await tester.pumpAndSettle();
 
     final timerCard = tester.widget<TimerCard>(find.byType(TimerCard));
     expect(timerCard.active, isTrue);
     expect(timerCard.color, AppColors.mint);
+    expect(find.text('إيقاف وحفظ'), findsOneWidget);
   });
 
   testWidgets('sleep timer state updates quick log controls', (tester) async {
@@ -139,9 +143,14 @@ void main() {
 
     await tester.pumpWidget(_quickLogHost());
     await tester.pumpAndSettle();
-    await tester.tap(find.byType(QuickLogTypeButton).at(2));
+
+    final sleepAction = find.text('نوم');
+    expect(sleepAction, findsOneWidget);
+    await tester.tap(sleepAction);
     await tester.pumpAndSettle();
 
+    expect(find.text('ينام الآن'), findsOneWidget);
+    expect(find.text('استيقظ — حفظ النوم'), findsOneWidget);
     expect(
       find.byWidgetPredicate(
         (widget) => widget is PrimaryButton && widget.color == AppColors.danger,
@@ -150,25 +159,29 @@ void main() {
     );
   });
 
-  testWidgets('diaper selection updates the selected choice pill', (
-    tester,
-  ) async {
+  testWidgets('diaper selection updates the selected choice', (tester) async {
     final child = _child();
     ChildSession.instance.setChildren([child], notify: false);
 
     await tester.pumpWidget(_quickLogHost());
     await tester.pumpAndSettle();
-    await tester.tap(find.byType(QuickLogTypeButton).at(3));
+
+    final diaperAction = find.text('حفاضة');
+    expect(diaperAction, findsOneWidget);
+    await tester.tap(diaperAction);
     await tester.pumpAndSettle();
 
     final dirtyText = find.text('متسخة');
+    expect(dirtyText, findsOneWidget);
     final before = tester.widget<Text>(dirtyText);
     expect(before.style?.color, isNot(AppColors.peach));
+
     await tester.tap(dirtyText);
     await tester.pumpAndSettle();
 
     final after = tester.widget<Text>(dirtyText);
     expect(after.style?.color, AppColors.peach);
+    expect(find.bySemanticsLabel('محدد'), findsOneWidget);
   });
 
   testWidgets('light and dark theme smoke tests', (tester) async {

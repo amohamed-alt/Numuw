@@ -8,12 +8,12 @@ import '../core/errors/app_error.dart';
 import '../services/auth_service.dart';
 import '../services/notification_service.dart';
 import '../services/report_service.dart';
-import 'family/family_screen.dart';
-import 'weekly_share_screen.dart';
 import '../state/app_preferences.dart';
 import '../state/child_session.dart';
 import '../widgets/app_widgets.dart';
 import '../widgets/numuw_components.dart';
+import 'family/family_screen.dart';
+import 'weekly_share_screen.dart';
 
 class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
@@ -25,13 +25,15 @@ class MoreScreen extends StatefulWidget {
 class _MoreScreenState extends State<MoreScreen> {
   String _version = '';
   String? _message;
+  bool _deletingAccount = false;
 
   @override
   void initState() {
     super.initState();
     PackageInfo.fromPlatform().then((info) {
-      if (mounted)
+      if (mounted) {
         setState(() => _version = '${info.version}+${info.buildNumber}');
+      }
     });
     AppPreferences.instance.addListener(_prefsChanged);
     ChildSession.instance.addListener(_prefsChanged);
@@ -44,7 +46,9 @@ class _MoreScreenState extends State<MoreScreen> {
     super.dispose();
   }
 
-  void _prefsChanged() => setState(() {});
+  void _prefsChanged() {
+    if (mounted) setState(() {});
+  }
 
   Future<void> _exportReport() async {
     final child = ChildSession.instance.selectedChild;
@@ -57,7 +61,9 @@ class _MoreScreenState extends State<MoreScreen> {
       );
     } catch (error, stackTrace) {
       logError(error, stackTrace);
-      setState(() => _message = 'تعذر إنشاء التقرير: ${readableError(error)}');
+      if (mounted) {
+        setState(() => _message = 'تعذر إنشاء التقرير: ${readableError(error)}');
+      }
     }
   }
 
@@ -84,7 +90,7 @@ class _MoreScreenState extends State<MoreScreen> {
         ),
       ),
     );
-    if (selected == null) return;
+    if (selected == null || !mounted) return;
     ChildSession.instance.selectChild(
       children.firstWhere((c) => c.id == selected),
     );
@@ -105,16 +111,56 @@ class _MoreScreenState extends State<MoreScreen> {
   }) async {
     final child = ChildSession.instance.selectedChild;
     await setter(value);
+    if (!mounted) return;
     if (child == null) {
       setState(() => _message = 'اختاري طفلًا أولًا لتحديث التذكيرات.');
       return;
     }
     try {
       await NotificationService.instance.rescheduleForChild(child.id);
-      setState(() => _message = 'تم تحديث إعدادات التذكيرات.');
+      if (mounted) {
+        setState(() => _message = 'تم تحديث إعدادات التذكيرات.');
+      }
     } catch (error, stackTrace) {
       logError(error, stackTrace);
-      setState(() => _message = readableError(error));
+      if (mounted) setState(() => _message = readableError(error));
+    }
+  }
+
+  Future<void> _deleteAccount() async {
+    if (_deletingAccount) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Directionality(
+        textDirection: TextDirection.rtl,
+        child: ConfirmationDialog(
+          title: 'حذف الحساب نهائيًا؟',
+          message:
+              'سيتم حذف حسابك وبياناتك المرتبطة به نهائيًا، بما فيها بيانات الأطفال والسجلات التي لا يشارك ملكيتها مستخدم آخر. لا يمكن التراجع عن هذه الخطوة.',
+          confirmLabel: 'حذف الحساب نهائيًا',
+        ),
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() {
+      _deletingAccount = true;
+      _message = null;
+    });
+
+    try {
+      await AuthService().deleteAccount();
+      ChildSession.instance.clear();
+    } catch (error, stackTrace) {
+      logError(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          _message = 'تعذر حذف الحساب: ${readableError(error)}';
+          _deletingAccount = false;
+        });
+      }
     }
   }
 
@@ -328,6 +374,25 @@ class _MoreScreenState extends State<MoreScreen> {
                     ChildSession.instance.clear();
                   },
                 ),
+                SettingsRow(
+                  icon: Icons.delete_forever_outlined,
+                  title: _deletingAccount
+                      ? 'جارٍ حذف الحساب...'
+                      : 'حذف الحساب نهائيًا',
+                  color: AppColors.danger,
+                  trailing: _deletingAccount
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2.2),
+                        )
+                      : const Icon(
+                          Icons.chevron_left_rounded,
+                          color: AppColors.danger,
+                          size: 18,
+                        ),
+                  onTap: _deletingAccount ? null : _deleteAccount,
+                ),
               ],
             ),
             if (_message != null) ...[
@@ -364,6 +429,7 @@ class _GroupLabel extends StatelessWidget {
 
 class _FeatureInfoScreen extends StatelessWidget {
   const _FeatureInfoScreen({required this.title, required this.message});
+
   final String title;
   final String message;
 

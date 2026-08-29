@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
 import '../core/errors/app_error.dart';
+import '../design/numuw_motion_widgets.dart';
+import '../design/numuw_organic_icons.dart';
 import '../repositories/care_event_repository.dart';
 import '../repositories/doctor_question_repository.dart';
 import '../services/report_service.dart';
@@ -41,6 +43,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
     try {
       final events = await _careRepo.fetchRecent(child.id, limit: 50);
       final summary = _assistant.localSummary(child, events);
+      if (!mounted) return;
       setState(() {
         _messages.add(
           _ChatMessage.user('أنشئي لي ملخصاً من بيانات ${child.name} للطبيب'),
@@ -49,7 +52,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
       });
     } catch (error, stackTrace) {
       logError(error, stackTrace);
-      setState(() => _notice = readableError(error));
+      if (mounted) setState(() => _notice = readableError(error));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -68,6 +71,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
     try {
       await _questionRepo.add(childId: child.id, question: text);
       await Future<void>.delayed(const Duration(milliseconds: 350));
+      if (!mounted) return;
       setState(() {
         _messages.add(
           _ChatMessage.assistant(
@@ -77,7 +81,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
       });
     } catch (error, stackTrace) {
       logError(error, stackTrace);
-      setState(() => _notice = readableError(error));
+      if (mounted) setState(() => _notice = readableError(error));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -103,27 +107,32 @@ class _AssistantScreenState extends State<AssistantScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            NumuwAppBar(
-              title: 'اسألي',
-              subtitle: 'رتّبي بياناتك وأسئلتك للطبيب بأمان',
-              trailing: const NumuwStatusBadge(
-                label: 'AI',
-                color: AppColors.mint,
+            NumuwEntrance(
+              child: NumuwAppBar(
+                title: 'اسألي',
+                subtitle: 'رتّبي بياناتك وأسئلتك للطبيب بأمان',
+                trailing: const NumuwOrganicIcon(
+                  NumuwOrganicIconName.aiAssistant,
+                  size: 42,
+                  semanticLabel: 'مساعد نمو الذكي',
+                ),
               ),
             ),
             const SizedBox(height: 14),
-            NumuwPlantProgress(
-              progress: _messages.isEmpty ? .28 : .62,
-              label: _messages.isEmpty ? 'جاهزة للمساعدة' : 'المحادثة تتقدم',
+            NumuwEntrance(
+              child: NumuwPlantProgress(
+                progress: _messages.isEmpty ? .28 : .62,
+                label: _messages.isEmpty ? 'جاهزة للمساعدة' : 'المحادثة تتقدم',
+              ),
             ),
             const SizedBox(height: 16),
-            WarningBanner(message: _assistant.safetyNotice()),
+            NumuwEntrance(child: WarningBanner(message: _assistant.safetyNotice())),
             const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
                   child: _AssistantActionCard(
-                    icon: '📝',
+                    icon: NumuwOrganicIconName.documents,
                     title: 'ملخص للطبيب',
                     subtitle: 'من آخر التسجيلات',
                     color: AppColors.mint,
@@ -134,7 +143,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: _AssistantActionCard(
-                    icon: '❔',
+                    icon: NumuwOrganicIconName.doctor,
                     title: 'صياغة سؤال',
                     subtitle: 'احفظيه للتقرير',
                     color: AppColors.blue,
@@ -146,7 +155,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
             ),
             const SizedBox(height: 10),
             _AssistantActionCard(
-              icon: '⚠️',
+              icon: NumuwOrganicIconName.error,
               title: 'تنبيه الطوارئ',
               subtitle: 'المساعد لا يشخّص ولا يؤكد السلامة الطبية',
               color: AppColors.danger,
@@ -155,25 +164,27 @@ class _AssistantScreenState extends State<AssistantScreen> {
               wide: true,
             ),
             const SizedBox(height: 16),
-            NumuwCard(
-              padding: const EdgeInsetsDirectional.all(14),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 230),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (_messages.isEmpty)
-                      _EmptyConversation(childName: child?.name)
-                    else
-                      ..._messages.map((message) => _Bubble(message)),
-                    if (_loading) ...[
-                      const SizedBox(height: 10),
-                      const Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: LoadingDots(),
-                      ),
+            NumuwEntrance(
+              child: NumuwCard(
+                padding: const EdgeInsetsDirectional.all(14),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 230),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (_messages.isEmpty)
+                        _EmptyConversation(childName: child?.name)
+                      else
+                        ..._messages.map((message) => _Bubble(message)),
+                      if (_loading) ...[
+                        const SizedBox(height: 10),
+                        const Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: LoadingDots(),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -186,7 +197,12 @@ class _AssistantScreenState extends State<AssistantScreen> {
             ),
             if (_notice != null) ...[
               const SizedBox(height: 12),
-              InfoBanner(message: _notice!, icon: Icons.info_outline_rounded),
+              NumuwEntrance(
+                child: InfoBanner(
+                  message: _notice!,
+                  icon: Icons.info_outline_rounded,
+                ),
+              ),
             ],
           ],
         ),
@@ -206,7 +222,7 @@ class _AssistantActionCard extends StatelessWidget {
     this.wide = false,
   });
 
-  final String icon;
+  final NumuwOrganicIconName icon;
   final String title;
   final String subtitle;
   final Color color;
@@ -215,43 +231,61 @@ class _AssistantActionCard extends StatelessWidget {
   final bool wide;
 
   @override
-  Widget build(BuildContext context) => NumuwCard(
-    onTap: onTap,
-    padding: EdgeInsetsDirectional.fromSTEB(14, wide ? 13 : 15, 14, 14),
-    child: Row(
-      children: [
-        IconBadge(icon: icon, background: background, size: wide ? 42 : 46),
-        const SizedBox(width: 11),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  color: color,
-                  fontSize: wide ? 14 : 13,
-                  fontWeight: FontWeight.w900,
-                  height: 1.25,
-                ),
+  Widget build(BuildContext context) {
+    return NumuwPressable(
+      onTap: onTap,
+      semanticLabel: title,
+      child: NumuwCard(
+        padding: EdgeInsetsDirectional.fromSTEB(14, wide ? 13 : 15, 14, 14),
+        child: Row(
+          children: [
+            Container(
+              width: wide ? 42 : 46,
+              height: wide ? 42 : 46,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: background,
+                borderRadius: BorderRadius.circular(15),
               ),
-              const SizedBox(height: 2),
-              Text(
-                subtitle,
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  color: numuwSecondaryTextColor(),
-                  fontSize: 11,
-                  height: 1.35,
-                ),
+              child: NumuwOrganicIcon(
+                icon,
+                size: wide ? 36 : 40,
+                semanticLabel: title,
               ),
-            ],
-          ),
+            ),
+            const SizedBox(width: 11),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      color: color,
+                      fontSize: wide ? 14 : 13,
+                      fontWeight: FontWeight.w900,
+                      height: 1.25,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      color: numuwSecondaryTextColor(),
+                      fontSize: 11,
+                      height: 1.35,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }
 
 class _EmptyConversation extends StatelessWidget {
@@ -263,7 +297,11 @@ class _EmptyConversation extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const IconBadge(icon: '🤍', background: AppColors.mintLight, size: 54),
+      const NumuwOrganicIcon(
+        NumuwOrganicIconName.aiAssistant,
+        size: 58,
+        semanticLabel: 'مساعد نمو',
+      ),
       const SizedBox(height: 12),
       Text(
         'كيف أقدر أساعدك اليوم؟',
@@ -331,9 +369,9 @@ class _Composer extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 10),
-        InkWell(
-          borderRadius: BorderRadius.circular(16),
+        NumuwPressable(
           onTap: enabled && !loading ? onSend : null,
+          semanticLabel: 'إرسال السؤال',
           child: Container(
             width: 46,
             height: 46,
@@ -351,7 +389,11 @@ class _Composer extends StatelessWidget {
                       color: Colors.white,
                     ),
                   )
-                : const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+                : const NumuwOrganicIcon(
+                    NumuwOrganicIconName.chat,
+                    size: 34,
+                    semanticLabel: 'إرسال',
+                  ),
           ),
         ),
       ],
@@ -366,41 +408,43 @@ class _Bubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = message.role == 'user';
-    return Align(
-      alignment: user
-          ? AlignmentDirectional.centerEnd
-          : AlignmentDirectional.centerStart,
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 282),
-        margin: const EdgeInsetsDirectional.only(bottom: 10),
-        padding: const EdgeInsetsDirectional.symmetric(
-          horizontal: 14,
-          vertical: 12,
-        ),
-        decoration: BoxDecoration(
-          color: user ? AppColors.mint : numuwSurfaceColor(),
-          borderRadius: BorderRadiusDirectional.only(
-            topStart: const Radius.circular(18),
-            topEnd: const Radius.circular(18),
-            bottomStart: Radius.circular(user ? 18 : 5),
-            bottomEnd: Radius.circular(user ? 5 : 18),
+    return NumuwEntrance(
+      child: Align(
+        alignment: user
+            ? AlignmentDirectional.centerEnd
+            : AlignmentDirectional.centerStart,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 282),
+          margin: const EdgeInsetsDirectional.only(bottom: 10),
+          padding: const EdgeInsetsDirectional.symmetric(
+            horizontal: 14,
+            vertical: 12,
           ),
-          border: user ? null : Border.all(color: numuwBorderColor()),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x12000000),
-              blurRadius: 8,
-              offset: Offset(0, 2),
+          decoration: BoxDecoration(
+            color: user ? AppColors.mint : numuwSurfaceColor(),
+            borderRadius: BorderRadiusDirectional.only(
+              topStart: const Radius.circular(18),
+              topEnd: const Radius.circular(18),
+              bottomStart: Radius.circular(user ? 18 : 5),
+              bottomEnd: Radius.circular(user ? 5 : 18),
             ),
-          ],
-        ),
-        child: Text(
-          message.text,
-          textAlign: TextAlign.start,
-          style: TextStyle(
-            color: user ? Colors.white : numuwTextColor(),
-            height: 1.6,
-            fontWeight: FontWeight.w700,
+            border: user ? null : Border.all(color: numuwBorderColor()),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x12000000),
+                blurRadius: 8,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Text(
+            message.text,
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              color: user ? Colors.white : numuwTextColor(),
+              height: 1.6,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
       ),
