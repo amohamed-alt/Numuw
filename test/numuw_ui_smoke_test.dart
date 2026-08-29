@@ -88,7 +88,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byIcon(Icons.menu_rounded));
+    await tester.tap(find.text('المزيد'));
     await tester.pump();
 
     expect(selectedIndex, 4);
@@ -105,7 +105,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byIcon(Icons.edit_note_rounded));
+    await tester.tap(find.text('التسجيل'));
     await tester.pumpAndSettle();
 
     expect(find.byType(QuickLogScreen), findsOneWidget);
