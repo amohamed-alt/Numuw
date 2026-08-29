@@ -8,6 +8,7 @@ on:
       - main
     paths:
       - .github/workflows/pages-preview-from-main.yml
+      - .github/preview-trigger-*.txt
   workflow_dispatch:
 
 permissions:
