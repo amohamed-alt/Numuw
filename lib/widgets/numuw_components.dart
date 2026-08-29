@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
+import '../design/numuw_motion_widgets.dart';
+import '../design/numuw_organic_icons.dart';
 import 'app_widgets.dart';
 
 class NumuwAppBar extends StatelessWidget {
@@ -193,47 +195,54 @@ class NumuwPlantProgress extends StatelessWidget {
         : normalized < .75
         ? 'الأوراق'
         : 'نمو ثابت';
-    return NumuwCard(
-      child: Row(
-        children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: AppColors.mintLight,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Center(
-              child: Text('🌱', style: TextStyle(fontSize: 28)),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label ?? stage,
-                  style: TextStyle(
-                    color: numuwTextColor(),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                  ),
+
+    return NumuwEntrance(
+      child: NumuwCard(
+        child: Row(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: AppColors.mintLight,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Center(
+                child: NumuwOrganicIcon(
+                  NumuwOrganicIconName.growth,
+                  size: 42,
+                  semanticLabel: 'تقدم النمو',
                 ),
-                const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(999),
-                  child: LinearProgressIndicator(
-                    minHeight: 8,
-                    value: normalized,
-                    backgroundColor: AppColors.border,
-                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.mint),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label ?? stage,
+                    style: TextStyle(
+                      color: numuwTextColor(),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(999),
+                    child: LinearProgressIndicator(
+                      minHeight: 8,
+                      value: normalized,
+                      backgroundColor: AppColors.border,
+                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.mint),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -250,35 +259,41 @@ class NumuwBabyHeader extends StatelessWidget {
   final String subtitle;
 
   @override
-  Widget build(BuildContext context) => NumuwCard(
-    child: Row(
-      children: [
-        const CircleAvatar(radius: 26, child: Text('👶')),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: TextStyle(
-                  color: numuwTextColor(),
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  color: numuwSecondaryTextColor(),
-                  fontSize: 13,
-                ),
-              ),
-            ],
+  Widget build(BuildContext context) => NumuwEntrance(
+    child: NumuwCard(
+      child: Row(
+        children: [
+          const NumuwOrganicIcon(
+            NumuwOrganicIconName.newborn,
+            size: 52,
+            semanticLabel: 'الطفل',
           ),
-        ),
-      ],
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: TextStyle(
+                    color: numuwTextColor(),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    color: numuwSecondaryTextColor(),
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -343,10 +358,13 @@ class NumuwSuccessSheet extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
-            Icons.check_circle_rounded,
-            color: AppColors.mint,
-            size: 42,
+          const NumuwSuccessPulse(
+            trigger: true,
+            child: NumuwOrganicIcon(
+              NumuwOrganicIconName.done,
+              size: 48,
+              semanticLabel: 'تم بنجاح',
+            ),
           ),
           const SizedBox(height: 10),
           Text(
@@ -475,35 +493,41 @@ class NumuwReminderCard extends StatelessWidget {
   final String subtitle;
 
   @override
-  Widget build(BuildContext context) => NumuwCard(
-    child: Row(
-      children: [
-        const Icon(Icons.notifications_active_outlined, color: AppColors.mint),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: numuwTextColor(),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  color: numuwSecondaryTextColor(),
-                  fontSize: 12.5,
-                ),
-              ),
-            ],
+  Widget build(BuildContext context) => NumuwEntrance(
+    child: NumuwCard(
+      child: Row(
+        children: [
+          const NumuwOrganicIcon(
+            NumuwOrganicIconName.notifications,
+            size: 34,
+            semanticLabel: 'تذكير',
           ),
-        ),
-      ],
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: numuwTextColor(),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    color: numuwSecondaryTextColor(),
+                    fontSize: 12.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -521,9 +545,10 @@ class NumuwFamilyTaskTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
     children: [
-      Icon(
-        completed ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
-        color: completed ? AppColors.mintDark : AppColors.border,
+      NumuwOrganicIcon(
+        completed ? NumuwOrganicIconName.done : NumuwOrganicIconName.tasks,
+        size: 28,
+        semanticLabel: completed ? 'مكتملة' : 'مهمة غير مكتملة',
       ),
       const SizedBox(width: 10),
       Expanded(
