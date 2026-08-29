@@ -684,15 +684,19 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('إنشاء الحساب'));
+    final submitButton = find.text('إنشاء الحساب');
+    await tester.ensureVisible(submitButton);
+    await tester.pumpAndSettle();
+    await tester.tap(submitButton);
     await tester.pump();
 
     expect(find.text('اكتبي اسمكِ.'), findsOneWidget);
     expect(find.text('اكتبي البريد الإلكتروني.'), findsOneWidget);
     expect(
-      find.text('كلمة المرور يجب أن تكون 6 أحرف على الأقل.'),
+      find.text('كلمة المرور يجب أن تكون 10 أحرف على الأقل.'),
       findsOneWidget,
     );
+    expect(find.text('أكدي كلمة المرور.'), findsOneWidget);
   });
 
   testWidgets('Basic RTL pumping-screen widget test', (tester) async {
