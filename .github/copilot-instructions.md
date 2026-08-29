@@ -1,47 +1,37 @@
 # Numuw repository instructions
 
-Numuw is a production Flutter motherhood application in Arabic-first RTL with light and black visual variants. The current `design/classy-motherhood-v1` lineage contains a full design-preview layer plus existing production business logic, repositories, Supabase integration, auth, notifications, and local app state.
+Numuw is a production Flutter motherhood application in Arabic-first RTL with Morning and Evening visual variants. The approved classy reference is the visual source of truth; the repository already contains production business logic, repositories, Supabase/auth integration, notifications, reporting and local app state.
 
-## Non-negotiable rules
+## Non-negotiable product rules
+- Preserve existing repositories, Supabase schema/contracts, auth, persistence, timers, notification behavior and real-data flows unless explicitly changing product logic.
+- Migrate preview/reference UI into production screen-by-screen; demo data must never leak into production routes.
+- Reuse the Numuw design system and tokens before creating near-duplicate widgets.
+- Arabic/RTL is first-class; keep supported LTR valid too.
+- One-hand reachability and >=44 logical pixel touch targets are required.
+- Every applicable screen needs loading, empty, error, success and disabled states.
+- Do not remove real capabilities just because the visual reference is simpler; use progressive disclosure.
 
-- Preserve existing business logic, repositories, Supabase schema/contracts, auth behavior, persistence, and notification behavior unless the task explicitly changes them.
-- Migrate design-preview UI into production screen-by-screen; do not replace production data access with demo data.
-- Reuse the Numuw design system before creating new widgets. Prefer `NumuwClassyButton`, existing surfaces, identity components, metrics, quick actions, segmented controls, timelines, and navigation primitives.
-- Never hardcode a new color, spacing scale, typography family, corner system, or motion duration when a Numuw token already exists.
-- Arabic/RTL is first-class. Every production UI change must also remain valid in LTR where supported.
-- Keep primary actions reachable one-handed and touch targets at least 44 logical pixels.
-- Every screen must handle loading, empty, error, success, and disabled states where applicable.
+## Permanent missing-asset rule
+- Search `NumuwIcons` and `docs/NUMUW_ASSET_MANIFEST.md` before using generic artwork.
+- If an icon/illustration is missing, do not stop. Use ChatGPT/current coding agent to generate an original clean SVG during the task, following `.github/skills/numuw-asset-generation/SKILL.md`.
+- Save it under `assets/icons/`, register it in `NumuwIcons` and `NumuwIcons.all`, update the manifest when needed, and continue implementation.
+- Migrated production screens must not ship Emoji or unrelated Material icons as final artwork when a Numuw asset can represent the concept.
+- `test/numuw_icon_assets_test.dart` is mandatory protection: every registered asset must load as a complete SVG.
 
 ## Motion
-
-- Numuw motion is calm, reassuring, and premium; never game-like.
-- Use existing `NumuwMotionTokens` durations and curves.
-- Native Flutter remains preferred for direct state feedback and simple animations.
-- Use `flutter_animate` for concise entrance/micro-interaction sequences.
-- Use the `animations` package for meaningful container transforms and fade-through navigation/state changes.
-- Respect `MediaQuery.disableAnimations`; decorative animation must disappear when reduced motion is requested.
-- Do not add Rive, Lottie, Flame, or another animation dependency until a concrete asset/interaction requires it.
+- Calm, reassuring and premium; never game-like.
+- Use `NumuwMotionTokens`; native Flutter for direct state feedback, `flutter_animate` for concise entrances/micro-interactions, and `animations` for meaningful transitions.
+- Respect `MediaQuery.disableAnimations`; decorative motion disappears under reduced motion.
+- Do not add Rive/Lottie/Flame unless a concrete interaction genuinely requires it.
 
 ## Engineering quality
-
-- Prefer small reusable widgets over duplicating large screen fragments.
-- Avoid unnecessary rebuilds and repeated async calls from `build`.
+- Prefer small reusable widgets and avoid async work/repeated calls from `build`.
 - Dispose controllers/subscriptions/timers.
-- Keep secrets and Supabase service-role credentials out of the client and repository.
-- Run `flutter pub get`, `dart format`, `flutter analyze`, and `flutter test` after code changes.
-- For UI changes, add or update widget/golden regression coverage when practical.
-- Android and iOS builds must remain healthy; web preview is a design/testing surface, not the product architecture.
+- Keep secrets/service-role credentials out of the client/repository.
+- Run format, analyze and tests; UI waves also keep Android+iOS builds healthy and capture Morning/Evening previews for major screens.
+- Scan Arabic literals for encoding corruption/mojibake when touching legacy files; never ship `Ã`/`Â`-style broken text.
 
-## Production migration order
+## Delivery loop
+Use `.github/skills/numuw-autonomous-builder/SKILL.md` and `docs/NUMUW_IMPLEMENTATION_MASTER.md`. Continue through unchecked MVP areas rather than stopping at a single mockup: inspect logic -> implement shared production presentation -> wire real state/actions -> add motion -> verify RTL/responsiveness/accessibility -> test -> capture previews -> Android/iOS check -> fix -> continue.
 
-Default migration sequence unless a dependency requires otherwise:
-1. Home
-2. Quick Log
-3. Feeding / Sleep / Pumping
-4. Child
-5. Assistant
-6. Auth / onboarding
-7. Family / sharing
-8. Settings and remaining secondary flows
-
-When migrating a screen, first identify its production data dependencies and actions, then apply the design-preview composition around those existing contracts.
+Default sequence: Home -> Quick Log -> Feeding/Sleep/Pumping -> Child/Growth/Vaccinations -> Assistant -> Auth/Onboarding/Pregnancy -> Family/Mother -> Content -> Settings/Commercial -> remaining secondary flows.
