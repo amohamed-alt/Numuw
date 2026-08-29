@@ -4,7 +4,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 /// Production vector icon wrapper for Numuw's custom icon family.
 /// SVG assets are monochrome and recolored at runtime for Morning/Evening.
 class NumuwIcon extends StatelessWidget {
-  const NumuwIcon(this.asset, {super.key, this.size = 22, this.color, this.semanticLabel});
+  const NumuwIcon(
+    this.asset, {
+    super.key,
+    this.size = 22,
+    this.color,
+    this.semanticLabel,
+  });
 
   final String asset;
   final double size;
@@ -20,7 +26,9 @@ class NumuwIcon extends StatelessWidget {
       height: size,
       fit: BoxFit.contain,
       semanticsLabel: semanticLabel,
-      colorFilter: resolvedColor == null ? null : ColorFilter.mode(resolvedColor, BlendMode.srcIn),
+      colorFilter: resolvedColor == null
+          ? null
+          : ColorFilter.mode(resolvedColor, BlendMode.srcIn),
     );
   }
 }
@@ -41,6 +49,8 @@ class NumuwIcons {
   static const bottle = '$_root/bottle.svg';
   static const formula = '$_root/formula.svg';
   static const pumping = '$_root/pumping.svg';
+  static const pumpingLeft = '$_root/pumping_left.svg';
+  static const pumpingRight = '$_root/pumping_right.svg';
   static const sleep = '$_root/sleep.svg';
   static const wake = '$_root/wake.svg';
   static const diaper = '$_root/diaper.svg';
@@ -109,15 +119,84 @@ class NumuwIcons {
 
   /// CI validates every registered asset. Add new SVGs here immediately.
   static const all = <String>{
-    logoMark, home, quickLog, child, assistant, more, feeding, feedingRight,
-    feedingLeft, bottle, formula, pumping, sleep, wake, diaper, diaperWet,
-    diaperDirty, food, medicine, temperature, note, vaccination, growth, weight,
-    height, headCircumference, milestones, playActivity, doctor, doctorReport,
-    prescription, pdf, pregnancy, hospitalBag, shopping, mealPlan, mother, water,
-    mood, breathing, family, caregiver, tasks, checklist, article, audio,
-    community, weeklyReport, chart, premium, camera, documents, upload,
-    microphone, voiceWave, timer, emergency, source, location, share, settings,
-    privacy, language, childAdd, logout, email, moon, edit, info, back, add,
-    check, search, bell, calendar, profile, history,
+    logoMark,
+    home,
+    quickLog,
+    child,
+    assistant,
+    more,
+    feeding,
+    feedingRight,
+    feedingLeft,
+    bottle,
+    formula,
+    pumping,
+    pumpingLeft,
+    pumpingRight,
+    sleep,
+    wake,
+    diaper,
+    diaperWet,
+    diaperDirty,
+    food,
+    medicine,
+    temperature,
+    note,
+    vaccination,
+    growth,
+    weight,
+    height,
+    headCircumference,
+    milestones,
+    playActivity,
+    doctor,
+    doctorReport,
+    prescription,
+    pdf,
+    pregnancy,
+    hospitalBag,
+    shopping,
+    mealPlan,
+    mother,
+    water,
+    mood,
+    breathing,
+    family,
+    caregiver,
+    tasks,
+    checklist,
+    article,
+    audio,
+    community,
+    weeklyReport,
+    chart,
+    premium,
+    camera,
+    documents,
+    upload,
+    microphone,
+    voiceWave,
+    timer,
+    emergency,
+    source,
+    location,
+    share,
+    settings,
+    privacy,
+    language,
+    childAdd,
+    logout,
+    email,
+    moon,
+    edit,
+    info,
+    back,
+    add,
+    check,
+    search,
+    bell,
+    calendar,
+    profile,
+    history,
   };
 }
