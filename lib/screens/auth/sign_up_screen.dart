@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../auth/password_policy.dart';
 import '../../core/errors/app_error.dart';
+import '../../design/numuw_organic_icons.dart';
 import '../../repositories/profile_repository.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/app_widgets.dart';
@@ -27,15 +29,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _name = TextEditingController();
   final _email = TextEditingController();
   final _password = TextEditingController();
+  final _passwordConfirmation = TextEditingController();
   bool _loading = false;
   String? _error;
 
   @override
+  void initState() {
+    super.initState();
+    _password.addListener(_refreshPasswordStrength);
+  }
+
+  @override
   void dispose() {
+    _password.removeListener(_refreshPasswordStrength);
     _name.dispose();
     _email.dispose();
     _password.dispose();
+    _passwordConfirmation.dispose();
     super.dispose();
+  }
+
+  void _refreshPasswordStrength() {
+    if (mounted) setState(() {});
   }
 
   Future<void> _submit() async {
@@ -80,8 +95,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               NumuwAppBar(
-                title: 'إنشاء حساب ✨',
-                subtitle: 'ابدئي رحلتكِ مع نُمُوّ',
+                title: 'إنشاء حساب',
+                subtitle: 'ابدئي رحلتكِ مع نُمُوّ بأمان وخصوصية',
                 leading: AppIconButton(
                   icon: Icons.arrow_forward_rounded,
                   onPressed: widget.onBack,
@@ -90,6 +105,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   radius: 13,
                   iconSize: 20,
                   borderWidth: 1.5,
+                ),
+                trailing: const NumuwOrganicIcon(
+                  NumuwOrganicIconName.privacy,
+                  size: 44,
+                  semanticLabel: 'الخصوصية والأمان',
                 ),
               ),
               const SizedBox(height: 14),
@@ -115,7 +135,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
               NumuwPasswordField(
                 controller: _password,
                 label: 'كلمة المرور',
-                validator: _passwordValidator,
+                validator: PasswordPolicy.validate,
+              ),
+              const SizedBox(height: 10),
+              _PasswordStrengthHint(password: _password.text),
+              const SizedBox(height: 15),
+              NumuwPasswordField(
+                controller: _passwordConfirmation,
+                label: 'تأكيد كلمة المرور',
+                validator: (value) => PasswordPolicy.validateConfirmation(
+                  confirmation: value,
+                  password: _password.text,
+                ),
               ),
               if (_error != null) ...[
                 const SizedBox(height: 12),
@@ -154,14 +185,69 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 }
 
+class _PasswordStrengthHint extends StatelessWidget {
+  const _PasswordStrengthHint({required this.password});
+
+  final String password;
+
+  @override
+  Widget build(BuildContext context) {
+    final strength = PasswordPolicy.strength(password);
+    final (label, color, progress) = switch (strength) {
+      PasswordStrength.weak => ('ضعيفة', const Color(0xFFB96E67), .32),
+      PasswordStrength.fair => ('جيدة', const Color(0xFFC18D5C), .66),
+      PasswordStrength.strong => ('قوية', const Color(0xFF68846B), 1.0),
+    };
+
+    return Semantics(
+      label: 'قوة كلمة المرور: $label',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  '10 أحرف على الأقل + حرف إنجليزي + رقم + رمز',
+                  style: TextStyle(
+                    color: numuwSecondaryTextColor(),
+                    fontSize: 11.5,
+                    height: 1.35,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                label,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 7),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: LinearProgressIndicator(
+              value: password.isEmpty ? 0 : progress,
+              minHeight: 5,
+              backgroundColor: numuwBorderColor(),
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 String? _emailValidator(String? value) {
   final email = value?.trim() ?? '';
   if (email.isEmpty) return 'اكتبي البريد الإلكتروني.';
-  if (!email.contains('@') || !email.contains('.'))
+  if (!email.contains('@') || !email.contains('.')) {
     return 'اكتبي بريدًا إلكترونيًا صحيحًا.';
+  }
   return null;
 }
-
-String? _passwordValidator(String? value) => (value ?? '').length < 6
-    ? 'كلمة المرور يجب أن تكون 6 أحرف على الأقل.'
-    : null;
