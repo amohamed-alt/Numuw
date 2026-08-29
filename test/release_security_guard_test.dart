@@ -41,7 +41,7 @@ void main() {
     });
 
     test('isolated UI review does not initialize backend services', () {
-      final review = File('lib/ui_review_main.dart').readAsStringSync();
+      final review = File('lib/main_ui_review_fixed.dart').readAsStringSync();
       expect(review, isNot(contains('Supabase.initialize')));
       expect(review, isNot(contains('NotificationService')));
       expect(review, isNot(contains('SentryFlutter.init')));
@@ -60,7 +60,9 @@ void main() {
         for (final entity in functions.listSync(recursive: true)) {
           if (entity is! File || !entity.path.endsWith('.ts')) continue;
           final text = entity.readAsStringSync();
-          final jwtLike = RegExp(r'eyJ[a-zA-Z0-9_-]{20,}\\.[a-zA-Z0-9_-]{20,}\\.[a-zA-Z0-9_-]{20,}');
+          final jwtLike = RegExp(
+            r'eyJ[a-zA-Z0-9_-]{20,}\.[a-zA-Z0-9_-]{20,}\.[a-zA-Z0-9_-]{20,}',
+          );
           if (jwtLike.hasMatch(text)) findings.add(entity.path);
         }
       }
