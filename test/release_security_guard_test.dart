@@ -41,7 +41,7 @@ void main() {
     });
 
     test('isolated UI review does not initialize backend services', () {
-      final review = File('lib/main_ui_review_fixed.dart').readAsStringSync();
+      final review = File('lib/main_ui_review_v3.dart').readAsStringSync();
       expect(review, isNot(contains('Supabase.initialize')));
       expect(review, isNot(contains('NotificationService')));
       expect(review, isNot(contains('SentryFlutter.init')));
