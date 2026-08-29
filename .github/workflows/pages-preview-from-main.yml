@@ -48,7 +48,7 @@ jobs:
       - name: Build isolated UI review
         run: |
           flutter build web --release \
-            --target lib/main_ui_review.dart \
+            --target lib/main_ui_review_fixed.dart \
             --source-maps \
             --base-href "/Numuw/"
 
