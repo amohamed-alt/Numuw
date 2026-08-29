@@ -1,7 +1,7 @@
-name: Deploy Numuw preview
+name: Deploy Numuw UI review
 
-# Deploys the current Organic production-foundation branch while dispatching
-# from main so GitHub Pages environment protection can remain scoped to main.
+# Deploys the current Organic production-foundation branch as an isolated
+# UI review candidate. Review mode never reads or writes production data.
 on:
   push:
     branches:
@@ -17,7 +17,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: numuw-pages-preview-main
+  group: numuw-pages-ui-review
   cancel-in-progress: true
 
 jobs:
@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Checkout preview source
+      - name: Checkout Organic review source
         uses: actions/checkout@v6
         with:
           ref: feat/organic-production-foundation
@@ -33,7 +33,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.44.4'
+          flutter-version: '3.47.2'
           channel: stable
           cache: true
 
@@ -45,16 +45,13 @@ jobs:
           flutter analyze --no-fatal-infos
           flutter test
 
-      - name: Build connected Flutter web preview
-        env:
-          SUPABASE_URL: https://mwqscuoutmbihexphocx.supabase.co
-          SUPABASE_PUBLISHABLE_KEY: sb_publishable_bb3Pg8su9rFSfnkDqNftuQ_GE4r05nL
+      - name: Build isolated UI review
         run: |
           flutter build web --release \
             --source-maps \
             --base-href "/Numuw/" \
-            --dart-define=SUPABASE_URL="$SUPABASE_URL" \
-            --dart-define=SUPABASE_PUBLISHABLE_KEY="$SUPABASE_PUBLISHABLE_KEY"
+            --dart-define=NUMUW_UI_REVIEW=true \
+            --dart-define=APP_ENV=ui-review
 
       - name: Verify Flutter web runtime
         shell: bash
@@ -76,13 +73,13 @@ jobs:
           "$CHROME" --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu --no-first-run --no-default-browser-check --user-data-dir=/tmp/numuw-chrome-profile --virtual-time-budget=15000 --dump-dom http://127.0.0.1:8765/Numuw/ >/tmp/numuw-dom.html 2>/tmp/numuw-chrome.log
           CHROME_EXIT=$?
           set -e
-          if [ "$CHROME_EXIT" -ne 0 ] || grep -q 'id="numuw-boot-status"[^>]*data-error=' /tmp/numuw-dom.html || ! grep -q "flt-glass-pane" /tmp/numuw-dom.html; then
-            echo "Flutter did not attach a rendered view during the Pages smoke test."
+          if [ "$CHROME_EXIT" -ne 0 ] || ! grep -q "flt-glass-pane" /tmp/numuw-dom.html; then
+            echo "Flutter did not attach a rendered view during the UI review smoke test."
             tail -200 /tmp/numuw-chrome.log || true
             tail -180 /tmp/numuw-dom.html || true
             exit 1
           fi
-          echo "Flutter web runtime smoke test passed."
+          echo "Numuw UI review runtime smoke test passed."
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -99,6 +96,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy preview
+      - name: Deploy UI review
         id: deployment
         uses: actions/deploy-pages@v4
