@@ -3,12 +3,19 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'core/numuw_app.dart';
+import 'screens/design_preview/ui_review_app.dart';
 import 'services/notification_service.dart';
 import 'state/app_preferences.dart';
 import 'state/log_timer_state.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  const uiReviewMode = bool.fromEnvironment('NUMUW_UI_REVIEW');
+  if (uiReviewMode) {
+    runApp(const NumuwUiReviewApp());
+    return;
+  }
 
   const sentryDsn = String.fromEnvironment('SENTRY_DSN');
   const appEnv = String.fromEnvironment('APP_ENV', defaultValue: 'development');
