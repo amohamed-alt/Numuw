@@ -32,21 +32,25 @@ class PushDeviceRepository {
     }
 
     // A native push token belongs to one installation, not permanently to one
-    // account. The server RPC atomically transfers ownership when a shared
-    // device signs into a different account, avoiding stale cross-account push
-    // delivery that client-side RLS cleanup cannot reliably prevent.
-    await withRepositoryTimeout(
-      _supabase.rpc(
-        'claim_push_device',
-        params: {
-          'p_token': normalizedToken,
-          'p_platform': normalizedPlatform,
-          'p_timezone': _cleanOptional(timezone),
-          'p_locale': _cleanOptional(locale),
-          'p_app_version': _cleanOptional(appVersion),
+    // account. The authenticated Edge Function verifies the caller and then
+    // atomically transfers token ownership with server-only credentials. This
+    // avoids stale cross-account delivery without exposing a SECURITY DEFINER
+    // database RPC through PostgREST.
+    final response = await withRepositoryTimeout(
+      _supabase.functions.invoke(
+        'register-push-device',
+        body: {
+          'token': normalizedToken,
+          'platform': normalizedPlatform,
+          'timezone': _cleanOptional(timezone),
+          'locale': _cleanOptional(locale),
+          'appVersion': _cleanOptional(appVersion),
         },
       ),
     );
+    if (response.status < 200 || response.status >= 300) {
+      throw StateError('Push device registration failed');
+    }
   }
 
   Future<void> refresh({
