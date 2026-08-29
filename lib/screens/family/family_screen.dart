@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../core/app_colors.dart';
 import '../../core/errors/app_error.dart';
 import '../../design/numuw_motion_widgets.dart';
 import '../../design/numuw_organic_icons.dart';
