@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -10,6 +11,55 @@ import '../models/vaccination.dart';
 import '../repositories/care_event_repository.dart';
 import '../repositories/vaccination_repository.dart';
 import '../state/app_preferences.dart';
+
+enum NotificationDestinationType {
+  quickLog,
+  vaccinations,
+  home,
+}
+
+class NotificationDestination {
+  const NotificationDestination({
+    required this.type,
+    this.childId,
+    this.eventType,
+  });
+
+  final NotificationDestinationType type;
+  final String? childId;
+  final String? eventType;
+}
+
+NotificationDestination parseNotificationPayload(String? payload) {
+  final value = payload?.trim();
+  if (value == null || value.isEmpty) {
+    return const NotificationDestination(type: NotificationDestinationType.home);
+  }
+
+  final separator = value.indexOf(':');
+  final eventType = separator == -1 ? value : value.substring(0, separator);
+  final childId = separator == -1 || separator == value.length - 1
+      ? null
+      : value.substring(separator + 1).trim();
+
+  return switch (eventType) {
+    'feeding' || 'medicine' => NotificationDestination(
+      type: NotificationDestinationType.quickLog,
+      childId: childId?.isEmpty == true ? null : childId,
+      eventType: eventType,
+    ),
+    'vaccination' => NotificationDestination(
+      type: NotificationDestinationType.vaccinations,
+      childId: childId?.isEmpty == true ? null : childId,
+      eventType: eventType,
+    ),
+    _ => NotificationDestination(
+      type: NotificationDestinationType.home,
+      childId: childId?.isEmpty == true ? null : childId,
+      eventType: eventType,
+    ),
+  };
+}
 
 class ReminderPlan {
   const ReminderPlan({
@@ -124,7 +174,19 @@ class NotificationService {
 
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
+  final StreamController<String> _responsePayloads =
+      StreamController<String>.broadcast();
+
   bool _initialized = false;
+  String? _pendingLaunchPayload;
+
+  Stream<String> get responsePayloads => _responsePayloads.stream;
+
+  String? takePendingLaunchPayload() {
+    final value = _pendingLaunchPayload;
+    _pendingLaunchPayload = null;
+    return value;
+  }
 
   Future<void> initialize() async {
     if (_initialized) return;
@@ -132,13 +194,32 @@ class NotificationService {
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
     const darwin = DarwinInitializationSettings();
     const settings = InitializationSettings(android: android, iOS: darwin);
-    await _plugin.initialize(settings: settings);
+
+    await _plugin.initialize(
+      settings: settings,
+      onDidReceiveNotificationResponse: _onNotificationResponse,
+    );
+
+    final launchDetails = await _plugin.getNotificationAppLaunchDetails();
+    if (launchDetails?.didNotificationLaunchApp ?? false) {
+      final payload = launchDetails?.notificationResponse?.payload?.trim();
+      if (payload != null && payload.isNotEmpty) {
+        _pendingLaunchPayload = payload;
+      }
+    }
+
     await _plugin
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >()
         ?.requestNotificationsPermission();
     _initialized = true;
+  }
+
+  void _onNotificationResponse(NotificationResponse response) {
+    final payload = response.payload?.trim();
+    if (payload == null || payload.isEmpty) return;
+    _responsePayloads.add(payload);
   }
 
   Future<void> rescheduleForChild(String childId) async {
