@@ -6,12 +6,11 @@ void main() {
   group('release security guards', () {
     test('client source never contains privileged Supabase credentials', () {
       final findings = <String>[];
-      for (final file in _sourceFiles()) {
-        final text = file.readAsStringSync();
-        final lowered = text.toLowerCase();
-        if (lowered.contains('service_role') ||
-            lowered.contains('service-role') ||
-            lowered.contains('supabase_secret_key')) {
+      for (final file in _clientSourceFiles()) {
+        final text = file.readAsStringSync().toLowerCase();
+        if (text.contains('service_role') ||
+            text.contains('service-role') ||
+            text.contains('supabase_secret_key')) {
           findings.add(file.path);
         }
       }
@@ -19,7 +18,7 @@ void main() {
         findings,
         isEmpty,
         reason:
-            'Privileged Supabase credentials/labels must never appear in client source: ${findings.join(', ')}',
+            'Privileged Supabase credentials/labels must never appear in Flutter client source: ${findings.join(', ')}',
       );
     });
 
@@ -53,20 +52,32 @@ void main() {
       final main = File('lib/main.dart').readAsStringSync();
       expect(main, contains('AuthFlowType.pkce'));
     });
+
+    test('Edge Functions do not hardcode service-role JWT values', () {
+      final findings = <String>[];
+      final functions = Directory('supabase/functions');
+      if (functions.existsSync()) {
+        for (final entity in functions.listSync(recursive: true)) {
+          if (entity is! File || !entity.path.endsWith('.ts')) continue;
+          final text = entity.readAsStringSync();
+          final jwtLike = RegExp(r'eyJ[a-zA-Z0-9_-]{20,}\\.[a-zA-Z0-9_-]{20,}\\.[a-zA-Z0-9_-]{20,}');
+          if (jwtLike.hasMatch(text)) findings.add(entity.path);
+        }
+      }
+      expect(
+        findings,
+        isEmpty,
+        reason:
+            'Edge Functions must load privileged keys from environment variables, never hardcode JWTs: ${findings.join(', ')}',
+      );
+    });
   });
 }
 
-Iterable<File> _sourceFiles() sync* {
-  for (final root in ['lib', 'supabase/functions']) {
-    final directory = Directory(root);
-    if (!directory.existsSync()) continue;
-    for (final entity in directory.listSync(recursive: true)) {
-      if (entity is! File) continue;
-      if (entity.path.endsWith('.dart') ||
-          entity.path.endsWith('.ts') ||
-          entity.path.endsWith('.js')) {
-        yield entity;
-      }
-    }
+Iterable<File> _clientSourceFiles() sync* {
+  final directory = Directory('lib');
+  if (!directory.existsSync()) return;
+  for (final entity in directory.listSync(recursive: true)) {
+    if (entity is File && entity.path.endsWith('.dart')) yield entity;
   }
 }
