@@ -8,6 +8,9 @@ void main() {
   testWidgets('signup shows organic privacy visual and password strength', (
     tester,
   ) async {
+    final semantics = tester.ensureSemantics();
+    addTearDown(semantics.dispose);
+
     await tester.pumpWidget(const MaterialApp(home: SignUpScreen()));
 
     expect(
@@ -25,7 +28,10 @@ void main() {
     await tester.enterText(fields.at(2), 'Numuw2026!Safe#');
     await tester.pump();
 
-    expect(find.bySemanticsLabel('قوة كلمة المرور: قوية'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel(RegExp(r'قوة كلمة المرور: قوية')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('signup blocks mismatched password confirmation before auth call', (
@@ -34,12 +40,17 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: SignUpScreen()));
 
     final fields = find.byType(TextFormField);
+    expect(fields, findsNWidgets(4));
+
     await tester.enterText(fields.at(0), 'أمينة');
     await tester.enterText(fields.at(1), 'amina@example.com');
     await tester.enterText(fields.at(2), 'Numuw2026!Safe#');
     await tester.enterText(fields.at(3), 'Numuw2026!Other#');
 
-    await tester.tap(find.text('إنشاء الحساب'));
+    final submitButton = find.text('إنشاء الحساب');
+    await tester.ensureVisible(submitButton);
+    await tester.pumpAndSettle();
+    await tester.tap(submitButton);
     await tester.pump();
 
     expect(find.text('كلمتا المرور غير متطابقتين.'), findsOneWidget);
