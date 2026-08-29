@@ -1088,7 +1088,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
         duration: MediaQuery.maybeOf(context)?.disableAnimations ?? false
             ? Duration.zero
             : NumuwMotionSpec.quick,
-        minHeight: 66,
+        constraints: const BoxConstraints(minHeight: 66),
         padding: const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: selected ? background : numuwSurfaceColor(),
