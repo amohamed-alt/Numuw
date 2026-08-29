@@ -10,6 +10,7 @@ void main() {
       'lib/screens/splash_screen.dart',
       'lib/screens/assistant_screen.dart',
       'lib/screens/family/family_screen.dart',
+      'lib/screens/onboarding/child_onboarding_screen.dart',
     ];
     const badMarkers = <String>[
       'Ã',
@@ -55,5 +56,22 @@ void main() {
     expect(source, contains('NumuwOrganicIconName.family'));
     expect(source, contains('NumuwOrganicIconName.account'));
     expect(source, contains('NumuwEntrance'));
+  });
+
+  test('onboarding keeps clean Arabic, organic visuals and reduced motion', () {
+    final source = File(
+      'lib/screens/onboarding/child_onboarding_screen.dart',
+    ).readAsStringSync();
+
+    expect(source, contains('أين أنتم الآن في الرحلة؟'));
+    expect(source, contains('NumuwOrganicIconName.newborn'));
+    expect(source, contains('NumuwOrganicIconName.pregnancy'));
+    expect(source, contains('NumuwOrganicIconName.breastfeeding'));
+    expect(source, contains('NumuwOrganicIconName.bottle'));
+    expect(source, contains('NumuwOrganicIconName.camera'));
+    expect(source, contains('disableAnimations'));
+    expect(source, isNot(contains('ðŸ')));
+    expect(source, isNot(contains('Ø')));
+    expect(source, isNot(contains('Ù')));
   });
 }
