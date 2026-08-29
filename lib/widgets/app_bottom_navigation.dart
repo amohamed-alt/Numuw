@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
+import '../design/numuw_organic_icons.dart';
 import 'app_widgets.dart';
 
 class AppBottomNavigation extends StatelessWidget {
@@ -14,11 +15,11 @@ class AppBottomNavigation extends StatelessWidget {
   final ValueChanged<int> onChanged;
 
   static const items = [
-    _NavData(Icons.home_rounded, 'اليوم'),
-    _NavData(Icons.edit_note_rounded, 'التسجيل'),
-    _NavData(Icons.child_care_rounded, 'طفلي'),
-    _NavData(Icons.chat_bubble_outline_rounded, 'اسألي'),
-    _NavData(Icons.menu_rounded, 'المزيد'),
+    _NavData(NumuwOrganicIconName.home, 'اليوم'),
+    _NavData(NumuwOrganicIconName.add, 'التسجيل'),
+    _NavData(NumuwOrganicIconName.newborn, 'طفلي'),
+    _NavData(NumuwOrganicIconName.aiAssistant, 'اسألي'),
+    _NavData(NumuwOrganicIconName.more, 'المزيد'),
   ];
 
   @override
@@ -38,21 +39,21 @@ class AppBottomNavigation extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: Container(
-          height: 68,
+          height: 72,
           padding: const EdgeInsetsDirectional.symmetric(
             horizontal: 6,
             vertical: 6,
           ),
           decoration: BoxDecoration(
             color: surface.withValues(alpha: .98),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(26),
             border: Border.all(color: border),
             boxShadow: night
                 ? const []
                 : const [
                     BoxShadow(
-                      color: Color(0x18000000),
-                      blurRadius: 22,
+                      color: Color(0x14000000),
+                      blurRadius: 24,
                       offset: Offset(0, 8),
                     ),
                   ],
@@ -61,7 +62,7 @@ class AppBottomNavigation extends StatelessWidget {
             children: List.generate(items.length, (index) {
               final item = items[index];
               final selected = selectedIndex == index;
-              final color = selected ? accent : inactive;
+              final labelColor = selected ? accent : inactive;
 
               return Expanded(
                 child: Semantics(
@@ -80,17 +81,13 @@ class AppBottomNavigation extends StatelessWidget {
                         curve: Curves.easeOutCubic,
                         padding: const EdgeInsetsDirectional.symmetric(
                           horizontal: 4,
-                          vertical: 6,
+                          vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: selected
-                              ? activeBackground
-                              : Colors.transparent,
+                          color: selected ? activeBackground : Colors.transparent,
                           borderRadius: BorderRadius.circular(18),
                           border: selected
-                              ? Border.all(
-                                  color: accent.withValues(alpha: .22),
-                                )
+                              ? Border.all(color: accent.withValues(alpha: .2))
                               : null,
                         ),
                         child: Column(
@@ -98,10 +95,15 @@ class AppBottomNavigation extends StatelessWidget {
                           children: [
                             AnimatedScale(
                               duration: const Duration(milliseconds: 180),
-                              scale: selected ? 1.06 : 1,
-                              child: Icon(item.icon, size: 21, color: color),
+                              curve: Curves.easeOutBack,
+                              scale: selected ? 1.08 : .94,
+                              child: NumuwOrganicIcon(
+                                item.icon,
+                                size: selected ? 25 : 23,
+                                semanticLabel: item.label,
+                              ),
                             ),
-                            const SizedBox(height: 3),
+                            const SizedBox(height: 2),
                             FittedBox(
                               fit: BoxFit.scaleDown,
                               child: Text(
@@ -109,12 +111,10 @@ class AppBottomNavigation extends StatelessWidget {
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: color,
+                                  color: labelColor,
                                   fontSize: 10.5,
                                   height: 1.1,
-                                  fontWeight: selected
-                                      ? FontWeight.w800
-                                      : FontWeight.w600,
+                                  fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
                                 ),
                               ),
                             ),
@@ -136,6 +136,6 @@ class AppBottomNavigation extends StatelessWidget {
 class _NavData {
   const _NavData(this.icon, this.label);
 
-  final IconData icon;
+  final NumuwOrganicIconName icon;
   final String label;
 }
