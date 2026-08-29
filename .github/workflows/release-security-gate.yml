@@ -1,0 +1,56 @@
+name: Release Security Gate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches:
+      - feat/organic-production-foundation
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Reject privileged Supabase credentials in tracked source
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git grep -nEI '(service[_-]?role|SUPABASE_SERVICE_ROLE_KEY|sb_secret_[A-Za-z0-9_-]{12,}|eyJ[a-zA-Z0-9_-]{20,}\.[a-zA-Z0-9_-]{20,}\.[a-zA-Z0-9_-]{20,})' -- \
+            'lib/**' 'web/**' 'android/**' 'ios/**' 'supabase/functions/**' ':!**/*.md' ':!test/**'; then
+            echo 'Potential privileged credential or JWT-like secret detected in tracked production source.' >&2
+            exit 1
+          fi
+
+      - name: Reject unsafe Supabase client configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git grep -q 'SUPABASE_PUBLISHABLE_KEY' -- lib
+          git grep -q 'AuthFlowType.pkce' -- lib
+          if git grep -nE 'SUPABASE_(SERVICE_ROLE|SECRET)_KEY' -- lib; then
+            echo 'Privileged Supabase key reference must never exist in Flutter client code.' >&2
+            exit 1
+          fi
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Run release security regression suite
+        run: flutter test test/release_security_guard_test.dart
