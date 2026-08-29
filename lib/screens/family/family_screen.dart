@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/errors/app_error.dart';
+import '../../design/numuw_motion_widgets.dart';
+import '../../design/numuw_organic_icons.dart';
 import '../../models/child_guardian.dart';
 import '../../repositories/family_sharing_repository.dart';
 import '../../state/child_session.dart';
@@ -38,7 +40,10 @@ class _FamilyScreenState extends State<FamilyScreen> {
 
   void _load() {
     final child = ChildSession.instance.selectedChild;
-    if (child == null) return;
+    if (child == null) {
+      _future = null;
+      return;
+    }
     _future = _FamilyData.load(_repo, child.id);
   }
 
@@ -54,37 +59,39 @@ class _FamilyScreenState extends State<FamilyScreen> {
         childId: child.id,
         invitedEmail: _email.text,
       );
+      if (!mounted) return;
       _email.clear();
       setState(() {
-        _message = 'ÙƒÙˆØ¯ Ø§Ù„Ø¯Ø¹ÙˆØ©: ${invite.inviteCode}';
+        _message = 'كود الدعوة: ${invite.inviteCode}';
         _load();
       });
     } catch (error, stackTrace) {
       logError(error, stackTrace);
-      setState(() => _message = readableError(error));
+      if (mounted) setState(() => _message = readableError(error));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
 
   Future<void> _acceptInvite() async {
-    if (_busy || _code.text.trim().isEmpty) return;
+    final inviteCode = _code.text.trim();
+    if (_busy || inviteCode.isEmpty) return;
     setState(() {
       _busy = true;
       _message = null;
     });
     try {
-      await _repo.acceptInvite(_code.text.trim());
-      _code.clear();
+      await _repo.acceptInvite(inviteCode);
       await ChildSession.instance.refresh();
+      if (!mounted) return;
+      _code.clear();
       setState(() {
-        _message =
-            'ØªÙ… Ù‚Ø¨ÙˆÙ„ Ø§Ù„Ø¯Ø¹ÙˆØ© ÙˆØªØ­Ø¯ÙŠØ« Ø§Ù„Ø£Ø·ÙØ§Ù„ Ø§Ù„Ù…ØªØ§Ø­ÙŠÙ†.';
+        _message = 'تم قبول الدعوة وتحديث الأطفال المتاحين.';
         _load();
       });
     } catch (error, stackTrace) {
       logError(error, stackTrace);
-      setState(() => _message = readableError(error));
+      if (mounted) setState(() => _message = readableError(error));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -98,35 +105,50 @@ class _FamilyScreenState extends State<FamilyScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            NumuwAppBar(
-              title: 'Ù…Ø´Ø§Ø±ÙƒØ© Ø§Ù„Ø¹ÙŠÙ„Ø©',
-              subtitle:
-                  'Ø§Ø¯Ø¹ÙŠ ÙˆÙ„ÙŠ Ø£Ù…Ø± Ø£Ùˆ Ø§Ù‚Ø¨Ù„ÙŠ Ø¯Ø¹ÙˆØ© Ù„Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„Ø·ÙÙ„ Ø¨Ø£Ù…Ø§Ù†.',
-              leading: AppIconButton(
-                icon: Icons.arrow_forward_rounded,
-                onPressed: () => Navigator.pop(context),
-                badge: false,
-                size: 42,
-                radius: 13,
-                iconSize: 20,
+            NumuwEntrance(
+              child: NumuwAppBar(
+                title: 'مشاركة العائلة',
+                subtitle: 'ادعي ولي أمر أو اقبلي دعوة لمتابعة الطفل بأمان.',
+                leading: AppIconButton(
+                  icon: Icons.arrow_forward_rounded,
+                  onPressed: () => Navigator.pop(context),
+                  badge: false,
+                  size: 42,
+                  radius: 13,
+                  iconSize: 20,
+                ),
+                trailing: const NumuwOrganicIcon(
+                  NumuwOrganicIconName.family,
+                  size: 42,
+                  semanticLabel: 'العائلة',
+                ),
               ),
             ),
             const SizedBox(height: 14),
-            const NumuwPlantProgress(
-              progress: .42,
-              label: 'Ø§Ù„Ø¨ÙŠØª Ù…ØªØµÙ„',
+            const NumuwEntrance(
+              child: NumuwPlantProgress(
+                progress: .42,
+                label: 'البيت متصل',
+              ),
             ),
             const SizedBox(height: 18),
             if (child == null)
               const NumuwEmptyState(
-                message:
-                    'Ø§Ø®ØªØ§Ø±ÙŠ Ø·ÙÙ„Ù‹Ø§ Ø£ÙˆÙ„Ù‹Ø§ Ù„Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø¹ÙŠÙ„Ø©.',
+                message: 'اختاري طفلًا أولًا لإدارة مشاركة العائلة.',
               )
             else
               FutureBuilder<_FamilyData>(
                 future: _future,
                 builder: (context, snapshot) {
-                  final data = snapshot.data;
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return const LoadingSkeleton(height: 240);
+                  }
+                  if (snapshot.hasError) {
+                    return ErrorMessageCard(
+                      message: readableError(snapshot.error!),
+                    );
+                  }
+                  final data = snapshot.data ?? const _FamilyData([], []);
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -142,10 +164,10 @@ class _FamilyScreenState extends State<FamilyScreen> {
                         onAccept: _acceptInvite,
                       ),
                       const SizedBox(height: 14),
-                      _GuardiansCard(guardians: data?.guardians ?? const []),
-                      if ((data?.invites ?? const []).isNotEmpty) ...[
+                      _GuardiansCard(guardians: data.guardians),
+                      if (data.invites.isNotEmpty) ...[
                         const SizedBox(height: 14),
-                        _PendingInvitesCard(invites: data!.invites),
+                        _PendingInvitesCard(invites: data.invites),
                       ],
                     ],
                   );
@@ -153,7 +175,12 @@ class _FamilyScreenState extends State<FamilyScreen> {
               ),
             if (_message != null) ...[
               const SizedBox(height: 14),
-              InfoBanner(message: _message!, icon: Icons.info_outline_rounded),
+              NumuwEntrance(
+                child: InfoBanner(
+                  message: _message!,
+                  icon: Icons.info_outline_rounded,
+                ),
+              ),
             ],
           ],
         ),
@@ -164,6 +191,7 @@ class _FamilyScreenState extends State<FamilyScreen> {
 
 class _FamilyData {
   const _FamilyData(this.guardians, this.invites);
+
   final List<ChildGuardian> guardians;
   final List<FamilyInvite> invites;
 
@@ -182,6 +210,32 @@ class _FamilyData {
   }
 }
 
+class _OrganicSectionTitle extends StatelessWidget {
+  const _OrganicSectionTitle({required this.title, required this.icon});
+
+  final String title;
+  final NumuwOrganicIconName icon;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    children: [
+      NumuwOrganicIcon(icon, size: 34, semanticLabel: title),
+      const SizedBox(width: 10),
+      Expanded(
+        child: Text(
+          title,
+          textAlign: TextAlign.start,
+          style: TextStyle(
+            color: numuwTextColor(),
+            fontSize: 16,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
 class _InviteCard extends StatelessWidget {
   const _InviteCard({
     required this.email,
@@ -194,29 +248,29 @@ class _InviteCard extends StatelessWidget {
   final VoidCallback onCreate;
 
   @override
-  Widget build(BuildContext context) => NumuwCard(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const NumuwSectionHeader(
-          title: 'Ø¯Ø¹ÙˆØ© ÙˆÙ„ÙŠ Ø£Ù…Ø±',
-          icon: Icons.group_add_outlined,
-        ),
-        const SizedBox(height: 10),
-        AppTextField(
-          controller: email,
-          label: 'Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ø§Ø®ØªÙŠØ§Ø±ÙŠ',
-          keyboardType: TextInputType.emailAddress,
-          textDirection: TextDirection.ltr,
-        ),
-        const SizedBox(height: 10),
-        NumuwPrimaryButton(
-          label: busy
-              ? 'Ø¬Ø§Ø±ÙŠ Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„Ø¯Ø¹ÙˆØ©...'
-              : 'Ø¥Ù†Ø´Ø§Ø¡ ÙƒÙˆØ¯ Ø¯Ø¹ÙˆØ©',
-          onPressed: busy ? null : onCreate,
-        ),
-      ],
+  Widget build(BuildContext context) => NumuwEntrance(
+    child: NumuwCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _OrganicSectionTitle(
+            title: 'دعوة ولي أمر',
+            icon: NumuwOrganicIconName.family,
+          ),
+          const SizedBox(height: 10),
+          AppTextField(
+            controller: email,
+            label: 'البريد الإلكتروني اختياري',
+            keyboardType: TextInputType.emailAddress,
+            textDirection: TextDirection.ltr,
+          ),
+          const SizedBox(height: 10),
+          NumuwPrimaryButton(
+            label: busy ? 'جاري إنشاء الدعوة...' : 'إنشاء كود دعوة',
+            onPressed: busy ? null : onCreate,
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -233,26 +287,28 @@ class _AcceptInviteCard extends StatelessWidget {
   final VoidCallback onAccept;
 
   @override
-  Widget build(BuildContext context) => NumuwCard(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const NumuwSectionHeader(
-          title: 'Ù‚Ø¨ÙˆÙ„ Ø¯Ø¹ÙˆØ©',
-          icon: Icons.mark_email_read_outlined,
-        ),
-        const SizedBox(height: 10),
-        AppTextField(
-          controller: code,
-          label: 'ÙƒÙˆØ¯ Ø§Ù„Ø¯Ø¹ÙˆØ©',
-          textDirection: TextDirection.ltr,
-        ),
-        const SizedBox(height: 10),
-        NumuwSecondaryButton(
-          label: busy ? 'Ø¬Ø§Ø±ÙŠ Ø§Ù„Ù‚Ø¨ÙˆÙ„...' : 'Ù‚Ø¨ÙˆÙ„ Ø§Ù„Ø¯Ø¹ÙˆØ©',
-          onPressed: busy ? null : onAccept,
-        ),
-      ],
+  Widget build(BuildContext context) => NumuwEntrance(
+    child: NumuwCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _OrganicSectionTitle(
+            title: 'قبول دعوة',
+            icon: NumuwOrganicIconName.done,
+          ),
+          const SizedBox(height: 10),
+          AppTextField(
+            controller: code,
+            label: 'كود الدعوة',
+            textDirection: TextDirection.ltr,
+          ),
+          const SizedBox(height: 10),
+          NumuwSecondaryButton(
+            label: busy ? 'جاري القبول...' : 'قبول الدعوة',
+            onPressed: busy ? null : onAccept,
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -263,38 +319,38 @@ class _GuardiansCard extends StatelessWidget {
   final List<ChildGuardian> guardians;
 
   @override
-  Widget build(BuildContext context) => NumuwCard(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const NumuwSectionHeader(
-          title: 'Ø£ÙˆÙ„ÙŠØ§Ø¡ Ø§Ù„Ø£Ù…ÙˆØ±',
-          icon: Icons.family_restroom_rounded,
-        ),
-        const SizedBox(height: 10),
-        if (guardians.isEmpty)
-          Text(
-            'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¨ÙŠØ§Ù†Ø§Øª Ø¹ÙŠÙ„Ø© Ø¨Ø¹Ø¯.',
-            style: TextStyle(color: numuwSecondaryTextColor()),
-          )
-        else
-          ...guardians.map(
-            (guardian) => ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const CircleAvatar(
-                backgroundColor: AppColors.mintLight,
-                child: Icon(Icons.person_outline, color: AppColors.mint),
-              ),
-              title: Text(guardian.label, textAlign: TextAlign.start),
-              subtitle: Text(
-                guardian.role == 'owner'
-                    ? 'Ù…Ø§Ù„Ùƒ Ø§Ù„Ø·ÙÙ„'
-                    : 'ÙˆÙ„ÙŠ Ø£Ù…Ø±',
-                textAlign: TextAlign.start,
+  Widget build(BuildContext context) => NumuwEntrance(
+    child: NumuwCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _OrganicSectionTitle(
+            title: 'أولياء الأمور',
+            icon: NumuwOrganicIconName.family,
+          ),
+          const SizedBox(height: 10),
+          if (guardians.isEmpty)
+            Text(
+              'لا توجد بيانات عائلة بعد.',
+              style: TextStyle(color: numuwSecondaryTextColor()),
+            )
+          else
+            ...guardians.map(
+              (guardian) => ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const NumuwOrganicIcon(
+                  NumuwOrganicIconName.account,
+                  size: 42,
+                ),
+                title: Text(guardian.label, textAlign: TextAlign.start),
+                subtitle: Text(
+                  guardian.role == 'owner' ? 'مالك ملف الطفل' : 'ولي أمر',
+                  textAlign: TextAlign.start,
+                ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     ),
   );
 }
@@ -305,23 +361,29 @@ class _PendingInvitesCard extends StatelessWidget {
   final List<FamilyInvite> invites;
 
   @override
-  Widget build(BuildContext context) => NumuwCard(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const NumuwSectionHeader(
-          title: 'Ø¯Ø¹ÙˆØ§Øª Ù…Ø¹Ù„Ù‚Ø©',
-          icon: Icons.pending_actions_rounded,
-        ),
-        const SizedBox(height: 10),
-        ...invites.map(
-          (invite) => ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(invite.inviteCode, textDirection: TextDirection.ltr),
-            subtitle: Text(invite.invitedEmail ?? 'Ø¨Ø¯ÙˆÙ† Ø¨Ø±ÙŠØ¯ Ù…Ø­Ø¯Ø¯'),
+  Widget build(BuildContext context) => NumuwEntrance(
+    child: NumuwCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _OrganicSectionTitle(
+            title: 'دعوات معلقة',
+            icon: NumuwOrganicIconName.notifications,
           ),
-        ),
-      ],
+          const SizedBox(height: 10),
+          ...invites.map(
+            (invite) => ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const NumuwOrganicIcon(
+                NumuwOrganicIconName.share,
+                size: 38,
+              ),
+              title: Text(invite.inviteCode, textDirection: TextDirection.ltr),
+              subtitle: Text(invite.invitedEmail ?? 'بدون بريد محدد'),
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }
