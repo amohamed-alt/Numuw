@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
+import '../design/numuw_motion_widgets.dart';
+import '../design/numuw_organic_icons.dart';
 import '../widgets/app_widgets.dart';
 import '../widgets/numuw_components.dart';
 
@@ -18,7 +20,7 @@ class SplashScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const _HeroMark(),
+                const NumuwEntrance(child: _HeroMark()),
                 const SizedBox(height: 22),
                 Text(
                   'نُموّ',
@@ -62,91 +64,27 @@ class _HeroMark extends StatelessWidget {
     return Container(
       width: 138,
       height: 138,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: const RadialGradient(
           colors: [Color(0xFFF3E8D3), Color(0xFFE8DEC7)],
         ),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x1A4F6242),
-            blurRadius: 30,
-            offset: Offset(0, 14),
-          ),
-        ],
+        boxShadow: numuwNightMode()
+            ? const []
+            : const [
+                BoxShadow(
+                  color: Color(0x1A4F6242),
+                  blurRadius: 30,
+                  offset: Offset(0, 14),
+                ),
+              ],
       ),
-      child: CustomPaint(painter: _NumuwMarkPainter()),
+      child: const NumuwOrganicIcon(
+        NumuwOrganicIconName.growth,
+        size: 104,
+        semanticLabel: 'نمو الطفل',
+      ),
     );
   }
-}
-
-class _NumuwMarkPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final stemPaint = Paint()
-      ..color = AppColors.mintDark
-      ..strokeWidth = 3
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-    final leafPaint = Paint()
-      ..color = AppColors.mint
-      ..style = PaintingStyle.fill;
-    final clayPaint = Paint()..color = AppColors.peach;
-
-    final pot = RRect.fromRectAndRadius(
-      Rect.fromCenter(
-        center: Offset(center.dx, size.height * .72),
-        width: size.width * .42,
-        height: size.height * .18,
-      ),
-      const Radius.circular(16),
-    );
-    canvas.drawRRect(pot, clayPaint);
-
-    canvas.drawLine(
-      Offset(center.dx, size.height * .56),
-      Offset(center.dx, size.height * .40),
-      stemPaint,
-    );
-
-    final leftLeaf = Path()
-      ..moveTo(center.dx, size.height * .48)
-      ..quadraticBezierTo(
-        size.width * .24,
-        size.height * .42,
-        size.width * .30,
-        size.height * .31,
-      )
-      ..quadraticBezierTo(
-        size.width * .42,
-        size.height * .37,
-        center.dx,
-        size.height * .48,
-      );
-    final rightLeaf = Path()
-      ..moveTo(center.dx, size.height * .44)
-      ..quadraticBezierTo(
-        size.width * .76,
-        size.height * .36,
-        size.width * .70,
-        size.height * .24,
-      )
-      ..quadraticBezierTo(
-        size.width * .58,
-        size.height * .30,
-        center.dx,
-        size.height * .44,
-      );
-    canvas.drawPath(leftLeaf, leafPaint);
-    canvas.drawPath(rightLeaf, leafPaint);
-
-    final seed = Paint()
-      ..color = Colors.white.withValues(alpha: .8)
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(center.dx, size.height * .66), 6, seed);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
