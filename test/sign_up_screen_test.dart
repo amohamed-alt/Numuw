@@ -9,7 +9,6 @@ void main() {
     tester,
   ) async {
     final semantics = tester.ensureSemantics();
-    addTearDown(semantics.dispose);
 
     await tester.pumpWidget(const MaterialApp(home: SignUpScreen()));
 
@@ -32,6 +31,8 @@ void main() {
       find.bySemanticsLabel(RegExp(r'قوة كلمة المرور: قوية')),
       findsOneWidget,
     );
+
+    semantics.dispose();
   });
 
   testWidgets('signup blocks mismatched password confirmation before auth call', (
