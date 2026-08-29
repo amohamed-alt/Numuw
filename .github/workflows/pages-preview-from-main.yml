@@ -48,10 +48,9 @@ jobs:
       - name: Build isolated UI review
         run: |
           flutter build web --release \
+            --target lib/main_ui_review.dart \
             --source-maps \
-            --base-href "/Numuw/" \
-            --dart-define=NUMUW_UI_REVIEW=true \
-            --dart-define=APP_ENV=ui-review
+            --base-href "/Numuw/"
 
       - name: Verify Flutter web runtime
         shell: bash
