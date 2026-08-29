@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -42,10 +41,9 @@ Future<void> main() async {
         ..tracesSampleRate = appEnv == 'production' ? 0.15 : 1.0
         ..sendDefaultPii = false
         ..attachScreenshot = false
-        ..attachViewHierarchy = false
         ..beforeSend = (event, hint) {
           // Numuw handles child/family health-adjacent data. Keep telemetry
-          // intentionally minimal: no screenshots, view hierarchy, or default PII.
+          // intentionally minimal: no screenshots or default PII.
           return event;
         };
     },
