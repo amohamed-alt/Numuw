@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
+import '../design/numuw_motion_widgets.dart';
+import '../design/numuw_organic_icons.dart';
 import '../widgets/app_widgets.dart';
 import '../widgets/numuw_components.dart';
 
@@ -26,39 +28,22 @@ class WelcomeScreen extends StatelessWidget {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsetsDirectional.fromSTEB(32, 58, 32, 40),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Color(0xFFD9EFE9), AppColors.background],
+                    colors: [
+                      AppColors.mintLight.withValues(alpha: .9),
+                      numuwPageColor(),
+                    ],
                   ),
                 ),
                 child: Column(
                   children: [
-                    Container(
-                      width: 148,
-                      height: 148,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          begin: AlignmentDirectional.topStart,
-                          end: AlignmentDirectional.bottomEnd,
-                          colors: [AppColors.mintLight, AppColors.mintSoft],
-                        ),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AppColors.mint.withValues(alpha: .2),
-                          width: 3,
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: const Text(
-                        'Ã°Å¸â€˜Â¶',
-                        style: TextStyle(fontSize: 76),
-                      ),
-                    ),
+                    const NumuwEntrance(child: _WelcomeHero()),
                     const SizedBox(height: 22),
                     Text(
-                      'Ã™â€ Ã™ÂÃ™â€¦Ã™ÂÃ™Ë†Ã™â€˜',
+                      'نُموّ',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: numuwTextColor(),
@@ -69,7 +54,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Ã˜Â³Ã˜Â¬Ã™â€˜Ã™â€žÃ™Å  Ã˜Â£Ã˜Â­Ã˜Â¯Ã˜Â§Ã˜Â« Ã˜Â·Ã™ÂÃ™â€žÃ™Æ’Ã™ÂÃ˜Å’ Ã˜ÂªÃ˜Â§Ã˜Â¨Ã˜Â¹Ã™Å  Ã™â€ Ã™â€¦Ã™Ë†Ã™â€˜Ã™â€¡\nÃ™Ë†Ã˜Â§Ã˜Â·Ã™â€¦Ã˜Â¦Ã™â€ Ã™Å  Ã™ÂÃ™Å  Ã™Æ’Ã™â€ž Ã™â€žÃ˜Â­Ã˜Â¸Ã˜Â© Ã°Å¸â€™Å¡',
+                      'سجّلي أحداث طفلكِ، تابعي نموّه\nواطمئني على تفاصيل يومه بهدوء.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: numuwSecondaryTextColor(),
@@ -85,42 +70,38 @@ class WelcomeScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     NumuwPrimaryButton(
-                      label: 'Ã˜ÂªÃ˜Â³Ã˜Â¬Ã™Å Ã™â€ž Ã˜Â§Ã™â€žÃ˜Â¯Ã˜Â®Ã™Ë†Ã™â€ž',
+                      label: 'تسجيل الدخول',
                       onPressed: onSignIn,
                     ),
                     const SizedBox(height: 12),
                     NumuwSecondaryButton(
-                      label:
-                          'Ã˜Â¥Ã™â€ Ã˜Â´Ã˜Â§Ã˜Â¡ Ã˜Â­Ã˜Â³Ã˜Â§Ã˜Â¨ Ã˜Â¬Ã˜Â¯Ã™Å Ã˜Â¯',
+                      label: 'إنشاء حساب جديد',
                       onPressed: onSignUp,
                     ),
                     const SizedBox(height: 24),
                     const _FeatureRow(
-                      icon: 'Ã°Å¸ÂÂ¼',
+                      icon: NumuwOrganicIconName.breastfeeding,
                       color: AppColors.mintLight,
-                      text:
-                          'Ã˜ÂªÃ˜Â³Ã˜Â¬Ã™Å Ã™â€ž Ã˜Â³Ã˜Â±Ã™Å Ã˜Â¹ Ã™â€žÃ™â€žÃ˜Â±Ã˜Â¶Ã˜Â§Ã˜Â¹Ã˜Â© Ã™Ë†Ã˜Â§Ã™â€žÃ™â€ Ã™Ë†Ã™â€¦ Ã™Ë†Ã˜Â§Ã™â€žÃ˜Â­Ã™ÂÃ˜Â§Ã˜Â¶Ã˜Â§Ã˜Âª',
+                      text: 'تسجيل سريع للرضاعة والنوم والحفاضات',
                     ),
                     const SizedBox(height: 11),
                     const _FeatureRow(
-                      icon: 'Ã°Å¸â€œÅ ',
+                      icon: NumuwOrganicIconName.growth,
                       color: AppColors.purpleLight,
-                      text:
-                          'Ã™â€¦Ã˜ÂªÃ˜Â§Ã˜Â¨Ã˜Â¹Ã˜Â© Ã˜Â§Ã™â€žÃ™â€ Ã™â€¦Ã™Ë† Ã™Ë†Ã˜Â§Ã™â€žÃ˜ÂªÃ˜Â·Ã˜Â¹Ã™Å Ã™â€¦Ã˜Â§Ã˜Âª',
+                      text: 'متابعة النمو والتطعيمات في مكان واحد',
                     ),
                     const SizedBox(height: 11),
                     const _FeatureRow(
-                      icon: 'Ã°Å¸â€™Â¬',
+                      icon: NumuwOrganicIconName.aiAssistant,
                       color: AppColors.peachLight,
-                      text:
-                          'Ã™â€¦Ã˜Â³Ã˜Â§Ã˜Â¹Ã˜Â¯ Ã˜Â¢Ã™â€¦Ã™â€  Ã™â€žÃ˜ÂªÃ™â€ Ã˜Â¸Ã™Å Ã™â€¦ Ã˜Â¨Ã™Å Ã˜Â§Ã™â€ Ã˜Â§Ã˜Âª Ã˜Â·Ã™ÂÃ™â€žÃ™Æ’Ã™Â',
+                      text: 'مساعد آمن لتنظيم بيانات طفلكِ وأسئلتكِ اليومية',
                     ),
                     const SizedBox(height: 18),
                     const _PrivacyTrustCard(),
                     const SizedBox(height: 18),
                     const NumuwPlantProgress(
                       progress: .28,
-                      label: 'ØªØªÙØªØ­ Ø£ÙˆÙ„ Ø§Ù„Ø£ÙˆØ±Ø§Ù‚',
+                      label: 'تتفتح أول الأوراق',
                     ),
                   ],
                 ),
@@ -128,6 +109,45 @@ class WelcomeScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _WelcomeHero extends StatelessWidget {
+  const _WelcomeHero();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 148,
+      height: 148,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: AlignmentDirectional.topStart,
+          end: AlignmentDirectional.bottomEnd,
+          colors: [AppColors.mintLight, AppColors.mintSoft],
+        ),
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: AppColors.mint.withValues(alpha: .2),
+          width: 3,
+        ),
+        boxShadow: numuwNightMode()
+            ? const []
+            : const [
+                BoxShadow(
+                  color: Color(0x184F6242),
+                  blurRadius: 26,
+                  offset: Offset(0, 12),
+                ),
+              ],
+      ),
+      alignment: Alignment.center,
+      child: const NumuwOrganicIcon(
+        NumuwOrganicIconName.newborn,
+        size: 104,
+        semanticLabel: 'طفل حديث الولادة',
       ),
     );
   }
@@ -143,14 +163,27 @@ class _PrivacyTrustCard extends StatelessWidget {
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(Icons.privacy_tip_outlined, color: AppColors.mint),
+        Container(
+          width: 44,
+          height: 44,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: numuwSurfaceColor(),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: const NumuwOrganicIcon(
+            NumuwOrganicIconName.privacy,
+            size: 34,
+            semanticLabel: 'الخصوصية',
+          ),
+        ),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Ø®ØµÙˆØµÙŠØªÙƒ ÙˆØ§Ø¶Ø­Ø© Ù…Ù† Ø§Ù„Ø¨Ø¯Ø§ÙŠØ©',
+                'خصوصيتك واضحة من البداية',
                 style: TextStyle(
                   color: numuwTextColor(),
                   fontSize: 14,
@@ -160,7 +193,7 @@ class _PrivacyTrustCard extends StatelessWidget {
               ),
               const SizedBox(height: 5),
               Text(
-                'Ø¨ÙŠØ§Ù†Ø§Øª Ø·ÙÙ„Ùƒ Ù„Ø§ ØªØ¸Ù‡Ø± Ø¥Ù„Ø§ Ù„ÙƒÙ ÙˆÙ„Ù…Ù† ØªØ³Ù…Ø­ÙŠÙ† Ù„Ù‡ Ù…Ù† Ù…Ø´Ø§Ø±ÙƒØ© Ø§Ù„Ø¹ÙŠÙ„Ø©ØŒ ÙˆÙŠÙ…ÙƒÙ†Ùƒ Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„ØµÙ„Ø§Ø­ÙŠØ§Øª Ù…Ù† Ø¯Ø§Ø®Ù„ Ø§Ù„ØªØ·Ø¨ÙŠÙ‚.',
+                'بيانات طفلك لا تظهر إلا لكِ ولمن تسمحين له من مشاركة العائلة، ويمكنك إدارة الصلاحيات وحذف حسابك وبياناتك من داخل التطبيق.',
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   color: numuwSecondaryTextColor(),
@@ -184,20 +217,34 @@ class _FeatureRow extends StatelessWidget {
     required this.text,
   });
 
-  final String icon;
+  final NumuwOrganicIconName icon;
   final Color color;
   final String text;
 
   @override
   Widget build(BuildContext context) => Row(
     children: [
-      IconBadge(icon: icon, background: color, size: 38),
+      Container(
+        width: 42,
+        height: 42,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: numuwBorderColor()),
+        ),
+        child: NumuwOrganicIcon(icon, size: 32),
+      ),
       const SizedBox(width: 12),
       Expanded(
         child: Text(
           text,
           textAlign: TextAlign.start,
-          style: TextStyle(color: numuwSecondaryTextColor(), fontSize: 14),
+          style: TextStyle(
+            color: numuwSecondaryTextColor(),
+            fontSize: 14,
+            height: 1.45,
+          ),
         ),
       ),
     ],
