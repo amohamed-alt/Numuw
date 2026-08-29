@@ -8,6 +8,8 @@ void main() {
       'lib/screens/child_screen.dart',
       'lib/screens/welcome_screen.dart',
       'lib/screens/splash_screen.dart',
+      'lib/screens/assistant_screen.dart',
+      'lib/screens/family/family_screen.dart',
     ];
     const badMarkers = <String>[
       'Ã',
@@ -16,6 +18,8 @@ void main() {
       'ðŸ',
       '™',
       '˜',
+      'Ø',
+      'Ù',
     ];
 
     final failures = <String>[];
@@ -28,11 +32,7 @@ void main() {
       }
     }
 
-    expect(
-      failures,
-      isEmpty,
-      reason: failures.join('\n'),
-    );
+    expect(failures, isEmpty, reason: failures.join('\n'));
   });
 
   test('ChildScreen keeps the approved organic visual vocabulary', () {
@@ -43,6 +43,17 @@ void main() {
     expect(source, contains('NumuwOrganicIconName.vaccine'));
     expect(source, contains('NumuwOrganicIconName.tasks'));
     expect(source, contains('NumuwOrganicIconName.doctor'));
+    expect(source, contains('NumuwEntrance'));
+  });
+
+  test('FamilyScreen keeps valid Arabic and organic family visuals', () {
+    final source = File(
+      'lib/screens/family/family_screen.dart',
+    ).readAsStringSync();
+
+    expect(source, contains('مشاركة العائلة'));
+    expect(source, contains('NumuwOrganicIconName.family'));
+    expect(source, contains('NumuwOrganicIconName.account'));
     expect(source, contains('NumuwEntrance'));
   });
 }
