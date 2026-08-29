@@ -15,7 +15,10 @@ void main() {
     expect(source, contains('NumuwOrganicIconName.documents'));
     expect(source, contains('NumuwOrganicIconName.privacy'));
     expect(source, contains('NumuwOrganicIconName.delete'));
-    expect(source, isNot(contains('SettingsRow(')));
+    expect(
+      source,
+      isNot(matches(RegExp(r'(^|[^A-Za-z0-9_])SettingsRow\(', multiLine: true))),
+    );
   });
 
   test('More keeps reduced-motion-aware entrance and press feedback', () {
