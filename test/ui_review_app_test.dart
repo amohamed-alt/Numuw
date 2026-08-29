@@ -18,32 +18,36 @@ void main() {
     expect(find.text('العائلة'), findsOneWidget);
     expect(find.text('المساعد'), findsOneWidget);
     expect(find.text('المزيد'), findsOneWidget);
+    expect(tester.takeException(), isNull, reason: 'home must not overflow');
 
     await tester.tap(find.text('تسجيل'));
     await tester.pumpAndSettle();
     expect(find.text('تسجيل سريع'), findsWidgets);
     expect(find.text('رضاعة'), findsWidgets);
+    expect(tester.takeException(), isNull, reason: 'quick log must not overflow');
 
     await tester.tap(find.text('الطفل'));
     await tester.pumpAndSettle();
     expect(find.text('النمو'), findsOneWidget);
     expect(find.text('التطعيمات'), findsOneWidget);
+    expect(tester.takeException(), isNull, reason: 'child must not overflow');
 
     await tester.tap(find.text('العائلة'));
     await tester.pumpAndSettle();
     expect(find.text('العائلة'), findsWidgets);
     expect(find.text('دعوة فرد من العائلة'), findsOneWidget);
+    expect(tester.takeException(), isNull, reason: 'family must not overflow');
 
     await tester.tap(find.text('المساعد'));
     await tester.pumpAndSettle();
     expect(find.text('مساعد نُمُوّ'), findsOneWidget);
     expect(find.text('ملخص اليوم'), findsOneWidget);
+    expect(tester.takeException(), isNull, reason: 'assistant must not overflow');
 
     await tester.tap(find.text('المزيد'));
     await tester.pumpAndSettle();
     expect(find.text('تقارير الطبيب'), findsOneWidget);
     expect(find.text('الخصوصية والأمان'), findsOneWidget);
-
-    expect(tester.takeException(), isNull);
+    expect(tester.takeException(), isNull, reason: 'more must not overflow');
   });
 }
