@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
-import 'app_widgets.dart';
+import '../core/theme/numuw_motion.dart';
+import 'icons/numuw_icon.dart';
+import 'numuw_motion_widgets.dart';
 
 class AppBottomNavigation extends StatelessWidget {
   const AppBottomNavigation({
@@ -13,47 +15,40 @@ class AppBottomNavigation extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onChanged;
 
-  static const items = [
-    _NavData(Icons.home_rounded, 'اليوم'),
-    _NavData(Icons.edit_note_rounded, 'التسجيل'),
-    _NavData(Icons.child_care_rounded, 'طفلي'),
-    _NavData(Icons.chat_bubble_outline_rounded, 'اسألي'),
-    _NavData(Icons.menu_rounded, 'المزيد'),
+  static const items = <_NavData>[
+    _NavData(NumuwIcons.home, 'الرئيسية'),
+    _NavData(NumuwIcons.quickLog, 'تسجيل'),
+    _NavData(NumuwIcons.child, 'طفلي'),
+    _NavData(NumuwIcons.assistant, 'المساعد'),
+    _NavData(NumuwIcons.more, 'المزيد'),
   ];
 
   @override
   Widget build(BuildContext context) {
-    final night = numuwNightMode();
-    final surface = numuwSurfaceColor();
-    final border = numuwBorderColor();
-    final accent = numuwAccentColor();
-    final inactive = numuwSecondaryTextColor();
-    final activeBackground = night
-        ? AppColors.nightGold.withValues(alpha: .16)
-        : AppColors.mintLight;
+    final night = Theme.of(context).brightness == Brightness.dark;
+    final surface = night ? AppColors.nightSurface : AppColors.surface;
+    final border = night ? AppColors.nightBorder : AppColors.border;
+    final accent = night ? AppColors.nightPrimaryStrong : AppColors.plum;
+    final inactive = night
+        ? AppColors.nightSecondaryText
+        : AppColors.secondaryText;
 
     return SafeArea(
       top: false,
-      minimum: const EdgeInsets.fromLTRB(12, 0, 12, 10),
-      child: Material(
-        color: Colors.transparent,
+      child: RepaintBoundary(
         child: Container(
-          height: 68,
-          padding: const EdgeInsetsDirectional.symmetric(
-            horizontal: 6,
-            vertical: 6,
-          ),
+          height: 64,
+          padding: const EdgeInsetsDirectional.fromSTEB(10, 6, 10, 6),
           decoration: BoxDecoration(
-            color: surface.withValues(alpha: .98),
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: border),
+            color: surface.withValues(alpha: .995),
+            border: Border(top: BorderSide(color: border.withValues(alpha: .8))),
             boxShadow: night
-                ? const []
+                ? const <BoxShadow>[]
                 : const [
                     BoxShadow(
-                      color: Color(0x18000000),
-                      blurRadius: 22,
-                      offset: Offset(0, 8),
+                      color: Color(0x0A442A34),
+                      blurRadius: 14,
+                      offset: Offset(0, -3),
                     ),
                   ],
           ),
@@ -61,66 +56,50 @@ class AppBottomNavigation extends StatelessWidget {
             children: List.generate(items.length, (index) {
               final item = items[index];
               final selected = selectedIndex == index;
-              final color = selected ? accent : inactive;
-
               return Expanded(
                 child: Semantics(
                   selected: selected,
                   button: true,
                   label: item.label,
-                  child: Material(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(18),
-                    clipBehavior: Clip.antiAlias,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(18),
-                      onTap: () => onChanged(index),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 180),
-                        curve: Curves.easeOutCubic,
-                        padding: const EdgeInsetsDirectional.symmetric(
-                          horizontal: 4,
-                          vertical: 6,
+                  child: NumuwPressable(
+                    onTap: selected ? null : () => onChanged(index),
+                    scale: .97,
+                    borderRadius: BorderRadius.circular(14),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AnimatedScale(
+                          duration: NumuwMotionTokens.chip,
+                          curve: NumuwMotionTokens.standard,
+                          scale: selected ? 1.07 : 1,
+                          child: NumuwIcon(
+                            item.asset,
+                            size: selected ? 20 : 19,
+                            color: selected ? accent : inactive,
+                          ),
                         ),
-                        decoration: BoxDecoration(
-                          color: selected
-                              ? activeBackground
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(18),
-                          border: selected
-                              ? Border.all(
-                                  color: accent.withValues(alpha: .22),
-                                )
-                              : null,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AnimatedScale(
-                              duration: const Duration(milliseconds: 180),
-                              scale: selected ? 1.06 : 1,
-                              child: Icon(item.icon, size: 21, color: color),
+                        const SizedBox(height: 3),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: AnimatedDefaultTextStyle(
+                            duration: NumuwMotionTokens.chip,
+                            curve: NumuwMotionTokens.standard,
+                            style: TextStyle(
+                              color: selected ? accent : inactive,
+                              fontSize: 9.2,
+                              height: 1,
+                              fontWeight: selected
+                                  ? FontWeight.w800
+                                  : FontWeight.w600,
                             ),
-                            const SizedBox(height: 3),
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                item.label,
-                                maxLines: 1,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: color,
-                                  fontSize: 10.5,
-                                  height: 1.1,
-                                  fontWeight: selected
-                                      ? FontWeight.w800
-                                      : FontWeight.w600,
-                                ),
-                              ),
+                            child: Text(
+                              item.label,
+                              maxLines: 1,
+                              textAlign: TextAlign.center,
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ),
@@ -134,8 +113,8 @@ class AppBottomNavigation extends StatelessWidget {
 }
 
 class _NavData {
-  const _NavData(this.icon, this.label);
+  const _NavData(this.asset, this.label);
 
-  final IconData icon;
+  final String asset;
   final String label;
 }

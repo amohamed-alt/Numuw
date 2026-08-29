@@ -1,9 +1,22 @@
 import 'dart:math' as math;
 
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import '../core/app_colors.dart';
 import '../core/theme/numuw_motion.dart';
+
+/// Central accessibility gate for Numuw motion.
+///
+/// Keep meaningful state changes, but remove decorative movement when the
+/// operating system asks the app to reduce/disable animations.
+class NumuwMotionPolicy {
+  const NumuwMotionPolicy._();
+
+  static bool reduceMotion(BuildContext context) =>
+      MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+}
 
 /// Press feedback used for primary actions, quick-log controls and tappable
 /// cards. It deliberately uses scale only; no bounce-heavy game-like motion.
@@ -41,15 +54,23 @@ class _NumuwPressableState extends State<NumuwPressable> {
     onTapUp: (_) => _setPressed(false),
     onTapCancel: () => _setPressed(false),
     child: AnimatedScale(
-      scale: _pressed ? widget.scale : 1,
-      duration: NumuwMotionTokens.button,
+      scale: _pressed && !NumuwMotionPolicy.reduceMotion(context)
+          ? widget.scale
+          : 1,
+      duration: NumuwMotionPolicy.reduceMotion(context)
+          ? Duration.zero
+          : NumuwMotionTokens.button,
       curve: NumuwMotionTokens.standard,
       child: widget.child,
     ),
   );
 }
 
-class NumuwFadeSlideIn extends StatefulWidget {
+/// Standard classy entrance animation.
+///
+/// Backed by flutter_animate to keep screen code concise and consistent while
+/// preserving the timings already established by the Numuw design system.
+class NumuwFadeSlideIn extends StatelessWidget {
   const NumuwFadeSlideIn({
     super.key,
     required this.child,
@@ -62,43 +83,26 @@ class NumuwFadeSlideIn extends StatefulWidget {
   final Offset offset;
 
   @override
-  State<NumuwFadeSlideIn> createState() => _NumuwFadeSlideInState();
-}
+  Widget build(BuildContext context) {
+    if (NumuwMotionPolicy.reduceMotion(context)) return child;
 
-class _NumuwFadeSlideInState extends State<NumuwFadeSlideIn>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: NumuwMotionTokens.card,
-  );
-  late final Animation<double> _opacity = CurvedAnimation(
-    parent: _controller,
-    curve: NumuwMotionTokens.standard,
-  );
-  late final Animation<Offset> _offset = Tween<Offset>(
-    begin: widget.offset,
-    end: Offset.zero,
-  ).animate(CurvedAnimation(parent: _controller, curve: NumuwMotionTokens.standard));
-
-  @override
-  void initState() {
-    super.initState();
-    Future<void>.delayed(widget.delay, () {
-      if (mounted) _controller.forward();
-    });
+    return Animate(
+      delay: delay,
+      effects: <Effect<dynamic>>[
+        FadeEffect(
+          duration: NumuwMotionTokens.card,
+          curve: NumuwMotionTokens.standard,
+        ),
+        SlideEffect(
+          begin: offset,
+          end: Offset.zero,
+          duration: NumuwMotionTokens.card,
+          curve: NumuwMotionTokens.standard,
+        ),
+      ],
+      child: child,
+    );
   }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => FadeTransition(
-    opacity: _opacity,
-    child: SlideTransition(position: _offset, child: widget.child),
-  );
 }
 
 class NumuwPulseDot extends StatefulWidget {
@@ -132,12 +136,13 @@ class _NumuwPulseDotState extends State<NumuwPulseDot>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.active) {
+    final reduceMotion = NumuwMotionPolicy.reduceMotion(context);
+    if (!widget.active || reduceMotion) {
       return Container(
         width: widget.size,
         height: widget.size,
         decoration: BoxDecoration(
-          color: widget.color.withValues(alpha: .45),
+          color: widget.color.withValues(alpha: widget.active ? 1 : .45),
           shape: BoxShape.circle,
         ),
       );
@@ -190,16 +195,21 @@ class NumuwAnimatedNumber extends StatelessWidget {
   final Duration duration;
 
   @override
-  Widget build(BuildContext context) => TweenAnimationBuilder<double>(
-    tween: Tween(end: value),
-    duration: duration,
-    curve: NumuwMotionTokens.standard,
-    builder: (context, value, child) => builder(context, value),
-  );
+  Widget build(BuildContext context) {
+    if (NumuwMotionPolicy.reduceMotion(context)) {
+      return builder(context, value);
+    }
+    return TweenAnimationBuilder<double>(
+      tween: Tween(end: value),
+      duration: duration,
+      curve: NumuwMotionTokens.standard,
+      builder: (context, value, child) => builder(context, value),
+    );
+  }
 }
 
 /// Lightweight success moment for completed logs. Uses only paint and scale so
-/// it has no package dependency and remains smooth on low-end devices.
+/// it remains smooth on low-end devices.
 class NumuwSuccessBloom extends StatefulWidget {
   const NumuwSuccessBloom({
     super.key,
@@ -228,37 +238,61 @@ class _NumuwSuccessBloomState extends State<NumuwSuccessBloom>
   }
 
   @override
-  Widget build(BuildContext context) => AnimatedBuilder(
-    animation: _controller,
-    builder: (context, _) {
-      final t = Curves.easeOutQuart.transform(_controller.value);
+  Widget build(BuildContext context) {
+    if (NumuwMotionPolicy.reduceMotion(context)) {
       return SizedBox(
         width: widget.size,
         height: widget.size,
-        child: CustomPaint(
-          painter: _BloomPainter(progress: t, color: widget.color),
-          child: Center(
-            child: Transform.scale(
-              scale: .75 + (.25 * t),
-              child: Container(
-                width: widget.size * .54,
-                height: widget.size * .54,
-                decoration: BoxDecoration(
-                  color: widget.color.withValues(alpha: .12),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.check_rounded,
-                  color: widget.color,
-                  size: widget.size * .29,
-                ),
-              ),
+        child: Center(
+          child: Container(
+            width: widget.size * .54,
+            height: widget.size * .54,
+            decoration: BoxDecoration(
+              color: widget.color.withValues(alpha: .12),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.check_rounded,
+              color: widget.color,
+              size: widget.size * .29,
             ),
           ),
         ),
       );
-    },
-  );
+    }
+
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        final t = Curves.easeOutQuart.transform(_controller.value);
+        return SizedBox(
+          width: widget.size,
+          height: widget.size,
+          child: CustomPaint(
+            painter: _BloomPainter(progress: t, color: widget.color),
+            child: Center(
+              child: Transform.scale(
+                scale: .75 + (.25 * t),
+                child: Container(
+                  width: widget.size * .54,
+                  height: widget.size * .54,
+                  decoration: BoxDecoration(
+                    color: widget.color.withValues(alpha: .12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.check_rounded,
+                    color: widget.color,
+                    size: widget.size * .29,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
 class _BloomPainter extends CustomPainter {
@@ -291,11 +325,96 @@ class _BloomPainter extends CustomPainter {
       oldDelegate.progress != progress || oldDelegate.color != color;
 }
 
+/// Fade-through for sibling destinations such as main-shell tabs or state
+/// changes that do not have a strong spatial relationship.
+class NumuwFadeThroughSwitcher extends StatelessWidget {
+  const NumuwFadeThroughSwitcher({
+    super.key,
+    required this.child,
+    this.reverse = false,
+    this.fillColor,
+  });
+
+  final Widget child;
+  final bool reverse;
+  final Color? fillColor;
+
+  @override
+  Widget build(BuildContext context) {
+    if (NumuwMotionPolicy.reduceMotion(context)) return child;
+
+    return PageTransitionSwitcher(
+      duration: NumuwMotionTokens.page,
+      reverse: reverse,
+      transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
+          FadeThroughTransition(
+            animation: primaryAnimation,
+            secondaryAnimation: secondaryAnimation,
+            fillColor: fillColor,
+            child: child,
+          ),
+      child: child,
+    );
+  }
+}
+
+/// Material container transform for strong parent → detail relationships.
+///
+/// Use for quick-log cards and activity rows that open a focused detail/editor
+/// screen. Avoid it for unrelated destinations.
+class NumuwOpenContainer<T extends Object?> extends StatelessWidget {
+  const NumuwOpenContainer({
+    super.key,
+    required this.closedBuilder,
+    required this.openBuilder,
+    this.onClosed,
+    this.closedColor = Colors.transparent,
+    this.openColor,
+    this.borderRadius = const BorderRadius.all(Radius.circular(24)),
+    this.transitionType = ContainerTransitionType.fadeThrough,
+    this.useRootNavigator = false,
+  });
+
+  final CloseContainerBuilder closedBuilder;
+  final OpenContainerBuilder<T> openBuilder;
+  final ClosedCallback<T?>? onClosed;
+  final Color closedColor;
+  final Color? openColor;
+  final BorderRadius borderRadius;
+  final ContainerTransitionType transitionType;
+  final bool useRootNavigator;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = openColor ?? Theme.of(context).scaffoldBackgroundColor;
+
+    return OpenContainer<T>(
+      transitionDuration: NumuwMotionPolicy.reduceMotion(context)
+          ? Duration.zero
+          : NumuwMotionTokens.page,
+      transitionType: transitionType,
+      closedColor: closedColor,
+      openColor: color,
+      middleColor: color,
+      closedElevation: 0,
+      openElevation: 0,
+      closedShape: RoundedRectangleBorder(borderRadius: borderRadius),
+      openShape: const RoundedRectangleBorder(),
+      useRootNavigator: useRootNavigator,
+      onClosed: onClosed,
+      closedBuilder: closedBuilder,
+      openBuilder: openBuilder,
+    );
+  }
+}
+
 Route<T> numuwPageRoute<T>(WidgetBuilder builder) => PageRouteBuilder<T>(
   transitionDuration: NumuwMotionTokens.page,
   reverseTransitionDuration: NumuwMotionTokens.card,
   pageBuilder: (context, animation, secondaryAnimation) => builder(context),
   transitionsBuilder: (context, animation, secondaryAnimation, child) {
+    if (NumuwMotionPolicy.reduceMotion(context)) return child;
+
     final curved = CurvedAnimation(
       parent: animation,
       curve: NumuwMotionTokens.standard,

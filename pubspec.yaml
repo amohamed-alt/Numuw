@@ -24,6 +24,12 @@ dependencies:
   share_plus: ^13.2.0
   path_provider: ^2.1.6
 
+  # Open-source motion + vector asset stack. Native Flutter remains the default
+  # for simple state transitions and press feedback.
+  flutter_animate: ^4.5.2
+  animations: ^3.0.0
+  flutter_svg: ^2.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -34,6 +40,7 @@ flutter:
   assets:
     - assets/fonts/NotoNaskhArabic-Regular.ttf
     - assets/fonts/Cairo-VariableFont_slnt,wght.ttf
+    - assets/icons/
   fonts:
     - family: NotoNaskhArabic
       fonts:

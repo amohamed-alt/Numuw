@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../auth/auth_gate.dart';
+import '../screens/design_preview/full/preview_feeding.dart';
+import '../screens/design_preview/full/preview_home.dart';
 import '../screens/design_preview/full_app_preview.dart';
 import '../state/app_preferences.dart';
 import 'theme/numuw_colors.dart';
@@ -12,13 +14,20 @@ class NumuwApp extends StatelessWidget {
 
   final String? startupError;
   static const bool designPreview = bool.fromEnvironment('DESIGN_PREVIEW');
+  static const bool homePreview = bool.fromEnvironment('HOME_PREVIEW');
+  static const bool feedingPreview = bool.fromEnvironment('FEEDING_PREVIEW');
+  static const bool darkPreview = bool.fromEnvironment('DARK_PREVIEW');
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: AppPreferences.instance,
       builder: (context, _) {
-        final night = AppPreferences.instance.nightMode;
+        final deterministicPreview =
+            designPreview && (homePreview || feedingPreview);
+        final night = deterministicPreview
+            ? darkPreview
+            : AppPreferences.instance.nightMode;
         final appBackground = night
             ? NumuwColorTokens.darkBackground
             : NumuwColorTokens.lightBackground;
@@ -80,7 +89,11 @@ class NumuwApp extends StatelessWidget {
             );
           },
           home: designPreview
-              ? const FullAppPreview()
+              ? (feedingPreview
+                    ? PreviewFeedingScreen(black: darkPreview)
+                    : homePreview
+                    ? PreviewHomeScreen(black: darkPreview)
+                    : const FullAppPreview())
               : AuthGate(startupError: startupError),
         );
       },
