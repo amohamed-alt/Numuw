@@ -15,7 +15,9 @@ const jsonResponse = (body: unknown, status = 200) =>
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return jsonResponse({}, 200);
-  if (req.method !== "POST") return jsonResponse({ message: "Method not allowed." }, 405);
+  if (req.method !== "POST") {
+    return jsonResponse({ message: "Method not allowed." }, 405);
+  }
 
   const authorization = req.headers.get("Authorization") ?? "";
   if (!authorization.toLowerCase().startsWith("bearer ")) {
@@ -51,7 +53,10 @@ serve(async (req) => {
   const { data: userData, error: userError } = await caller.auth.getUser();
   const user = userData.user;
   if (userError || !user) {
-    return jsonResponse({ message: "انتهت الجلسة. سجّلي الدخول من جديد ثم حاولي مرة أخرى." }, 401);
+    return jsonResponse(
+      { message: "انتهت الجلسة. سجّلي الدخول من جديد ثم حاولي مرة أخرى." },
+      401,
+    );
   }
 
   try {
@@ -61,7 +66,9 @@ serve(async (req) => {
       .eq("user_id", user.id);
     if (membershipError) throw membershipError;
 
-    const childIds = [...new Set((memberships ?? []).map((row) => String(row.child_id)))];
+    const childIds = [
+      ...new Set((memberships ?? []).map((row) => String(row.child_id))),
+    ];
 
     for (const childId of childIds) {
       const { data: child, error: childError } = await admin
@@ -83,15 +90,30 @@ serve(async (req) => {
         if (candidateError) throw candidateError;
 
         const ranked = [...(candidates ?? [])].sort((a, b) => {
-          const rank = (role: string) => role === "owner" ? 0 : role === "parent" ? 1 : role === "caregiver" ? 2 : 3;
+          const rank = (role: string) =>
+            role === "owner"
+              ? 0
+              : role === "parent"
+                ? 1
+                : role === "caregiver"
+                  ? 2
+                  : 3;
           const difference = rank(String(a.role)) - rank(String(b.role));
           if (difference !== 0) return difference;
           return String(a.created_at).localeCompare(String(b.created_at));
         });
-        const successorId = ranked[0]?.user_id ? String(ranked[0].user_id) : null;
+        const successorId = ranked[0]?.user_id
+          ? String(ranked[0].user_id)
+          : null;
 
         if (!successorId) {
           await removeChildStorage(admin, childId);
+          const { error: childDeleteError } = await admin
+            .from("children")
+            .delete()
+            .eq("id", childId)
+            .eq("created_by", user.id);
+          if (childDeleteError) throw childDeleteError;
           continue;
         }
 
@@ -111,15 +133,25 @@ serve(async (req) => {
           .eq("created_by", user.id);
         if (childTransferError) throw childTransferError;
       } else {
-        await rehomeChildAuthoredData(admin, childId, user.id, String(child.created_by));
+        await rehomeChildAuthoredData(
+          admin,
+          childId,
+          user.id,
+          String(child.created_by),
+        );
       }
     }
+
+    await cleanupUserReferences(admin, user.id);
 
     const { error: deleteError } = await admin.auth.admin.deleteUser(user.id);
     if (deleteError) {
       console.error("delete-account: auth deletion failed", deleteError);
       return jsonResponse(
-        { message: "تعذر حذف الحساب بالكامل. لم يتم تأكيد الحذف، وحاولي مرة أخرى أو تواصلي مع الدعم." },
+        {
+          message:
+            "تعذر حذف الحساب بالكامل. لم يتم تأكيد الحذف، وحاولي مرة أخرى أو تواصلي مع الدعم.",
+        },
         409,
       );
     }
@@ -127,7 +159,10 @@ serve(async (req) => {
     return jsonResponse({ deleted: true }, 200);
   } catch (error) {
     console.error("delete-account failed", error);
-    return jsonResponse({ message: "تعذر حذف الحساب حاليًا. لم يتم تأكيد الحذف." }, 500);
+    return jsonResponse(
+      { message: "تعذر حذف الحساب حاليًا. لم يتم تأكيد الحذف." },
+      500,
+    );
   }
 });
 
@@ -137,9 +172,20 @@ async function rehomeChildAuthoredData(
   departingUserId: string,
   successorId: string,
 ) {
-  await rehomeDocuments(admin, childId, departingUserId, successorId);
+  const { error: documentError } = await admin
+    .from("child_documents")
+    .update({ uploaded_by: successorId })
+    .eq("child_id", childId)
+    .eq("uploaded_by", departingUserId);
+  if (documentError) throw documentError;
 
-  for (const table of ["care_events", "growth_measurements", "vaccinations", "doctor_questions", "family_tasks"]) {
+  for (const table of [
+    "care_events",
+    "growth_measurements",
+    "vaccinations",
+    "doctor_questions",
+    "family_tasks",
+  ]) {
     const { error } = await admin
       .from(table)
       .update({ created_by: successorId })
@@ -156,43 +202,51 @@ async function rehomeChildAuthoredData(
   if (unassignError) throw unassignError;
 }
 
-async function rehomeDocuments(
+async function cleanupUserReferences(
   admin: ReturnType<typeof createClient>,
-  childId: string,
-  departingUserId: string,
-  successorId: string,
+  userId: string,
 ) {
-  const { data: documents, error } = await admin
-    .from("child_documents")
-    .select("id,storage_bucket,storage_path,mime_type")
-    .eq("child_id", childId)
-    .eq("uploaded_by", departingUserId);
-  if (error) throw error;
+  const { error: acceptedInviteError } = await admin
+    .from("family_invites")
+    .update({ accepted_by: null })
+    .eq("accepted_by", userId);
+  if (acceptedInviteError) throw acceptedInviteError;
 
-  for (const document of documents ?? []) {
-    const bucket = String(document.storage_bucket);
-    const path = String(document.storage_path);
-    const { data: blob, error: downloadError } = await admin.storage.from(bucket).download(path);
-    if (downloadError) throw downloadError;
+  const { error: createdInviteError } = await admin
+    .from("family_invites")
+    .delete()
+    .eq("created_by", userId);
+  if (createdInviteError) throw createdInviteError;
 
-    const { error: removeError } = await admin.storage.from(bucket).remove([path]);
-    if (removeError) throw removeError;
+  const { error: assignedTaskError } = await admin
+    .from("family_tasks")
+    .update({ assigned_to: null })
+    .eq("assigned_to", userId);
+  if (assignedTaskError) throw assignedTaskError;
 
-    const { error: uploadError } = await admin.storage.from(bucket).upload(path, blob, {
-      upsert: true,
-      contentType: document.mime_type ?? (blob.type || undefined),
-    });
-    if (uploadError) throw uploadError;
+  const { error: membershipsError } = await admin
+    .from("child_members")
+    .delete()
+    .eq("user_id", userId);
+  if (membershipsError) throw membershipsError;
 
-    const { error: metadataError } = await admin
-      .from("child_documents")
-      .update({ uploaded_by: successorId })
-      .eq("id", document.id);
-    if (metadataError) throw metadataError;
-  }
+  const { error: usageError } = await admin
+    .from("ai_usage_events")
+    .delete()
+    .eq("user_id", userId);
+  if (usageError) throw usageError;
+
+  const { error: profileError } = await admin
+    .from("profiles")
+    .delete()
+    .eq("id", userId);
+  if (profileError) throw profileError;
 }
 
-async function removeChildStorage(admin: ReturnType<typeof createClient>, childId: string) {
+async function removeChildStorage(
+  admin: ReturnType<typeof createClient>,
+  childId: string,
+) {
   const { data: documents, error } = await admin
     .from("child_documents")
     .select("storage_bucket,storage_path")
