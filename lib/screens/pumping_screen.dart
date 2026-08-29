@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import '../core/app_colors.dart';
 import '../core/errors/app_error.dart';
 import '../core/formatters/arabic_formatters.dart';
+import '../design/numuw_motion_widgets.dart';
+import '../design/numuw_organic_icons.dart';
 import '../models/care_event.dart';
 import '../models/pumping_analytics.dart';
 import '../repositories/care_event_repository.dart';
@@ -234,60 +236,62 @@ class _PumpingLogPaneState extends State<PumpingLogPane> {
     final duration = timerStart == null
         ? Duration.zero
         : DateTime.now().difference(timerStart);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _header(),
-        const SizedBox(height: 14),
-        NumuwPlantProgress(
-          progress: timerStart == null ? .34 : .72,
-          label: timerStart == null ? 'بداية هادئة' : 'جلسة نشطة',
-        ),
-        const SizedBox(height: 14),
-        TimerCard(
-          time: _timerText(duration),
-          status: timerStart == null ? 'جاهزة للبدء' : 'جارية الآن',
-          color: AppColors.mintDark,
-          active: timerStart != null,
-          buttonLabel: timerStart == null
-              ? 'بدء مؤقت الشفط'
-              : 'استخدام وقت المؤقت',
-          onPressed: _saving ? null : _toggleTimer,
-        ),
-        const SizedBox(height: 12),
-        _timeCard(),
-        const SizedBox(height: 12),
-        _sideCard(),
-        const SizedBox(height: 12),
-        _quantityCard(),
-        const SizedBox(height: 12),
-        NumuwTextArea(controller: _notes, label: 'ملاحظات اختيارية'),
-        const SizedBox(height: 16),
-        PrimaryButton(
-          label: 'حفظ جلسة الشفط',
-          color: AppColors.mintDark,
-          loading: _saving,
-          onPressed: _saving ? null : _save,
-        ),
-        if (_error != null) ...[
+    return NumuwEntrance(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _header(),
+          const SizedBox(height: 14),
+          NumuwPlantProgress(
+            progress: timerStart == null ? .34 : .72,
+            label: timerStart == null ? 'بداية هادئة' : 'جلسة نشطة',
+          ),
+          const SizedBox(height: 14),
+          TimerCard(
+            time: _timerText(duration),
+            status: timerStart == null ? 'جاهزة للبدء' : 'جارية الآن',
+            color: AppColors.mintDark,
+            active: timerStart != null,
+            buttonLabel: timerStart == null
+                ? 'بدء مؤقت الشفط'
+                : 'استخدام وقت المؤقت',
+            onPressed: _saving ? null : _toggleTimer,
+          ),
           const SizedBox(height: 12),
-          ErrorMessageCard(message: _error!),
-        ],
-        const SizedBox(height: 18),
-        AnimatedBuilder(
-          animation: NumuwAppState.instance,
-          builder: (context, _) => PumpingSummaryCard(
-            comparison: NumuwAppState.instance.pumpingComparison,
-            loading: NumuwAppState.instance.pumpingLoading,
-            error: NumuwAppState.instance.pumpingError,
-            onOpenFull: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const PumpingAnalyticsScreen(),
+          _timeCard(),
+          const SizedBox(height: 12),
+          _sideCard(),
+          const SizedBox(height: 12),
+          _quantityCard(),
+          const SizedBox(height: 12),
+          NumuwTextArea(controller: _notes, label: 'ملاحظات اختيارية'),
+          const SizedBox(height: 16),
+          PrimaryButton(
+            label: 'حفظ جلسة الشفط',
+            color: AppColors.mintDark,
+            loading: _saving,
+            onPressed: _saving ? null : _save,
+          ),
+          if (_error != null) ...[
+            const SizedBox(height: 12),
+            ErrorMessageCard(message: _error!),
+          ],
+          const SizedBox(height: 18),
+          AnimatedBuilder(
+            animation: NumuwAppState.instance,
+            builder: (context, _) => PumpingSummaryCard(
+              comparison: NumuwAppState.instance.pumpingComparison,
+              loading: NumuwAppState.instance.pumpingLoading,
+              error: NumuwAppState.instance.pumpingError,
+              onOpenFull: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const PumpingAnalyticsScreen(),
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -306,38 +310,50 @@ class _PumpingLogPaneState extends State<PumpingLogPane> {
     trailing: const NumuwStatusBadge(label: 'جاري', color: AppColors.mint),
   );
 
-  Widget _timeCard() => SoftCard(
+  Widget _timeCard() => NumuwPressable(
     onTap: _pickStartedAt,
-    child: Row(
-      children: [
-        const IconBadge(icon: '🕒', background: AppColors.mintLight, size: 40),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'وقت البدء',
-                style: TextStyle(
-                  color: numuwTextColor(),
-                  fontSize: 13,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                '${ArabicFormatters.date(_startedAt)} · ${ArabicFormatters.time(_startedAt)}',
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  color: numuwSecondaryTextColor(),
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
+    semanticLabel: 'تعديل وقت بدء جلسة الشفط',
+    child: SoftCard(
+      child: Row(
+        children: [
+          const _OrganicBadge(
+            icon: NumuwOrganicIconName.calendar,
+            background: AppColors.mintLight,
+            size: 40,
+            semanticLabel: 'وقت البدء',
           ),
-        ),
-        Icon(Icons.edit_calendar_outlined, color: numuwSecondaryTextColor()),
-      ],
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'وقت البدء',
+                  style: TextStyle(
+                    color: numuwTextColor(),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '${ArabicFormatters.date(_startedAt)} · ${ArabicFormatters.time(_startedAt)}',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    color: numuwSecondaryTextColor(),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const NumuwOrganicIcon(
+            NumuwOrganicIconName.edit,
+            size: 24,
+            semanticLabel: 'تعديل وقت البدء',
+          ),
+        ],
+      ),
     ),
   );
 
@@ -564,61 +580,137 @@ class _PumpingAnalyticsScreenState extends State<PumpingAnalyticsScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
     body: AppPage(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          NumuwHeader(
-            title: 'تحليل الشفط',
-            subtitle: 'آخر 7 أيام مقارنة بالـ7 أيام السابقة',
-            leading: AppIconButton(
-              icon: Icons.arrow_forward_rounded,
-              onPressed: () => Navigator.pop(context),
-              badge: false,
+      child: NumuwEntrance(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            NumuwHeader(
+              title: 'تحليل الشفط',
+              subtitle: 'آخر 7 أيام مقارنة بالـ7 أيام السابقة',
+              leading: AppIconButton(
+                icon: Icons.arrow_forward_rounded,
+                onPressed: () => Navigator.pop(context),
+                badge: false,
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          AnimatedBuilder(
-            animation: NumuwAppState.instance,
-            builder: (context, _) => PumpingSummaryCard(
-              comparison: NumuwAppState.instance.pumpingComparison,
-              loading: NumuwAppState.instance.pumpingLoading,
-              error: NumuwAppState.instance.pumpingError,
+            const SizedBox(height: 16),
+            AnimatedBuilder(
+              animation: NumuwAppState.instance,
+              builder: (context, _) => PumpingSummaryCard(
+                comparison: NumuwAppState.instance.pumpingComparison,
+                loading: NumuwAppState.instance.pumpingLoading,
+                error: NumuwAppState.instance.pumpingError,
+              ),
             ),
-          ),
-          const SizedBox(height: 14),
-          FutureBuilder<List<CareEvent>>(
-            future: _sessions,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
-                return const LoadingSkeleton(height: 120);
-              }
-              final events = snapshot.data ?? const <CareEvent>[];
-              if (events.isEmpty) {
-                return const EmptyState(
-                  message: 'لا توجد جلسات في هذه الفترة.',
-                );
-              }
-              return SoftCard(
-                padding: EdgeInsets.zero,
-                child: Column(
-                  children: [
-                    for (var i = 0; i < events.length; i++) ...[
-                      ActivityListItem(
-                        icon: '🍼',
-                        background: AppColors.mintLight,
-                        title: 'شفط',
-                        subtitle: pumpingSubtitle(events[i]),
-                      ),
-                      if (i != events.length - 1)
-                        Divider(height: 1, color: numuwBorderColor()),
+            const SizedBox(height: 14),
+            FutureBuilder<List<CareEvent>>(
+              future: _sessions,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return const LoadingSkeleton(height: 120);
+                }
+                final events = snapshot.data ?? const <CareEvent>[];
+                if (events.isEmpty) {
+                  return const EmptyState(
+                    message: 'لا توجد جلسات في هذه الفترة.',
+                  );
+                }
+                return SoftCard(
+                  padding: EdgeInsets.zero,
+                  child: Column(
+                    children: [
+                      for (var i = 0; i < events.length; i++) ...[
+                        _PumpingActivityItem(event: events[i]),
+                        if (i != events.length - 1)
+                          Divider(height: 1, color: numuwBorderColor()),
+                      ],
                     ],
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
+    ),
+  );
+}
+
+class _PumpingActivityItem extends StatelessWidget {
+  const _PumpingActivityItem({required this.event});
+
+  final CareEvent event;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsetsDirectional.fromSTEB(15, 13, 15, 13),
+    child: Row(
+      children: [
+        const _OrganicBadge(
+          icon: NumuwOrganicIconName.bottle,
+          background: AppColors.mintLight,
+          size: 36,
+          semanticLabel: 'جلسة شفط',
+        ),
+        const SizedBox(width: 11),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'شفط',
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: numuwTextColor(),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  height: 1.35,
+                ),
+              ),
+              const SizedBox(height: 1),
+              Text(
+                pumpingSubtitle(event),
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: numuwSecondaryTextColor(),
+                  fontSize: 11,
+                  height: 1.35,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _OrganicBadge extends StatelessWidget {
+  const _OrganicBadge({
+    required this.icon,
+    required this.background,
+    required this.size,
+    required this.semanticLabel,
+  });
+
+  final NumuwOrganicIconName icon;
+  final Color background;
+  final double size;
+  final String semanticLabel;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: size,
+    height: size,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      color: background,
+      borderRadius: BorderRadius.circular(size * .34),
+    ),
+    child: NumuwOrganicIcon(
+      icon,
+      size: size * .68,
+      semanticLabel: semanticLabel,
     ),
   );
 }
@@ -704,7 +796,9 @@ class _PumpingBars extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   AnimatedContainer(
-                    duration: NumuwMotion.fast,
+                    duration: MediaQuery.maybeOf(context)?.disableAnimations == true
+                        ? Duration.zero
+                        : NumuwMotion.fast,
                     height: height,
                     width: 18,
                     decoration: BoxDecoration(
