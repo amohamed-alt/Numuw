@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/app_bottom_navigation.dart';
 import 'assistant_screen.dart';
-import 'child_screen.dart';
+import 'classy/classy_child_screen.dart';
 import 'classy/classy_home_screen.dart';
 import 'classy/classy_more_screen.dart';
 import 'classy/classy_quick_log_screen.dart';
@@ -37,7 +37,7 @@ class _MainShellState extends State<MainShell> {
     setState(() {
       childInitialSection = section;
       selectedIndex = 2;
-      _pages[2] = ChildScreen(initialSection: section);
+      _pages[2] = ClassyChildScreen(initialSection: section);
     });
   }
 
@@ -45,7 +45,7 @@ class _MainShellState extends State<MainShell> {
     _pages[index] ??= switch (index) {
       0 => const ClassyHomeScreen(),
       1 => const ClassyQuickLogScreen(),
-      2 => ChildScreen(initialSection: childInitialSection),
+      2 => ClassyChildScreen(initialSection: childInitialSection),
       3 => const AssistantScreen(),
       4 => const ClassyMoreScreen(),
       _ => const ClassyHomeScreen(),
