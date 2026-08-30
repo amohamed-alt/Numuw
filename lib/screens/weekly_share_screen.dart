@@ -8,6 +8,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../core/app_colors.dart';
+import '../core/errors/app_error.dart';
+import '../design/numuw_motion_widgets.dart';
+import '../design/numuw_organic_icons.dart';
 import '../models/weekly_child_summary.dart';
 import '../services/weekly_summary_service.dart';
 import '../state/child_session.dart';
@@ -62,15 +65,13 @@ class _WeeklyShareScreenState extends State<WeeklyShareScreen> {
           files: [
             XFile(file.path, mimeType: 'image/png', name: 'numuw-weekly.png'),
           ],
-          text: 'ÙƒØ§Ø±Øª Ø£Ø³Ø¨ÙˆØ¹ Ø§Ù„Ø·ÙÙ„ Ù…Ù† Ù†ÙÙ…ÙÙˆÙ‘',
+          text: 'كارت أسبوع الطفل من نُمُوّ',
         ),
       );
-    } catch (_) {
+    } catch (error, stackTrace) {
+      logError(error, stackTrace);
       if (!mounted) return;
-      setState(
-        () => _message =
-            'ØªØ¹Ø°Ø± Ù…Ø´Ø§Ø±ÙƒØ© Ø§Ù„ÙƒØ§Ø±Øª. Ø­Ø§ÙˆÙ„ÙŠ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰.',
-      );
+      setState(() => _message = 'تعذر مشاركة الكارت. حاولي مرة أخرى.');
     } finally {
       if (mounted) setState(() => _sharing = false);
     }
@@ -89,78 +90,75 @@ class _WeeklyShareScreenState extends State<WeeklyShareScreen> {
     final child = ChildSession.instance.selectedChild;
     return Scaffold(
       body: AppPage(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            NumuwAppBar(
-              title: 'ÙƒØ§Ø±Øª Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹',
-              subtitle:
-                  'Ù…Ù„Ø®Øµ Ø¨Ø³ÙŠØ· Ù‚Ø§Ø¨Ù„ Ù„Ù„Ù…Ø´Ø§Ø±ÙƒØ© Ù…Ù† Ø³Ø¬Ù„Ø§Øª Ø·ÙÙ„Ùƒ',
-              leading: AppIconButton(
-                icon: Icons.arrow_forward_rounded,
-                onPressed: () => Navigator.pop(context),
-                badge: false,
-                size: 42,
-                radius: 13,
-                iconSize: 20,
-                borderWidth: 1.5,
+        child: NumuwEntrance(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              NumuwAppBar(
+                title: 'كارت الأسبوع',
+                subtitle: 'ملخص بسيط قابل للمشاركة من سجلات طفلك',
+                leading: AppIconButton(
+                  icon: Icons.arrow_forward_rounded,
+                  onPressed: () => Navigator.pop(context),
+                  badge: false,
+                  size: 42,
+                  radius: 13,
+                  iconSize: 20,
+                  borderWidth: 1.5,
+                ),
               ),
-            ),
-            const SizedBox(height: 14),
-            const NumuwPlantProgress(
-              progress: .58,
-              label: 'Ù…Ù„Ø®Øµ Ø¬Ø§Ù‡Ø² Ù„Ù„Ù…Ø´Ø§Ø±ÙƒØ©',
-            ),
-            const SizedBox(height: 18),
-            if (child == null)
-              const NumuwEmptyState(
-                message:
-                    'Ø§Ø®ØªØ§Ø±ÙŠ Ø·ÙÙ„Ù‹Ø§ Ø£ÙˆÙ„Ù‹Ø§ Ù„Ø¹Ø±Ø¶ Ø§Ù„ÙƒØ§Ø±Øª.',
-              )
-            else
-              FutureBuilder<WeeklyChildSummary>(
-                future: _future,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const NumuwLoadingState(height: 280);
-                  }
-                  if (snapshot.hasError) {
-                    return NumuwErrorState(
-                      message:
-                          'ØªØ¹Ø°Ø± ØªØ­Ù…ÙŠÙ„ Ù…Ù„Ø®Øµ Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹. Ø­Ø§ÙˆÙ„ÙŠ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰.',
-                    );
-                  }
-                  final summary = snapshot.data;
-                  if (summary == null) {
-                    return const NumuwEmptyState(
-                      message:
-                          'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¨ÙŠØ§Ù†Ø§Øª ÙƒØ§ÙÙŠØ© Ù„Ø¹Ø±Ø¶ Ø§Ù„ÙƒØ§Ø±Øª Ø¨Ø¹Ø¯.',
-                    );
-                  }
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RepaintBoundary(
-                        key: _cardKey,
-                        child: WeeklyShareCard(summary: summary),
-                      ),
-                      const SizedBox(height: 16),
-                      NumuwPrimaryButton(
-                        label: _sharing
-                            ? 'Ø¬Ø§Ø±ÙŠ Ø§Ù„Ù…Ø´Ø§Ø±ÙƒØ©...'
-                            : 'Ù…Ø´Ø§Ø±ÙƒØ©',
-                        loading: _sharing,
-                        onPressed: _sharing ? null : _share,
-                      ),
-                    ],
-                  );
-                },
-              ),
-            if (_message != null) ...[
               const SizedBox(height: 14),
-              NumuwErrorState(message: _message!),
+              const NumuwPlantProgress(
+                progress: .58,
+                label: 'ملخص جاهز للمشاركة',
+              ),
+              const SizedBox(height: 18),
+              if (child == null)
+                const NumuwEmptyState(
+                  message: 'اختاري طفلًا أولًا لعرض الكارت.',
+                )
+              else
+                FutureBuilder<WeeklyChildSummary>(
+                  future: _future,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const NumuwLoadingState(height: 280);
+                    }
+                    if (snapshot.hasError) {
+                      return const NumuwErrorState(
+                        message:
+                            'تعذر تحميل ملخص الأسبوع. حاولي مرة أخرى.',
+                      );
+                    }
+                    final summary = snapshot.data;
+                    if (summary == null) {
+                      return const NumuwEmptyState(
+                        message: 'لا توجد بيانات كافية لعرض الكارت بعد.',
+                      );
+                    }
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RepaintBoundary(
+                          key: _cardKey,
+                          child: WeeklyShareCard(summary: summary),
+                        ),
+                        const SizedBox(height: 16),
+                        NumuwPrimaryButton(
+                          label: _sharing ? 'جاري المشاركة...' : 'مشاركة',
+                          loading: _sharing,
+                          onPressed: _sharing ? null : _share,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              if (_message != null) ...[
+                const SizedBox(height: 14),
+                NumuwErrorState(message: _message!),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -220,9 +218,10 @@ class WeeklyShareCard extends StatelessWidget {
                     color: numuwSurfaceColor(),
                     borderRadius: BorderRadius.circular(18),
                   ),
-                  child: const Text(
-                    'Ù†ÙÙ…ÙÙˆÙ‘',
-                    style: TextStyle(fontSize: 13),
+                  child: const NumuwOrganicIcon(
+                    NumuwOrganicIconName.growth,
+                    size: 42,
+                    semanticLabel: 'نُمُوّ',
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -231,7 +230,7 @@ class WeeklyShareCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Ø£Ø³Ø¨ÙˆØ¹ ${summary.childName}',
+                        'أسبوع ${summary.childName}',
                         style: TextStyle(
                           color: numuwTextColor(),
                           fontSize: 20,
@@ -240,7 +239,7 @@ class WeeklyShareCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Ø¢Ø®Ø± 7 Ø£ÙŠØ§Ù… Ù…Ù† Ø³Ø¬Ù„Ø§ØªÙƒ',
+                        'آخر 7 أيام من سجلاتك',
                         style: TextStyle(
                           color: numuwSecondaryTextColor(),
                           fontSize: 12,
@@ -289,15 +288,15 @@ class WeeklyShareCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: _MiniMetric(
-                    label: 'Ø§Ù„Ù†ÙˆÙ…',
-                    value: '${_trim(summary.current.sleepHours)} Ø³',
+                    label: 'النوم',
+                    value: '${_trim(summary.current.sleepHours)} س',
                     color: AppColors.purple,
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: _MiniMetric(
-                    label: 'Ø§Ù„Ø±Ø¶Ø¹Ø§Øª',
+                    label: 'الرضعات',
                     value: '${summary.current.feedingCount}',
                     color: AppColors.mint,
                   ),
@@ -305,8 +304,8 @@ class WeeklyShareCard extends StatelessWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   child: _MiniMetric(
-                    label: 'Ø§Ù„Ø´ÙØ·',
-                    value: '${summary.current.pumpingMl.round()} Ù…Ù„',
+                    label: 'الشفط',
+                    value: '${summary.current.pumpingMl.round()} مل',
                     color: AppColors.blue,
                   ),
                 ),
@@ -320,7 +319,7 @@ class WeeklyShareCard extends StatelessWidget {
             _TrendLine(comparison: summary.pumpingComparison),
             const SizedBox(height: 14),
             Text(
-              'Ù‡Ø°Ù‡ Ù…Ù‚Ø§Ø±Ù†Ø© Ù„Ù„Ø³Ø¬Ù„Ø§Øª ÙÙ‚Ø· ÙˆÙ„ÙŠØ³Øª ØªÙ‚ÙŠÙŠÙ…Ù‹Ø§ Ø·Ø¨ÙŠÙ‹Ø§.',
+              'هذه مقارنة للسجلات فقط وليست تقييمًا طبيًا.',
               style: TextStyle(
                 color: numuwSecondaryTextColor(),
                 fontSize: 11,
