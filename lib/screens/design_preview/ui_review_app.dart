@@ -36,7 +36,12 @@ class _NumuwUiReviewAppState extends State<NumuwUiReviewApp> {
           body: SafeArea(
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 460),
+                constraints: BoxConstraints(
+                  maxWidth: 460,
+                  minHeight:
+                      MediaQuery.sizeOf(context).height -
+                      MediaQuery.paddingOf(context).vertical,
+                ),
                 child: Column(
                   children: [
                     Expanded(
