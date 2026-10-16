@@ -161,13 +161,11 @@ class _ReviewHeader extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.icon,
-    this.action,
   });
 
   final String title;
   final String subtitle;
   final NumuwOrganicIconName icon;
-  final Widget? action;
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +188,6 @@ class _ReviewHeader extends StatelessWidget {
                         style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
                       ),
                     ),
-                    if (action != null) action!,
                   ],
                 ),
                 const SizedBox(height: 3),
