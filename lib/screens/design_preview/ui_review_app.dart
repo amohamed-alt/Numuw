@@ -34,30 +34,35 @@ class _NumuwUiReviewAppState extends State<NumuwUiReviewApp> {
         textDirection: TextDirection.rtl,
         child: Scaffold(
           body: SafeArea(
-            child: Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: 460,
-                  minHeight:
-                      MediaQuery.sizeOf(context).height -
-                      MediaQuery.paddingOf(context).vertical,
-                ),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: AnimatedSwitcher(
-                        duration: NumuwMotionSpec.quick,
-                        child: _screenFor(_index),
-                      ),
+            child: Builder(
+              builder: (context) {
+                final availableHeight =
+                    MediaQuery.sizeOf(context).height -
+                    MediaQuery.paddingOf(context).vertical;
+                return Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: 460,
+                      minHeight: availableHeight,
                     ),
-                    _ReviewNavigation(
-                      tabs: _tabs,
-                      selectedIndex: _index,
-                      onChanged: (value) => setState(() => _index = value),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: AnimatedSwitcher(
+                            duration: NumuwMotionSpec.quick,
+                            child: _screenFor(_index),
+                          ),
+                        ),
+                        _ReviewNavigation(
+                          tabs: _tabs,
+                          selectedIndex: _index,
+                          onChanged: (value) => setState(() => _index = value),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
           ),
         ),
