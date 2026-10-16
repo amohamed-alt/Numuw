@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 16047)
-Total output lines: 1910
-
 import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
@@ -666,7 +663,496 @@ class _HomeScreenState extends State<HomeScreen> {
                             : 'يوم متوازن',
                       ),
                       const SizedBox(height: 16),
-            …4047 tokens truncated…ration(
+                      ChildHeroCard(
+                        name: child.name,
+                        age: ArabicFormatters.age(child),
+                      ),
+                      const SizedBox(height: 18),
+                      const NumuwSectionHeader(
+                        title: 'ملخص اليوم',
+                        icon: Icons.calendar_month_outlined,
+                      ),
+                      const SizedBox(height: 12),
+                      GridView.count(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 11,
+                        crossAxisSpacing: 11,
+                        childAspectRatio: 1.28,
+                        children: [
+                          _MetricCard(
+                            title: 'آخر رضعة',
+                            value: summary.latestFeeding == null
+                                ? 'لا توجد رضعات مسجلة'
+                                : ArabicFormatters.time(
+                                    summary.latestFeeding!.startedAt,
+                                  ),
+                            label: summary.latestFeeding == null ? '' : 'في',
+                            icon: NumuwOrganicIconName.breastfeeding,
+                            color: AppColors.mint,
+                            bg: AppColors.mintLight,
+                          ),
+                          _MetricCard(
+                            title: 'نوم اليوم',
+                            value: summary.sleepToday.inMinutes == 0
+                                ? 'لا توجد تسجيلات نوم اليوم'
+                                : ArabicFormatters.duration(summary.sleepToday),
+                            icon: NumuwOrganicIconName.sleep,
+                            color: AppColors.mint,
+                            bg: AppColors.mintLight,
+                          ),
+                          _MetricCard(
+                            title: 'آخر تغيير حفاضة',
+                            value: summary.latestDiaper == null
+                                ? 'لا توجد تغييرات حفاضة مسجلة'
+                                : ArabicFormatters.time(
+                                    summary.latestDiaper!.startedAt,
+                                  ),
+                            label: summary.latestDiaper == null ? '' : 'في',
+                            icon: NumuwOrganicIconName.diaper,
+                            color: AppColors.mintDark,
+                            bg: AppColors.blueLight,
+                          ),
+                          _MetricCard(
+                            title: 'التطعيم القادم',
+                            value: summary.nextVaccination == null
+                                ? 'لم يتم تحديد تطعيم قادم'
+                                : summary.nextVaccination!.name,
+                            label: summary.nextVaccination == null
+                                ? ''
+                                : ArabicFormatters.date(
+                                    summary.nextVaccination!.scheduledDate,
+                                  ),
+                            icon: NumuwOrganicIconName.vaccine,
+                            color: AppColors.yellow,
+                            bg: AppColors.yellowLight,
+                            onTap: _showProfileTab,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 18),
+                      _InsightGrid(child: child),
+                      const SizedBox(height: 18),
+                      _TasksCard(
+                        summary: summary,
+                        onComplete: (task) => _completeTask(summary, task),
+                      ),
+                      const SizedBox(height: 18),
+                      const NumuwSectionHeader(
+                        title: 'النشاط الأخير',
+                        icon: Icons.history_rounded,
+                      ),
+                      const SizedBox(height: 12),
+                      summary.recentEvents.isEmpty
+                          ? const EmptyState(message: 'لا توجد أنشطة مسجلة بعد')
+                          : SoftCard(
+                              padding: EdgeInsets.zero,
+                              child: Column(
+                                children: [
+                                  for (
+                                    var i = 0;
+                                    i < summary.recentEvents.length;
+                                    i++
+                                  ) ...[
+                                    _eventTile(
+                                      summary,
+                                      summary.recentEvents[i],
+                                    ),
+                                    if (i != summary.recentEvents.length - 1)
+                                      Divider(
+                                        height: 1,
+                                        color: numuwBorderColor(),
+                                      ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _eventTile(DashboardSummary summary, CareEvent event) => InkWell(
+    onTap: () => _showEventDetails(summary, event),
+    child: ActivityListItem(
+      icon: _eventIcon(event.isPumping ? 'pumping' : event.eventType),
+      background: _eventBg(event.isPumping ? 'pumping' : event.eventType),
+      title: ArabicFormatters.eventType(
+        event.isPumping ? 'pumping' : event.eventType,
+      ),
+      subtitle: _eventSubtitle(event),
+    ),
+  );
+}
+
+class _EventDetail {
+  const _EventDetail(this.label, this.value);
+
+  final String label;
+  final String value;
+}
+
+class _DetailRow extends StatelessWidget {
+  const _DetailRow(this.detail);
+
+  final _EventDetail detail;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsetsDirectional.only(bottom: 9),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 86,
+          child: Text(
+            detail.label,
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              color: numuwSecondaryTextColor(),
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            detail.value,
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              color: numuwTextColor(),
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+              height: 1.4,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+List<_EventDetail> _eventDetails(CareEvent event) {
+  final details = <_EventDetail>[
+    _EventDetail('البداية', ArabicFormatters.time(event.startedAt)),
+  ];
+  if (event.endedAt != null) {
+    details.add(_EventDetail('النهاية', ArabicFormatters.time(event.endedAt)));
+    details.add(
+      _EventDetail(
+        'المدة',
+        ArabicFormatters.duration(event.endedAt!.difference(event.startedAt)),
+      ),
+    );
+  }
+  if (event.isPumping) {
+    details.add(_EventDetail('الجهة', _sideLabel(event.side)));
+    if (event.pumpedAmountMl != null) {
+      details.add(
+        _EventDetail('إجمالي الكمية', '${event.pumpedAmountMl!.round()} مل'),
+      );
+    }
+    if (event.leftPumpedAmountMl != null) {
+      details.add(
+        _EventDetail('كمية اليسار', '${event.leftPumpedAmountMl!.round()} مل'),
+      );
+    }
+    if (event.rightPumpedAmountMl != null) {
+      details.add(
+        _EventDetail('كمية اليمين', '${event.rightPumpedAmountMl!.round()} مل'),
+      );
+    }
+  } else if (event.eventType == 'feeding') {
+    details.add(_EventDetail('الجهة', _sideLabel(event.side)));
+    details.add(_EventDetail('الطريقة', _feedingMethodLabel(event)));
+    if (event.amountMl != null) {
+      details.add(_EventDetail('الكمية', '${event.amountMl!.round()} مل'));
+    }
+    details.add(_EventDetail('التجشؤ', event.burped == true ? 'نعم' : 'لا'));
+    details.add(_EventDetail('القيء', event.vomited == true ? 'نعم' : 'لا'));
+  } else if (event.eventType == 'diaper') {
+    details.add(_EventDetail('النوع', _diaperLabel(event)));
+  } else if (event.eventType == 'medicine') {
+    details.add(_EventDetail('الدواء', _safe(event.medicineName)));
+    details.add(_EventDetail('الجرعة', _safe(event.medicineDose)));
+  } else if (event.eventType == 'temperature') {
+    details.add(
+      _EventDetail(
+        'الحرارة',
+        event.temperatureC == null ? 'غير محدد' : '${event.temperatureC} °C',
+      ),
+    );
+  } else if (event.eventType == 'food') {
+    details.add(_EventDetail('الطعام', _safe(event.metadata?['food_name'])));
+    details.add(_EventDetail('الكمية', _safe(event.metadata?['description'])));
+  }
+  details.add(_EventDetail('الملاحظات', _safe(event.notes)));
+  return details;
+}
+
+String _safe(Object? value) {
+  final text = value?.toString().trim() ?? '';
+  if (text.isEmpty || text == '.' || text == '..' || text == 'null') {
+    return 'غير محدد';
+  }
+  return text;
+}
+
+String _sideLabel(String? side) => switch (side) {
+  'right' => 'اليمنى',
+  'left' => 'اليسرى',
+  'both' => 'كلاهما',
+  _ => 'غير محدد',
+};
+
+String _feedingMethodLabel(CareEvent event) {
+  final methods = event.metadata?['feeding_methods'];
+  if (methods is List && methods.isNotEmpty) {
+    return methods.map((item) => _methodLabel(item.toString())).join(' + ');
+  }
+  return _methodLabel(event.feedingMethod);
+}
+
+String _methodLabel(String? value) => switch (value) {
+  'breast' => 'طبيعية',
+  'bottle' => 'زجاجة',
+  'formula' => 'صناعية',
+  'pumping' => 'شفط',
+  'mixed' => 'مختلطة',
+  _ => 'غير محدد',
+};
+
+String _diaperLabel(CareEvent event) {
+  if (event.diaperWet == true && event.diaperDirty == true) {
+    return 'مبللة ومتسخة';
+  }
+  if (event.diaperWet == true) return 'مبللة';
+  if (event.diaperDirty == true) return 'متسخة';
+  return 'غير محدد';
+}
+
+String _diaperTypeValue(CareEvent event) {
+  if (event.diaperWet == true && event.diaperDirty == true) return 'both';
+  if (event.diaperDirty == true) return 'dirty';
+  return 'wet';
+}
+
+class _DialogTextField extends StatelessWidget {
+  const _DialogTextField({
+    required this.controller,
+    required this.label,
+    this.keyboardType,
+    this.minLines = 1,
+    this.maxLines = 1,
+  });
+
+  final TextEditingController controller;
+  final String label;
+  final TextInputType? keyboardType;
+  final int minLines;
+  final int maxLines;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsetsDirectional.only(bottom: 10),
+    child: TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      minLines: minLines,
+      maxLines: maxLines,
+      textDirection: keyboardType == TextInputType.number
+          ? TextDirection.ltr
+          : TextDirection.rtl,
+      textAlign: TextAlign.start,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+    ),
+  );
+}
+
+class _DialogDropdown extends StatelessWidget {
+  const _DialogDropdown({
+    required this.label,
+    required this.value,
+    required this.items,
+    required this.onChanged,
+  });
+
+  final String label;
+  final String value;
+  final Map<String, String> items;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsetsDirectional.only(bottom: 10),
+    child: DropdownButtonFormField<String>(
+      initialValue: value,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+      items: items.entries
+          .map(
+            (entry) =>
+                DropdownMenuItem(value: entry.key, child: Text(entry.value)),
+          )
+          .toList(),
+      onChanged: (value) {
+        if (value != null) onChanged(value);
+      },
+    ),
+  );
+}
+
+class _DialogSwitch extends StatelessWidget {
+  const _DialogSwitch({
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String label;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) => SwitchListTile(
+    contentPadding: EdgeInsets.zero,
+    title: Text(label, textAlign: TextAlign.start),
+    value: value,
+    onChanged: onChanged,
+  );
+}
+
+String _eventSubtitle(CareEvent event) {
+  if (event.isPumping) return pumpingSubtitle(event);
+  final time = ArabicFormatters.time(event.startedAt);
+  final notes = event.notes?.trim();
+  if (notes == null || notes.isEmpty) return time;
+  return '$time · $notes';
+}
+
+double? _parseAmount(String value) => double.tryParse(
+  value
+      .trim()
+      .replaceAll('٫', '.')
+      .replaceAll(',', '.')
+      .replaceAll('٠', '0')
+      .replaceAll('١', '1')
+      .replaceAll('٢', '2')
+      .replaceAll('٣', '3')
+      .replaceAll('٤', '4')
+      .replaceAll('٥', '5')
+      .replaceAll('٦', '6')
+      .replaceAll('٧', '7')
+      .replaceAll('٨', '8')
+      .replaceAll('٩', '9'),
+);
+
+class _MetricCard extends StatelessWidget {
+  const _MetricCard({
+    required this.title,
+    required this.value,
+    required this.icon,
+    required this.color,
+    required this.bg,
+    this.label = '',
+    this.onTap,
+  });
+
+  final String title;
+  final String value;
+  final NumuwOrganicIconName icon;
+  final Color color;
+  final Color bg;
+  final String label;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) => SoftCard(
+    onTap: onTap,
+    padding: const EdgeInsetsDirectional.all(14),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      color: color,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  if (label.isNotEmpty) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      label,
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(
+                        color: AppColors.secondaryText,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            _OrganicBadge(icon: icon, background: bg, size: 38),
+          ],
+        ),
+        const Spacer(),
+        Text(
+          value,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.start,
+          style: TextStyle(
+            color: numuwTextColor(),
+            fontSize: value.length > 18 ? 13 : 20,
+            fontWeight: FontWeight.w900,
+            height: 1.25,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _OrganicBadge extends StatelessWidget {
+  const _OrganicBadge({
+    required this.icon,
+    required this.background,
+    required this.size,
+  });
+
+  final NumuwOrganicIconName icon;
+  final Color background;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: size,
+    height: size,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
       color: background,
       borderRadius: BorderRadius.circular(size * .34),
     ),
