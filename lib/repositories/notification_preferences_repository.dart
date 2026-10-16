@@ -4,11 +4,11 @@ import '../models/notification_preferences.dart';
 import 'repo_utils.dart';
 
 class NotificationPreferencesRepository {
-  NotificationPreferencesRepository({SupabaseClient? client}) : _client = client;
+  NotificationPreferencesRepository({SupabaseClient? this.client});
 
-  final SupabaseClient? _client;
+  final SupabaseClient? client;
 
-  SupabaseClient get _supabase => _client ?? Supabase.instance.client;
+  SupabaseClient get _supabase => client ?? Supabase.instance.client;
 
   Future<NotificationPreferences> getOrCreate({
     String? timezone,
