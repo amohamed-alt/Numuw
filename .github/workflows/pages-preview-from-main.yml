@@ -6,9 +6,13 @@ on:
   push:
     branches:
       - main
+      - feat/organic-production-foundation
     paths:
       - '.github/workflows/pages-preview-from-main.yml'
       - '.github/preview-trigger-*.txt'
+      - 'lib/screens/home_screen.dart'
+      - 'lib/screens/design_preview/**'
+      - 'lib/widgets/app_widgets.dart'
   workflow_dispatch:
 
 permissions:
