@@ -24,7 +24,7 @@ This file is the source of truth for product scope, screen ownership, production
 ## Core screens
 | Screen / flow | Status | Production target |
 |---|---|---|
-| Today / يومك مع طفلك | 🟡 | Daily summary, last feeding/sleep/diaper, next vaccine, tip/activity, open tasks. |
+| Today / يومك مع طفلك | 🟡 | Daily summary, last feeding/sleep/diaper, next vaccine, tip/activity, open tasks. Organic SVG icons now cover summary metrics, tips/activity and night mode; review recent-event cards in the next design pass. |
 | Quick Log / التسجيل | 🟡 | Feeding, sleep, diaper, food, medicine, temperature, note; one-handed entry. |
 | Child / طفلي | 🟡 | Profile, growth, vaccines, milestones, reports, documents. |
 | AI Assistant / اسألي المساعد | 🟡 | Safe general guidance + log summaries + doctor-question prep; never diagnosis. |
