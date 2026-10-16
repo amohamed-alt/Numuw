@@ -49,9 +49,16 @@ jobs:
         run: |
           flutter build web --release \
             --source-maps \
-            --base-href "/Numuw/" \
+            --base-href "/Numuw/review/" \
             --dart-define=NUMUW_UI_REVIEW=true \
             --dart-define=APP_ENV=ui-review
+
+      - name: Stage versioned preview route
+        run: |
+          mkdir -p /tmp/numuw-review-route
+          cp -a build/web/. /tmp/numuw-review-route/
+          mkdir -p build/web/review
+          cp -a /tmp/numuw-review-route/. build/web/review/
 
       - name: Verify Flutter web runtime
         shell: bash
@@ -63,14 +70,14 @@ jobs:
             exit 1
           fi
           rm -rf /tmp/numuw-pages /tmp/numuw-chrome-profile
-          mkdir -p /tmp/numuw-pages/Numuw
-          cp -a build/web/. /tmp/numuw-pages/Numuw/
+          mkdir -p /tmp/numuw-pages/Numuw/review
+          cp -a build/web/review/. /tmp/numuw-pages/Numuw/review/
           python3 -m http.server 8765 --directory /tmp/numuw-pages >/tmp/numuw-http.log 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           sleep 1
           set +e
-          "$CHROME" --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu --no-first-run --no-default-browser-check --user-data-dir=/tmp/numuw-chrome-profile --virtual-time-budget=15000 --dump-dom http://127.0.0.1:8765/Numuw/ >/tmp/numuw-dom.html 2>/tmp/numuw-chrome.log
+          "$CHROME" --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu --no-first-run --no-default-browser-check --user-data-dir=/tmp/numuw-chrome-profile --virtual-time-budget=15000 --dump-dom http://127.0.0.1:8765/Numuw/review/ >/tmp/numuw-dom.html 2>/tmp/numuw-chrome.log
           CHROME_EXIT=$?
           set -e
           if [ "$CHROME_EXIT" -ne 0 ] || ! grep -q "flt-glass-pane" /tmp/numuw-dom.html; then
