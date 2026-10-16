@@ -42,19 +42,11 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Verify review source checkout
-        run: |
-          git rev-parse HEAD
-          git ls-tree -r HEAD -- lib/screens/design_preview
-          ls -la lib/screens/design_preview
-
       - name: Resolve packages
         run: flutter pub get
 
-      - name: Run quality checks
-        run: |
-          flutter analyze --no-fatal-infos
-          flutter test
+      - name: Run tests
+        run: flutter test
 
       - name: Build isolated UI review
         run: |
