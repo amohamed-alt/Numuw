@@ -34,26 +34,23 @@ class _NumuwUiReviewAppState extends State<NumuwUiReviewApp> {
         textDirection: TextDirection.rtl,
         child: Scaffold(
           body: SafeArea(
-            bottom: false,
             child: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 460),
-                child: AnimatedSwitcher(
-                  duration: NumuwMotionSpec.quick,
-                  child: _screenFor(_index),
-                ),
-              ),
-            ),
-          ),
-          bottomNavigationBar: SafeArea(
-            top: false,
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 460),
-                child: _ReviewNavigation(
-                  tabs: _tabs,
-                  selectedIndex: _index,
-                  onChanged: (value) => setState(() => _index = value),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: AnimatedSwitcher(
+                        duration: NumuwMotionSpec.quick,
+                        child: _screenFor(_index),
+                      ),
+                    ),
+                    _ReviewNavigation(
+                      tabs: _tabs,
+                      selectedIndex: _index,
+                      onChanged: (value) => setState(() => _index = value),
+                    ),
+                  ],
                 ),
               ),
             ),
