@@ -12,6 +12,7 @@ on:
       - '.github/preview-trigger-*.txt'
       - 'lib/screens/home_screen.dart'
       - 'lib/screens/design_preview/**'
+      - 'lib/main.dart'
       - 'lib/widgets/app_widgets.dart'
   workflow_dispatch:
 
@@ -32,7 +33,7 @@ jobs:
       - name: Checkout Organic review source
         uses: actions/checkout@v6
         with:
-          ref: feat/organic-production-foundation
+          ref: ${{ github.ref == 'refs/heads/feat/organic-production-foundation' && github.sha || 'feat/organic-production-foundation' }}
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
