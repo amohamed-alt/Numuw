@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../core/app_colors.dart';
 import '../core/errors/app_error.dart';
 import '../core/formatters/arabic_formatters.dart';
-import '../design/numuw_organic_icons.dart';
 import '../models/care_event.dart';
 import '../models/child_profile.dart';
 import '../models/dashboard_summary.dart';
@@ -633,36 +632,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (numuwNightMode()) {
                     return _NightHome(childName: child.name, summary: summary);
                   }
-                  final dailyProgress =
-                      [
-                        summary.latestFeeding != null,
-                        summary.latestDiaper != null,
-                        summary.sleepToday.inMinutes > 0,
-                        summary.nextVaccination != null,
-                        summary.incompleteTasks.isEmpty,
-                      ].where((value) => value).length /
-                      5.0;
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       NumuwAppBar(
-                        title: 'مرحباً ماما 💚',
-                        subtitle: 'أنتِ تقومين بعمل رائع اليوم 🧡',
+                        title: 'أهلًا بيكي',
+                        subtitle: 'دي لمحة سريعة عن يوم طفلك',
                         trailing: AppIconButton(
                           icon: Icons.refresh_rounded,
                           onPressed: _refresh,
                         ),
                       ),
                       const SizedBox(height: 14),
-                      NumuwPlantProgress(
-                        progress: dailyProgress == 0 ? .22 : dailyProgress,
-                        label: dailyProgress == 0
-                            ? 'البذرة الأولى'
-                            : dailyProgress < .6
-                            ? 'السجل ينمو'
-                            : 'يوم متوازن',
-                      ),
-                      const SizedBox(height: 16),
                       ChildHeroCard(
                         name: child.name,
                         age: ArabicFormatters.age(child),
@@ -689,7 +670,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     summary.latestFeeding!.startedAt,
                                   ),
                             label: summary.latestFeeding == null ? '' : 'في',
-                            icon: NumuwOrganicIconName.breastfeeding,
+                            icon: Icons.child_friendly_rounded,
                             color: AppColors.mint,
                             bg: AppColors.mintLight,
                           ),
@@ -698,7 +679,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             value: summary.sleepToday.inMinutes == 0
                                 ? 'لا توجد تسجيلات نوم اليوم'
                                 : ArabicFormatters.duration(summary.sleepToday),
-                            icon: NumuwOrganicIconName.sleep,
+                            icon: Icons.bedtime_rounded,
                             color: AppColors.mint,
                             bg: AppColors.mintLight,
                           ),
@@ -710,7 +691,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     summary.latestDiaper!.startedAt,
                                   ),
                             label: summary.latestDiaper == null ? '' : 'في',
-                            icon: NumuwOrganicIconName.diaper,
+                            icon: Icons.child_care_rounded,
                             color: AppColors.mintDark,
                             bg: AppColors.blueLight,
                           ),
@@ -724,7 +705,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 : ArabicFormatters.date(
                                     summary.nextVaccination!.scheduledDate,
                                   ),
-                            icon: NumuwOrganicIconName.vaccine,
+                            icon: Icons.medical_services_outlined,
                             color: AppColors.yellow,
                             bg: AppColors.yellowLight,
                             onTap: _showProfileTab,
@@ -1072,7 +1053,7 @@ class _MetricCard extends StatelessWidget {
 
   final String title;
   final String value;
-  final NumuwOrganicIconName icon;
+  final IconData icon;
   final Color color;
   final Color bg;
   final String label;
@@ -1115,7 +1096,7 @@ class _MetricCard extends StatelessWidget {
                 ],
               ),
             ),
-            _OrganicBadge(icon: icon, background: bg, size: 38),
+            _DashboardIconBadge(icon: icon, background: bg, size: 38),
           ],
         ),
         const Spacer(),
@@ -1136,14 +1117,14 @@ class _MetricCard extends StatelessWidget {
   );
 }
 
-class _OrganicBadge extends StatelessWidget {
-  const _OrganicBadge({
+class _DashboardIconBadge extends StatelessWidget {
+  const _DashboardIconBadge({
     required this.icon,
     required this.background,
     required this.size,
   });
 
-  final NumuwOrganicIconName icon;
+  final IconData icon;
   final Color background;
   final double size;
 
@@ -1156,7 +1137,7 @@ class _OrganicBadge extends StatelessWidget {
       color: background,
       borderRadius: BorderRadius.circular(size * .34),
     ),
-    child: NumuwOrganicIcon(icon, size: size * .82),
+    child: Icon(icon, size: size * .5, color: numuwAccentColor()),
   );
 }
 
@@ -1179,7 +1160,7 @@ class _NightHome extends StatelessWidget {
       children: [
         Row(
           children: [
-            const NumuwOrganicIcon(NumuwOrganicIconName.sleep, size: 28),
+            const Icon(Icons.bedtime_rounded, color: AppColors.nightGold),
             const SizedBox(width: 8),
             const Expanded(
               child: Text(
@@ -1233,7 +1214,7 @@ class _NightHome extends StatelessWidget {
                 value: summary.latestFeeding == null
                     ? 'لا توجد'
                     : ArabicFormatters.time(summary.latestFeeding!.startedAt),
-                icon: NumuwOrganicIconName.breastfeeding,
+                icon: Icons.child_friendly_rounded,
               ),
             ),
             const SizedBox(width: 11),
@@ -1243,7 +1224,7 @@ class _NightHome extends StatelessWidget {
                 value: summary.latestDiaper == null
                     ? 'لا توجد'
                     : ArabicFormatters.time(summary.latestDiaper!.startedAt),
-                icon: NumuwOrganicIconName.diaper,
+                icon: Icons.child_care_rounded,
               ),
             ),
           ],
@@ -1260,17 +1241,17 @@ class _NightHome extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         const _NightAction(
-          icon: NumuwOrganicIconName.breastfeeding,
+          icon: Icons.child_friendly_rounded,
           label: 'بدء رضاعة جديدة',
         ),
         const SizedBox(height: 8),
         const _NightAction(
-          icon: NumuwOrganicIconName.diaper,
+          icon: Icons.child_care_rounded,
           label: 'تغيير حفاضة',
         ),
         const SizedBox(height: 8),
         const _NightAction(
-          icon: NumuwOrganicIconName.sleep,
+          icon: Icons.bedtime_rounded,
           label: 'بدء جلسة نوم',
         ),
       ],
@@ -1302,7 +1283,11 @@ class _NightChildCard extends StatelessWidget {
             color: AppColors.nightSurfaceSoft,
             borderRadius: BorderRadius.circular(18),
           ),
-          child: const NumuwOrganicIcon(NumuwOrganicIconName.newborn, size: 44),
+          child: Icon(
+            Icons.child_care_rounded,
+            color: AppColors.nightGold,
+            size: 32,
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -1330,7 +1315,7 @@ class _NightMetric extends StatelessWidget {
 
   final String title;
   final String value;
-  final NumuwOrganicIconName icon;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -1343,7 +1328,7 @@ class _NightMetric extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _OrganicBadge(
+        _DashboardIconBadge(
           icon: icon,
           background: AppColors.nightSurfaceSoft,
           size: 32,
@@ -1375,7 +1360,7 @@ class _NightMetric extends StatelessWidget {
 class _NightAction extends StatelessWidget {
   const _NightAction({required this.icon, required this.label});
 
-  final NumuwOrganicIconName icon;
+  final IconData icon;
   final String label;
 
   @override
@@ -1392,7 +1377,7 @@ class _NightAction extends StatelessWidget {
     ),
     child: Row(
       children: [
-        _OrganicBadge(
+        _DashboardIconBadge(
           icon: icon,
           background: AppColors.nightSurfaceSoft,
           size: 30,
@@ -1442,7 +1427,7 @@ class _InsightGrid extends StatelessWidget {
       children: [
         _InfoMiniCard(
           title: 'نصيحة اليوم',
-          icon: NumuwOrganicIconName.tips,
+          icon: Icons.lightbulb_outline_rounded,
           iconBackground: AppColors.mintLight,
           body: tip.summary,
           action: 'اقرئي المزيد ‹',
@@ -1453,7 +1438,7 @@ class _InsightGrid extends StatelessWidget {
         ),
         _InfoMiniCard(
           title: 'نشاط مناسب',
-          icon: NumuwOrganicIconName.milestones,
+          icon: Icons.toys_rounded,
           iconBackground: AppColors.yellowLight,
           body: '${activity.title}\n${activity.duration}',
           action: 'عرض الأنشطة ‹',
@@ -1481,7 +1466,7 @@ class _InfoMiniCard extends StatelessWidget {
   });
 
   final String title;
-  final NumuwOrganicIconName icon;
+  final IconData icon;
   final Color iconBackground;
   final String body;
   final String action;
@@ -1510,7 +1495,11 @@ class _InfoMiniCard extends StatelessWidget {
                 ),
               ),
             ),
-            _OrganicBadge(icon: icon, background: iconBackground, size: 30),
+            _DashboardIconBadge(
+              icon: icon,
+              background: iconBackground,
+              size: 30,
+            ),
           ],
         ),
         const SizedBox(height: 8),

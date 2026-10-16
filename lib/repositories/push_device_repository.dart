@@ -3,11 +3,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'repo_utils.dart';
 
 class PushDeviceRepository {
-  PushDeviceRepository({SupabaseClient? this.client});
+  PushDeviceRepository({SupabaseClient? client}) : _client = client;
 
-  final SupabaseClient? client;
+  final SupabaseClient? _client;
 
-  SupabaseClient get _supabase => client ?? Supabase.instance.client;
+  SupabaseClient get _supabase => _client ?? Supabase.instance.client;
 
   Future<void> register({
     required String token,

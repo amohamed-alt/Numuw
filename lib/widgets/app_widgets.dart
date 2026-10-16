@@ -1472,25 +1472,30 @@ class ChildHeroCard extends StatelessWidget {
     width: double.infinity,
     padding: const EdgeInsetsDirectional.all(20),
     decoration: BoxDecoration(
-      gradient: numuwNightMode()
-          ? AppColors.nightGradient
-          : const LinearGradient(
-              begin: AlignmentDirectional.topStart,
-              end: AlignmentDirectional.bottomEnd,
-              colors: [AppColors.mintLight, AppColors.mintSoft],
-            ),
+      color: numuwSurfaceColor(),
       borderRadius: BorderRadius.circular(24),
+      border: Border.all(color: numuwBorderColor()),
     ),
     child: InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(24),
       child: Row(
         children: [
-          IconBadge(
-            icon: '👶',
-            background: numuwSurfaceColor(),
-            size: 68,
-            borderColor: numuwAccentColor().withValues(alpha: .25),
+          Container(
+            width: 56,
+            height: 56,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: numuwNightMode()
+                  ? AppColors.nightSurfaceSoft
+                  : AppColors.mintLight,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Icon(
+              Icons.child_care_rounded,
+              color: numuwAccentColor(),
+              size: 30,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
