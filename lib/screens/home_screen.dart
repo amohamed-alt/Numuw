@@ -1179,7 +1179,7 @@ class _NightHome extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Text('🌙', style: TextStyle(fontSize: 24)),
+            const NumuwOrganicIcon(NumuwOrganicIconName.sleep, size: 28),
             const SizedBox(width: 8),
             const Expanded(
               child: Text(
@@ -1233,7 +1233,7 @@ class _NightHome extends StatelessWidget {
                 value: summary.latestFeeding == null
                     ? 'لا توجد'
                     : ArabicFormatters.time(summary.latestFeeding!.startedAt),
-                icon: '🍼',
+                icon: NumuwOrganicIconName.breastfeeding,
               ),
             ),
             const SizedBox(width: 11),
@@ -1243,7 +1243,7 @@ class _NightHome extends StatelessWidget {
                 value: summary.latestDiaper == null
                     ? 'لا توجد'
                     : ArabicFormatters.time(summary.latestDiaper!.startedAt),
-                icon: '🧷',
+                icon: NumuwOrganicIconName.diaper,
               ),
             ),
           ],
@@ -1259,11 +1259,20 @@ class _NightHome extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        const _NightAction(icon: '🍼', label: 'بدء رضاعة جديدة'),
+        const _NightAction(
+          icon: NumuwOrganicIconName.breastfeeding,
+          label: 'بدء رضاعة جديدة',
+        ),
         const SizedBox(height: 8),
-        const _NightAction(icon: '🧷', label: 'تغيير حفاضة'),
+        const _NightAction(
+          icon: NumuwOrganicIconName.diaper,
+          label: 'تغيير حفاضة',
+        ),
         const SizedBox(height: 8),
-        const _NightAction(icon: '🌙', label: 'بدء جلسة نوم'),
+        const _NightAction(
+          icon: NumuwOrganicIconName.sleep,
+          label: 'بدء جلسة نوم',
+        ),
       ],
     ),
   );
@@ -1285,10 +1294,15 @@ class _NightChildCard extends StatelessWidget {
     ),
     child: Row(
       children: [
-        const IconBadge(
-          icon: '👶',
-          background: AppColors.nightSurfaceSoft,
-          size: 54,
+        Container(
+          width: 54,
+          height: 54,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: AppColors.nightSurfaceSoft,
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: const NumuwOrganicIcon(NumuwOrganicIconName.newborn, size: 44),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -1316,7 +1330,7 @@ class _NightMetric extends StatelessWidget {
 
   final String title;
   final String value;
-  final String icon;
+  final NumuwOrganicIconName icon;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -1329,7 +1343,11 @@ class _NightMetric extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(icon, style: const TextStyle(fontSize: 22)),
+        _OrganicBadge(
+          icon: icon,
+          background: AppColors.nightSurfaceSoft,
+          size: 32,
+        ),
         const SizedBox(height: 8),
         Text(
           title,
@@ -1357,7 +1375,7 @@ class _NightMetric extends StatelessWidget {
 class _NightAction extends StatelessWidget {
   const _NightAction({required this.icon, required this.label});
 
-  final String icon;
+  final NumuwOrganicIconName icon;
   final String label;
 
   @override
@@ -1374,7 +1392,11 @@ class _NightAction extends StatelessWidget {
     ),
     child: Row(
       children: [
-        Text(icon, style: const TextStyle(fontSize: 18)),
+        _OrganicBadge(
+          icon: icon,
+          background: AppColors.nightSurfaceSoft,
+          size: 30,
+        ),
         const SizedBox(width: 10),
         Expanded(
           child: Text(
